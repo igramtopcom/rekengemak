@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+    (function() {
+      var t = localStorage.getItem('rekengemak-theme');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uurloon Berekenen Online Gratis -- Salaris naar Uurloon | RekenGemak</title>
+  <meta name="description" content="Bereken je uurloon op basis van je maandsalaris of andersom. Met of zonder vakantiegeld, voor 32, 36 of 40 uur per week. Gratis en direct resultaat.">
+  <link rel="canonical" href="https://rekengemak.nl/uurloon-berekenen/">
+  <meta property="og:title" content="Uurloon Berekenen Online Gratis -- Salaris naar Uurloon | RekenGemak">
+  <meta property="og:description" content="Bereken je uurloon op basis van je maandsalaris of andersom. Met of zonder vakantiegeld, voor 32, 36 of 40 uur per week. Gratis en direct resultaat.">
+  <meta property="og:url" content="https://rekengemak.nl/uurloon-berekenen/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ═══════════════════════════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+.badge-updated {
+  display: inline-block; margin-top: 6px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 500;
+  background: rgba(31, 92, 153, 0.15);
+  color: var(--accent);
+}
+
+/* ═══ 4. TOOL CARD ═══════════════════════════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* Input group */
+.input-group { margin-bottom: var(--space-md); }
+.input-group label {
+  display: block; margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.input-wrap {
+  display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+.input-prefix {
+  padding: 0 12px; color: var(--text-secondary);
+  font-weight: 500; border-right: 1px solid var(--border);
+  height: 48px; display: flex; align-items: center;
+}
+.input-suffix {
+  padding: 0 12px; color: var(--text-secondary);
+  font-weight: 500; border-left: 1px solid var(--border);
+  height: 48px; display: flex; align-items: center;
+}
+.input-wrap input,
+.input-wrap select {
+  flex: 1; height: 48px; padding: 0 14px;
+  background: transparent; border: none; outline: none;
+  font-size: 1.1rem; color: var(--text-primary);
+}
+.input-wrap select { appearance: none; cursor: pointer; }
+select option {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
+
+/* Toggle row */
+.toggle-row {
+  display: flex; align-items: center; gap: var(--space-md);
+  margin-bottom: var(--space-md); font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.toggle-switch {
+  position: relative; width: 44px; height: 24px;
+  cursor: pointer; flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-track {
+  position: absolute; inset: 0;
+  background: var(--border); border-radius: 12px;
+  transition: background var(--transition);
+}
+.toggle-switch input:checked + .toggle-track { background: var(--accent); }
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: white; transition: transform var(--transition);
+  pointer-events: none;
+}
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+/* Slider */
+.slider-wrap {
+  margin-bottom: var(--space-md);
+}
+.slider-wrap label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.slider-wrap .slider-value {
+  font-weight: 700; color: var(--text-primary);
+}
+input[type="range"] {
+  width: 100%; height: 6px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Preset buttons */
+.btn-preset {
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  transition: all var(--transition);
+}
+.btn-preset:hover,
+.btn-preset.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ═══ 5. RESULT BOX ═══════════════════════════════════════════════════════════════════════════ */
+.result-box {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-md);
+}
+.result-label {
+  font-size: 0.8rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.result-main {
+  font-size: 2.25rem; font-weight: 700; color: var(--success);
+  font-variant-numeric: tabular-nums; line-height: 1.2;
+}
+.result-sub {
+  font-size: 1.1rem; color: var(--text-primary);
+  margin-top: 6px; display: flex; align-items: center; gap: 8px;
+}
+.result-empty { color: var(--text-secondary); font-style: italic; }
+.result-main.empty { color: var(--text-secondary); font-size: 1.1rem; font-weight: 400; }
+
+/* Copy button */
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+/* ═══ BUTTONS ═══════════════════════════════════════════════════════════════════════════════ */
+.btn-primary {
+  width: 100%; height: 48px; margin-top: var(--space-md);
+  background: var(--accent); color: white;
+  font-size: 1rem; font-weight: 600; border-radius: var(--radius);
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ TAB BAR ═══════════════════════════════════════════════════════════════════════════════ */
+.tab-bar {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-lg);
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 10px 18px; min-height: 48px; font-size: 0.95rem; font-weight: 500;
+  color: var(--text-secondary); border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: all var(--transition);
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-btn:hover:not(.active) { color: var(--text-primary); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ═══ DISCLAIMER ═══════════════════════════════════════════════════════════════════════════ */
+.disclaimer {
+  font-size: 0.8rem; font-style: italic;
+  color: var(--text-secondary);
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+/* ═══ 6. ARTICLE & FAQ ═══════════════════════════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+/* FAQ */
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ═══════════════════════════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════════════════════════════ */
+.result-main { font-size: 1.8rem; }
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+
+@media (min-width: 640px) {
+  .result-main { font-size: 2.25rem; }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">RekenGemak</a>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Wissel thema">
+      <span class="icon-dark">&#9789;</span>
+      <span class="icon-light">&#9788;</span>
+    </button>
+  </header>
+
+  <div id="ad-top" class="ad-slot"></div>
+
+  <main>
+    <div class="hero">
+      <nav aria-label="Breadcrumb">
+        <a href="/">Thuis</a> &rsaquo; <span>Uurloon Berekenen</span>
+      </nav>
+      <h1>Uurloon Berekenen</h1>
+      <span class="badge-updated">Bijgewerkt: januari 2026</span>
+      <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+        Bereken je uurloon op basis van je maandsalaris, of reken andersom. Kies het aantal uren per week en stel in of vakantiegeld meegerekend wordt.
+      </p>
+    </div>
+
+    <section class="tool-card" aria-label="Uurloon Berekenen">
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" role="tab" id="tab-1"
+                aria-selected="true" aria-controls="panel-1"
+                onclick="switchTab(1)">Salaris naar uurloon</button>
+        <button class="tab-btn" role="tab" id="tab-2"
+                aria-selected="false" aria-controls="panel-2"
+                onclick="switchTab(2)">Uurloon naar salaris</button>
+      </div>
+
+      <!-- Panel 1: Maandsalaris naar uurloon -->
+      <div id="panel-1" class="tab-panel active" role="tabpanel" aria-labelledby="tab-1">
+        <p class="panel-desc" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-md);">
+          Voer je bruto maandsalaris in en zie je uurloon direct. Handig om te vergelijken met een uurcontract of zzp-tarief.
+        </p>
+
+        <div class="input-group">
+          <label for="p1-salaris">Bruto maandsalaris</label>
+          <div class="input-wrap">
+            <span class="input-prefix">&euro;</span>
+            <input id="p1-salaris" type="text" inputmode="decimal"
+                   autocomplete="off" placeholder="bijv. 3000" oninput="calc(1)">
+          </div>
+        </div>
+
+        <div class="slider-wrap">
+          <label for="p1-uren">
+            <span>Uren per week</span>
+            <span class="slider-value" id="p1-uren-value">40</span>
+          </label>
+          <input type="range" id="p1-uren" min="8" max="48" value="40" step="1"
+                 oninput="updateSlider('p1-uren','p1-uren-value'); calc(1)">
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <button class="btn-preset" onclick="setSlider('p1-uren','p1-uren-value',32);calc(1)">32u</button>
+            <button class="btn-preset" onclick="setSlider('p1-uren','p1-uren-value',36);calc(1)">36u</button>
+            <button class="btn-preset" onclick="setSlider('p1-uren','p1-uren-value',38);calc(1)">38u</button>
+            <button class="btn-preset" onclick="setSlider('p1-uren','p1-uren-value',40);calc(1)">40u</button>
+          </div>
+        </div>
+
+        <div class="toggle-row" style="margin-bottom:var(--space-md);">
+          <span style="color:var(--text-secondary);font-size:0.9rem;">Vakantiegeld (8%) meenemen</span>
+          <label class="toggle-switch" aria-label="Vakantiegeld meenemen">
+            <input type="checkbox" id="p1-vg" onchange="calc(1)">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+
+        <div class="result-box">
+          <div class="result-label">Bruto uurloon</div>
+          <div class="result-main" id="res-1" style="color:var(--text-secondary);font-size:1.2rem;font-weight:400;">--</div>
+
+          <div style="display:flex;gap:var(--space-lg);margin-top:12px;flex-wrap:wrap;">
+            <div>
+              <div class="result-label">Bruto jaarsalaris</div>
+              <div id="res-1-jaar" style="font-size:1rem;color:var(--text-primary);">--</div>
+            </div>
+            <div>
+              <div class="result-label">Uren per jaar</div>
+              <div id="res-1-uren" style="font-size:1rem;color:var(--text-primary);">--</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button class="btn-copy" onclick="copyVal('res-1')">Kopieer uurloon</button>
+          </div>
+        </div>
+
+        <button class="btn-secondary" onclick="resetPanel(1)" style="margin-top:12px;">Wis alles</button>
+
+        <p class="disclaimer">
+          Dit is een indicatieve berekening op basis van bruto salaris. Het netto uurloon is afhankelijk van je persoonlijke belastingsituatie, toeslagen en aftrekposten. Raadpleeg een salarisadministrateur voor een exacte berekening.
+        </p>
+      </div>
+
+      <!-- Panel 2: Uurloon naar maandsalaris -->
+      <div id="panel-2" class="tab-panel" role="tabpanel" aria-labelledby="tab-2">
+        <p class="panel-desc" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-md);">
+          Weet je je uurloon en wil je weten wat dat is als maandsalaris? Handig bij vergelijken van een uurcontract met een vast contract.
+        </p>
+
+        <div class="input-group">
+          <label for="p2-uurloon">Bruto uurloon</label>
+          <div class="input-wrap">
+            <span class="input-prefix">&euro;</span>
+            <input id="p2-uurloon" type="text" inputmode="decimal"
+                   autocomplete="off" placeholder="bijv. 18,50" oninput="calc(2)">
+          </div>
+        </div>
+
+        <div class="slider-wrap">
+          <label for="p2-uren">
+            <span>Uren per week</span>
+            <span class="slider-value" id="p2-uren-value">40</span>
+          </label>
+          <input type="range" id="p2-uren" min="8" max="48" value="40" step="1"
+                 oninput="updateSlider('p2-uren','p2-uren-value'); calc(2)">
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+            <button class="btn-preset" onclick="setSlider('p2-uren','p2-uren-value',32);calc(2)">32u</button>
+            <button class="btn-preset" onclick="setSlider('p2-uren','p2-uren-value',36);calc(2)">36u</button>
+            <button class="btn-preset" onclick="setSlider('p2-uren','p2-uren-value',38);calc(2)">38u</button>
+            <button class="btn-preset" onclick="setSlider('p2-uren','p2-uren-value',40);calc(2)">40u</button>
+          </div>
+        </div>
+
+        <div class="toggle-row" style="margin-bottom:var(--space-md);">
+          <span style="color:var(--text-secondary);font-size:0.9rem;">Vakantiegeld (8%) meenemen</span>
+          <label class="toggle-switch" aria-label="Vakantiegeld meenemen">
+            <input type="checkbox" id="p2-vg" onchange="calc(2)">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+
+        <div class="result-box">
+          <div class="result-label">Bruto maandsalaris</div>
+          <div class="result-main" id="res-2" style="color:var(--text-secondary);font-size:1.2rem;font-weight:400;">--</div>
+
+          <div style="display:flex;gap:var(--space-lg);margin-top:12px;flex-wrap:wrap;">
+            <div>
+              <div class="result-label">Bruto jaarsalaris</div>
+              <div id="res-2-jaar" style="font-size:1rem;color:var(--text-primary);">--</div>
+            </div>
+            <div>
+              <div class="result-label">Uren per jaar</div>
+              <div id="res-2-uren" style="font-size:1rem;color:var(--text-primary);">--</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <button class="btn-copy" onclick="copyVal('res-2')">Kopieer maandsalaris</button>
+          </div>
+        </div>
+
+        <button class="btn-secondary" onclick="resetPanel(2)" style="margin-top:12px;">Wis alles</button>
+
+        <p class="disclaimer">
+          Dit is een indicatieve berekening op basis van bruto uurloon. Het werkelijke maandsalaris kan afwijken door cao-schalen, toeslagen en aftrekposten. Raadpleeg je arbeidscontract of werkgever voor het exacte bedrag.
+        </p>
+      </div>
+    </section>
+
+    <div id="ad-middle" class="ad-slot"></div>
+
+    <article class="content">
+      <h2>Hoe werkt de uurlooncalculator?</h2>
+      <p>Kies het tabblad dat bij je situatie past. Met 'Salaris naar uurloon' bereken je wat je bruto maandsalaris is per uur. Vul het salaris in en stel het aantal uren per week in via de schuifregelaar. De preset-knoppen 32, 36, 38 en 40 uur maken het instellen makkelijker.</p>
+      <p>Wil je vakantiegeld meenemen? Zet de toggle aan. De calculator verhoogt het jaarsalaris dan met 8% voor de berekening. Handig als je je echte arbeidskosten wilt weten of een zzp-tarief wilt bepalen.</p>
+      <p>Met 'Uurloon naar salaris' doe je het andersom: vul een uurloon in en zie wat dat oplevert als maandsalaris. Nuttig bij het vergelijken van een uurcontract met een vast dienstverband.</p>
+      <p>Let op: alle bedragen zijn bruto. Je netto uurloon hangt af van je persoonlijke belastingsituatie.</p>
+
+      <h2>Voor wie is deze rekenhulp?</h2>
+      <ul>
+        <li>Werknemers die willen weten wat hun maandsalaris per uur is</li>
+        <li>Zzp'ers die hun uurtarief willen baseren op een gewenst netto-inkomen</li>
+        <li>HR-medewerkers en recruiters die salarissen en tarieven vergelijken</li>
+        <li>Werkzoekenden die een jobaanbieding met uur- of maandloon willen vergelijken</li>
+        <li>Deeltijdwerkers die het effect van hun werkuren op het uurloon willen zien</li>
+      </ul>
+
+      <h2>Veelgestelde vragen</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <h3>Hoe bereken je uurloon op basis van maandsalaris?</h3>
+          <p>Vermenigvuldig je bruto maandsalaris met 12 voor het jaarsalaris. Deel dat door het aantal uren per jaar (uren per week x 52). Bij 3.000 euro per maand en 40 uur per week is dat 36.000 / 2.080 = 17,31 euro per uur. De calculator doet dit automatisch.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Moet ik vakantiegeld meenemen in de uurloonberekening?</h3>
+          <p>Dat hangt af van je doel. Wil je je werkelijke kosten voor de werkgever berekenen of je tarief als zzp'er bepalen? Zet dan vakantiegeld aan. Wil je alleen het uurloon op basis van je reguliere salaris weten? Zet het dan uit. De toggle in de calculator past de berekening direct aan.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoeveel uren per jaar werk je bij een 40-urige werkweek?</h3>
+          <p>Bij 40 uur per week en 52 weken per jaar werk je 2.080 uur per jaar. Dit is het standaard getal dat wordt gebruikt voor uurloonberekeningen in Nederland. Bij 36 uur per week zijn dat 1.872 uur, bij 32 uur per week 1.664 uur.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Wat is een redelijk uurloon in Nederland in 2026?</h3>
+          <p>Het wettelijk minimumloon bedraagt in 2026 13,68 euro per uur voor werknemers van 21 jaar en ouder. Een modaal salaris van circa 3.100 euro bruto per maand komt neer op ongeveer 17,88 euro per uur bij 40 uur per week. Uurlonen varieren sterk per sector en functieniveau.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoe bereken je een zzp-uurtarief op basis van je gewenste salaris?</h3>
+          <p>Gebruik de tab 'Salaris naar uurloon' en zet vakantiegeld aan. Voeg daarnaast een opslag toe voor verzekeringen, pensioen en niet-declarabele uren. Als vuistregel hanteren veel zzp'ers een factor 1,5 tot 2 bovenop het bruto uurloon als loondienst-equivalent.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Wat is het verschil tussen bruto en netto uurloon?</h3>
+          <p>Bruto uurloon is je verdienste voor belastingen en premies. Netto uurloon is wat je daadwerkelijk ontvangt. Het verschil hangt af van je belastingschijf, toeslagen en persoonlijke aftrekposten. Deze calculator berekent alleen het bruto uurloon.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoe werkt de uurloonberekening voor deeltijdwerkers?</h3>
+          <p>Voor deeltijdwerkers gebruik je het werkelijke aantal uren per week. Stel de schuifregelaar in op 24, 28 of 32 uur per week. De calculator past het jaarsalaris en het uurloon automatisch aan op basis van de ingevoerde uren.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Is deze uurlooncalculator gratis?</h3>
+          <p>Ja, de uurlooncalculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen tijdslimiet. De calculator werkt direct in je browser, ook op je telefoon.</p>
+        </div>
+      </div>
+
+      <h2>Gerelateerde rekenhulpen</h2>
+      <div class="related-tools">
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon berekenen</a>
+        <a href="/btw-berekenen/">BTW berekenen</a>
+        <a href="/procenten-berekenen/">Procenten berekenen</a>
+      </div>
+    </article>
+  </main>
+
+  <div id="ad-bottom" class="ad-slot"></div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <strong>Financieel</strong>
+        <ul>
+          <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+          <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+          <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Werk &amp; Salaris</strong>
+        <ul>
+          <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+          <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+          <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Tekst</strong>
+        <ul>
+          <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+          <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+          <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Dagelijks</strong>
+        <ul>
+          <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+          <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+          <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 RekenGemak &middot; <a href="/privacy/">Privacy beleid</a> &middot; <a href="/contact/">Contact</a>
+    </div>
+  </footer>
+
+  <!-- JSON-LD Schemas -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Uurloon Berekenen \u2014 RekenGemak",
+    "url": "https://rekengemak.nl/uurloon-berekenen/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "inLanguage": "nl",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Hoe bereken je uurloon op basis van maandsalaris?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Vermenigvuldig je bruto maandsalaris met 12 voor het jaarsalaris. Deel dat door het aantal uren per jaar (uren per week x 52). Bij 3.000 euro per maand en 40 uur per week is dat 36.000 / 2.080 = 17,31 euro per uur. De calculator doet dit automatisch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Moet ik vakantiegeld meenemen in de uurloonberekening?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Dat hangt af van je doel. Wil je je werkelijke kosten voor de werkgever berekenen of je tarief als zzp'er bepalen? Zet dan vakantiegeld aan. Wil je alleen het uurloon op basis van je reguliere salaris weten? Zet het dan uit. De toggle in de calculator past de berekening direct aan."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoeveel uren per jaar werk je bij een 40-urige werkweek?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bij 40 uur per week en 52 weken per jaar werk je 2.080 uur per jaar. Dit is het standaard getal dat wordt gebruikt voor uurloonberekeningen in Nederland. Bij 36 uur per week zijn dat 1.872 uur, bij 32 uur per week 1.664 uur."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wat is een redelijk uurloon in Nederland in 2026?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Het wettelijk minimumloon bedraagt in 2026 13,68 euro per uur voor werknemers van 21 jaar en ouder. Een modaal salaris van circa 3.100 euro bruto per maand komt neer op ongeveer 17,88 euro per uur bij 40 uur per week. Uurlonen varieren sterk per sector en functieniveau."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe bereken je een zzp-uurtarief op basis van je gewenste salaris?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Gebruik de tab 'Salaris naar uurloon' en zet vakantiegeld aan. Voeg daarnaast een opslag toe voor verzekeringen, pensioen en niet-declarabele uren. Als vuistregel hanteren veel zzp'ers een factor 1,5 tot 2 bovenop het bruto uurloon als loondienst-equivalent."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wat is het verschil tussen bruto en netto uurloon?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bruto uurloon is je verdienste voor belastingen en premies. Netto uurloon is wat je daadwerkelijk ontvangt. Het verschil hangt af van je belastingschijf, toeslagen en persoonlijke aftrekposten. Deze calculator berekent alleen het bruto uurloon."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe werkt de uurloonberekening voor deeltijdwerkers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Voor deeltijdwerkers gebruik je het werkelijke aantal uren per week. Stel de schuifregelaar in op 24, 28 of 32 uur per week. De calculator past het jaarsalaris en het uurloon automatisch aan op basis van de ingevoerde uren."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is deze uurlooncalculator gratis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja, de uurlooncalculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen tijdslimiet. De calculator werkt direct in je browser, ook op je telefoon."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Thuis",
+        "item": "https://rekengemak.nl/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Uurloon Berekenen",
+        "item": "https://rekengemak.nl/uurloon-berekenen/"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+/* ═══ FORMAT HELPERS ═══════════════════════════════════════════════════ */
+var fmtEUR = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
+var fmtNum = new Intl.NumberFormat('nl-NL', { maximumFractionDigits: 0 });
+
+function parseNL(str) {
+  if (!str) return NaN;
+  return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+}
+
+/* ═══ SLIDER HELPERS ════════════════════════════════════════════════════ */
+function updateSlider(sliderId, valueId) {
+  document.getElementById(valueId).textContent =
+    document.getElementById(sliderId).value;
+}
+
+function setSlider(sliderId, valueId, val) {
+  document.getElementById(sliderId).value = val;
+  document.getElementById(valueId).textContent = val;
+}
+
+/* ═══ FORMULES ══════════════════════════════════════════════════════════
+   Maandsalaris -> Uurloon
+   excl. VG: uurloon = (maand x 12) / (uren x 52)
+   incl. VG: uurloon = (maand x 12 x 1.08) / (uren x 52)
+
+   Uurloon -> Maandsalaris
+   excl. VG: maand = (uurloon x uren x 52) / 12
+   incl. VG: maand = (uurloon x uren x 52) / (12 x 1.08)
+════════════════════════════════════════════════════════════════════════ */
+function calc(tab) {
+  if (tab === 1) {
+    var salaris = parseNL(document.getElementById('p1-salaris').value);
+    var uren    = parseInt(document.getElementById('p1-uren').value);
+    var vg      = document.getElementById('p1-vg').checked;
+
+    if (isNaN(salaris) || salaris <= 0) { setResult(1, null); return; }
+
+    var factor     = vg ? 1.08 : 1;
+    var jaarSal    = salaris * 12 * factor;
+    var jaarUren   = uren * 52;
+    var uurloon    = jaarSal / jaarUren;
+
+    setResult(1, fmtEUR.format(uurloon));
+    document.getElementById('res-1-jaar').textContent  = fmtEUR.format(jaarSal);
+    document.getElementById('res-1-uren').textContent  = fmtNum.format(jaarUren) + ' uur';
+  }
+
+  if (tab === 2) {
+    var uurloon2 = parseNL(document.getElementById('p2-uurloon').value);
+    var uren2    = parseInt(document.getElementById('p2-uren').value);
+    var vg2      = document.getElementById('p2-vg').checked;
+
+    if (isNaN(uurloon2) || uurloon2 <= 0) { setResult(2, null); return; }
+
+    var factor2   = vg2 ? 1.08 : 1;
+    var jaarUren2 = uren2 * 52;
+    var jaarSal2  = uurloon2 * jaarUren2;
+    var maand2    = jaarSal2 / (12 * factor2);
+
+    setResult(2, fmtEUR.format(maand2));
+    document.getElementById('res-2-jaar').textContent  = fmtEUR.format(jaarSal2 / factor2);
+    document.getElementById('res-2-uren').textContent  = fmtNum.format(jaarUren2) + ' uur';
+  }
+}
+
+/* ═══ SET RESULT ════════════════════════════════════════════════════════ */
+function setResult(tab, val) {
+  var el = document.getElementById('res-' + tab);
+  if (!el) return;
+  if (val === null) {
+    el.textContent      = '--';
+    el.style.color      = 'var(--text-secondary)';
+    el.style.fontSize   = '1.2rem';
+    el.style.fontWeight = '400';
+    /* Reset sub-results for current tab only */
+    var prefix = 'res-' + tab;
+    var jaar = document.getElementById(prefix + '-jaar');
+    var uren = document.getElementById(prefix + '-uren');
+    if (jaar) jaar.textContent = '--';
+    if (uren) uren.textContent = '--';
+    return;
+  }
+  el.textContent      = val;
+  el.style.color      = 'var(--success)';
+  el.style.fontSize   = '2.25rem';
+  el.style.fontWeight = '700';
+}
+
+/* ═══ RESET PANEL ═══════════════════════════════════════════════════════ */
+function resetPanel(tab) {
+  var panel = document.getElementById('panel-' + tab);
+  panel.querySelectorAll('input[type="text"]').forEach(function(i) { i.value = ''; });
+  setSlider('p' + tab + '-uren', 'p' + tab + '-uren-value', 40);
+  document.getElementById('p' + tab + '-vg').checked = false;
+  setResult(tab, null);
+}
+
+/* ═══ TAB SWITCH ════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  for (var i = 1; i <= 2; i++) {
+    document.getElementById('tab-'   + i).classList.toggle('active', i === tab);
+    document.getElementById('tab-'   + i).setAttribute('aria-selected', i === tab);
+    document.getElementById('panel-' + i).classList.toggle('active', i === tab);
+  }
+}
+
+/* ═══ COPY ══════════════════════════════════════════════════════════════ */
+function copyVal(id) {
+  var el  = document.getElementById(id);
+  var txt = el ? el.textContent.trim() : '';
+  if (!txt || txt === '--') return;
+  navigator.clipboard.writeText(txt).then(function() {
+    var panel = el.closest('.result-box');
+    var btn   = panel ? panel.querySelector('.btn-copy') : null;
+    if (!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = 'Gekopieerd!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+/* ═══ DARK MODE TOGGLE ══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+  </script>
+</body>
+</html>
