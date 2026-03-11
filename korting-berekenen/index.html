@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korting Berekenen Online Gratis -- Prijs na Korting | RekenGemak</title>
+  <meta name="description" content="Bereken snel de prijs na korting, het kortingspercentage of de originele prijs. Gratis kortingscalculator voor winkelen, sale en zakelijke kortingen.">
+  <link rel="canonical" href="https://rekengemak.nl/korting-berekenen/">
+  <meta property="og:title"       content="Korting Berekenen Online Gratis -- Prijs na Korting | RekenGemak">
+  <meta property="og:description" content="Bereken snel de prijs na korting, het kortingspercentage of de originele prijs. Gratis kortingscalculator voor winkelen, sale en zakelijke kortingen.">
+  <meta property="og:url"         content="https://rekengemak.nl/korting-berekenen/">
+  <meta property="og:type"        content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+/* ═══ 4. TOOL CARD ════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* Tab bar */
+.tab-bar {
+  display: flex; gap: 4px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+.tab-btn {
+  padding: 8px 14px; white-space: nowrap;
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  transition: all var(--transition);
+}
+.tab-btn:hover { background: var(--bg-input); color: var(--text-primary); }
+.tab-btn.active {
+  background: var(--accent); color: #fff;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Input group */
+.input-group { margin-bottom: var(--space-md); }
+.input-group label {
+  display: block; margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.input-wrap {
+  display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+.input-prefix {
+  padding: 0 12px; color: var(--text-secondary);
+  font-weight: 500; border-right: 1px solid var(--border);
+  height: 48px; display: flex; align-items: center;
+}
+.input-suffix {
+  padding: 0 12px; color: var(--text-secondary);
+  font-weight: 500; border-left: 1px solid var(--border);
+  height: 48px; display: flex; align-items: center;
+}
+.input-wrap input {
+  flex: 1; height: 48px; padding: 0 14px;
+  background: transparent; border: none; outline: none;
+  font-size: 1.1rem; color: var(--text-primary);
+}
+
+/* ═══ 5. RESULT BOX ═══════════════════════════════════════════════════ */
+.result-box {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-md);
+}
+.result-label {
+  font-size: 0.8rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.result-main {
+  font-size: 2.25rem; font-weight: 700; color: var(--success);
+  font-variant-numeric: tabular-nums; line-height: 1.2;
+}
+
+/* Copy button */
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+/* ═══ BUTTONS ══════════════════════════════════════════════════════════ */
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ 6. ARTICLE & FAQ ════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+/* FAQ */
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════ */
+.result-main { font-size: 1.8rem; }
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+
+@media (min-width: 640px) {
+  .result-main { font-size: 2.25rem; }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">RekenGemak</a>
+  <button onclick="toggleTheme()" aria-label="Thema wisselen" class="theme-btn">
+    <span class="icon-dark">&#127769;</span>
+    <span class="icon-light">&#9728;&#65039;</span>
+  </button>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+
+<div class="hero">
+  <nav aria-label="Breadcrumb">
+    <a href="/">Thuis</a> &rsaquo; <span>Korting Berekenen</span>
+  </nav>
+  <h1>Korting Berekenen</h1>
+  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+    Bereken de prijs na korting, het kortingspercentage of de originele prijs. Kies het tabblad dat bij je vraag past.
+  </p>
+</div>
+
+<section class="tool-card" aria-label="Korting Berekenen">
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" role="tab" id="tab-1"
+            aria-selected="true" aria-controls="panel-1"
+            onclick="switchTab(1)">Prijs na korting</button>
+    <button class="tab-btn" role="tab" id="tab-2"
+            aria-selected="false" aria-controls="panel-2"
+            onclick="switchTab(2)">Kortings&shy;percentage</button>
+    <button class="tab-btn" role="tab" id="tab-3"
+            aria-selected="false" aria-controls="panel-3"
+            onclick="switchTab(3)">Originele prijs</button>
+  </div>
+
+  <!-- Panel 1: Prijs na korting -->
+  <div id="panel-1" class="tab-panel active" role="tabpanel" aria-labelledby="tab-1">
+    <p class="panel-desc" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-md);">
+      Bereken hoeveel je betaalt na een kortingspercentage. Bijvoorbeeld: wat kost een artikel van &euro; 150 met 20% korting?
+    </p>
+
+    <div class="input-group">
+      <label for="p1-prijs">Originele prijs</label>
+      <div class="input-wrap">
+        <span class="input-prefix">&euro;</span>
+        <input id="p1-prijs" type="text" inputmode="decimal"
+               autocomplete="off" placeholder="bijv. 150" oninput="calc(1)">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="p1-korting">Kortingspercentage</label>
+      <div class="input-wrap">
+        <input id="p1-korting" type="text" inputmode="decimal"
+               autocomplete="off" placeholder="bijv. 20" oninput="calc(1)">
+        <span class="input-suffix">%</span>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">Prijs na korting</div>
+      <div class="result-main" id="res-1">--</div>
+      <div style="display:flex;gap:var(--space-lg);margin-top:10px;flex-wrap:wrap;">
+        <div>
+          <div class="result-label">Je bespaart</div>
+          <div id="res-1-besparing" style="font-size:1.1rem;color:var(--text-primary);">--</div>
+        </div>
+        <div>
+          <div class="result-label">Korting</div>
+          <div id="res-1-pct" style="font-size:1.1rem;color:var(--text-primary);">--</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn-copy" onclick="copyVal('res-1')">Kopieer prijs</button>
+      </div>
+    </div>
+    <button class="btn-secondary" onclick="resetPanel(1)" style="margin-top:12px;">Wis alles</button>
+  </div>
+
+  <!-- Panel 2: Kortingspercentage -->
+  <div id="panel-2" class="tab-panel" role="tabpanel" aria-labelledby="tab-2">
+    <p class="panel-desc" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-md);">
+      Bereken welk kortingspercentage is toegepast. Bijvoorbeeld: een artikel kost normaal &euro; 150 maar je betaalt &euro; 120. Hoeveel procent korting is dat?
+    </p>
+
+    <div class="input-group">
+      <label for="p2-origineel">Originele prijs</label>
+      <div class="input-wrap">
+        <span class="input-prefix">&euro;</span>
+        <input id="p2-origineel" type="text" inputmode="decimal"
+               autocomplete="off" placeholder="bijv. 150" oninput="calc(2)">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="p2-nieuw">Prijs na korting</label>
+      <div class="input-wrap">
+        <span class="input-prefix">&euro;</span>
+        <input id="p2-nieuw" type="text" inputmode="decimal"
+               autocomplete="off" placeholder="bijv. 120" oninput="calc(2)">
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">Kortingspercentage</div>
+      <div class="result-main" id="res-2">--</div>
+      <div style="margin-top:8px;">
+        <div class="result-label">Besparing</div>
+        <div id="res-2-besparing" style="font-size:1.1rem;color:var(--text-primary);">--</div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn-copy" onclick="copyVal('res-2')">Kopieer percentage</button>
+      </div>
+    </div>
+    <button class="btn-secondary" onclick="resetPanel(2)" style="margin-top:12px;">Wis alles</button>
+  </div>
+
+  <!-- Panel 3: Originele prijs -->
+  <div id="panel-3" class="tab-panel" role="tabpanel" aria-labelledby="tab-3">
+    <p class="panel-desc" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:var(--space-md);">
+      Bereken de originele prijs als je de prijs na korting en het kortingspercentage weet. Bijvoorbeeld: je betaalt &euro; 80 na 20% korting. Wat was de originele prijs?
+    </p>
+
+    <div class="input-group">
+      <label for="p3-betaald">Prijs na korting</label>
+      <div class="input-wrap">
+        <span class="input-prefix">&euro;</span>
+        <input id="p3-betaald" type="text" inputmode="decimal"
+               autocomplete="off" placeholder="bijv. 80" oninput="calc(3)">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="p3-pct">Kortingspercentage</label>
+      <div class="input-wrap">
+        <input id="p3-pct" type="text" inputmode="decimal"
+               autocomplete="off" placeholder="bijv. 20" oninput="calc(3)">
+        <span class="input-suffix">%</span>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">Originele prijs</div>
+      <div class="result-main" id="res-3">--</div>
+      <div style="margin-top:8px;">
+        <div class="result-label">Je hebt bespaard</div>
+        <div id="res-3-besparing" style="font-size:1.1rem;color:var(--text-primary);">--</div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn-copy" onclick="copyVal('res-3')">Kopieer prijs</button>
+      </div>
+    </div>
+    <button class="btn-secondary" onclick="resetPanel(3)" style="margin-top:12px;">Wis alles</button>
+  </div>
+
+</section>
+
+<div id="ad-middle"></div>
+
+<article class="content">
+
+  <h2>Hoe werkt de kortingscalculator?</h2>
+  <p>Deze calculator heeft drie tabbladen voor drie verschillende kortingsvragen. Kies het tabblad dat past bij wat je wilt weten.</p>
+  <p>Met 'Prijs na korting' bereken je wat je betaalt als een artikel een bepaald percentage goedkoper is. Vul de originele prijs en het kortingspercentage in en zie direct de nieuwe prijs en het bespaarde bedrag.</p>
+  <p>Met 'Kortingspercentage' achterhaal je welke korting is toegepast als je de originele en de nieuwe prijs weet. Handig om te controleren of een aanbieding klopt.</p>
+  <p>Met 'Originele prijs' reken je terug naar de oorspronkelijke prijs als je de kortingsprijs en het percentage kent.</p>
+
+  <h2>Voor wie is deze rekenhulp?</h2>
+  <ul>
+    <li>Shoppers die willen weten wat ze betalen bij sale of aanbiedingen</li>
+    <li>Ondernemers die kortingen op facturen of offertes willen berekenen</li>
+    <li>Inkopers die kortingspercentages van leveranciers willen controleren</li>
+    <li>Consumenten die de originele prijs willen achterhalen uit een kortingsprijs</li>
+    <li>Iedereen die snel een kortingsberekening wil doen zonder rekenwerk</li>
+  </ul>
+
+  <h2>Veelgestelde vragen</h2>
+  <div class="faq">
+
+    <div class="faq-item">
+      <h3>Hoe bereken je de prijs na korting?</h3>
+      <p>Vermenigvuldig de originele prijs met (1 - kortingspercentage / 100). Bij een prijs van 150 euro en 20% korting is dat 150 x 0,80 = 120 euro. Je bespaart 30 euro. Met de tab 'Prijs na korting' in deze calculator zie je het resultaat direct.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Hoe bereken je een kortingspercentage?</h3>
+      <p>Trek de nieuwe prijs af van de originele prijs, deel door de originele prijs en vermenigvuldig met 100. Een artikel kost normaal 150 euro maar je betaalt 120 euro: (150 - 120) / 150 x 100 = 20% korting. Gebruik de tab 'Kortingspercentage' voor deze berekening.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Hoe bereken je de originele prijs als je de korting weet?</h3>
+      <p>Deel de prijs na korting door (1 - kortingspercentage / 100). Je betaalt 80 euro na 20% korting: 80 / 0,80 = 100 euro originele prijs. Gebruik de tab 'Originele prijs' in de calculator.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wat is het verschil tussen korting en cashback?</h3>
+      <p>Bij korting betaal je direct minder aan de kassa. Bij cashback betaal je de volle prijs en ontvang je later een deel van het bedrag terug, vaak via een app of formulier. Beide vormen van voordeel kun je berekenen met het kortingspercentage dat van toepassing is.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Hoe werkt een dubbele korting?</h3>
+      <p>Bij een dubbele korting pas je twee kortingen na elkaar toe, niet bij elkaar op. Eerst 20% korting op 100 euro = 80 euro. Dan nog 10% op 80 euro = 72 euro. Het totale kortingspercentage is geen 30% maar 28%. Gebruik de calculator twee keer voor zo'n berekening.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Kan ik ook een kortingsbedrag in euro berekenen?</h3>
+      <p>Ja. Vul de originele prijs en het kortingspercentage in bij de tab 'Prijs na korting'. De calculator toont zowel de nieuwe prijs als het bespaarde bedrag in euro. Zo zie je direct hoeveel je uitgeeft en hoeveel je bespaart.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wat is een gebruikelijke korting bij uitverkoop?</h3>
+      <p>Bij de reguliere uitverkoop en sale liggen kortingen vaak tussen de 20% en 50%. Eindejaarsuitverkoop en opruiming gaan soms tot 70% of meer. Seizoensgebonden aanbiedingen starten veelal met 20% tot 30%, oplopend naarmate het seizoen vordert.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is deze kortingscalculator gratis?</h3>
+      <p>Ja, de kortingscalculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen tijdslimiet. De calculator werkt direct in je browser, ook op je telefoon.</p>
+    </div>
+
+  </div>
+
+  <h2>Gerelateerde rekenhulpen</h2>
+  <div class="related-tools">
+    <a href="/procenten-berekenen/">Procenten berekenen</a>
+    <a href="/btw-berekenen/">BTW berekenen</a>
+    <a href="/vakantiegeld-berekenen/">Vakantiegeld berekenen</a>
+    <a href="/minimumloon-berekenen/">Minimumloon berekenen</a>
+    <a href="/uurloon-berekenen/">Uurloon berekenen</a>
+  </div>
+
+</article>
+
+<div id="ad-bottom"></div>
+
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong>Financieel</strong>
+      <ul>
+        <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+        <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+        <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Werk &amp; Salaris</strong>
+      <ul>
+        <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+        <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+        <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Tekst</strong>
+      <ul>
+        <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+        <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+        <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Dagelijks</strong>
+      <ul>
+        <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+        <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+        <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-bottom">
+    <a href="/privacy/">Privacybeleid</a> &middot;
+    <a href="/contact/">Contact</a> &middot;
+    &copy; 2026 RekenGemak
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Korting Berekenen \u2014 RekenGemak",
+  "url": "https://rekengemak.nl/korting-berekenen/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "inLanguage": "nl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoe bereken je de prijs na korting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vermenigvuldig de originele prijs met (1 - kortingspercentage / 100). Bij een prijs van 150 euro en 20% korting is dat 150 x 0,80 = 120 euro. Je bespaart 30 euro. Met de tab 'Prijs na korting' in deze calculator zie je het resultaat direct."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe bereken je een kortingspercentage?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Trek de nieuwe prijs af van de originele prijs, deel door de originele prijs en vermenigvuldig met 100. Een artikel kost normaal 150 euro maar je betaalt 120 euro: (150 - 120) / 150 x 100 = 20% korting. Gebruik de tab 'Kortingspercentage' voor deze berekening."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe bereken je de originele prijs als je de korting weet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Deel de prijs na korting door (1 - kortingspercentage / 100). Je betaalt 80 euro na 20% korting: 80 / 0,80 = 100 euro originele prijs. Gebruik de tab 'Originele prijs' in de calculator."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is het verschil tussen korting en cashback?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bij korting betaal je direct minder aan de kassa. Bij cashback betaal je de volle prijs en ontvang je later een deel van het bedrag terug, vaak via een app of formulier. Beide vormen van voordeel kun je berekenen met het kortingspercentage dat van toepassing is."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe werkt een dubbele korting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bij een dubbele korting pas je twee kortingen na elkaar toe, niet bij elkaar op. Eerst 20% korting op 100 euro = 80 euro. Dan nog 10% op 80 euro = 72 euro. Het totale kortingspercentage is geen 30% maar 28%. Gebruik de calculator twee keer voor zo'n berekening."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kan ik ook een kortingsbedrag in euro berekenen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja. Vul de originele prijs en het kortingspercentage in bij de tab 'Prijs na korting'. De calculator toont zowel de nieuwe prijs als het bespaarde bedrag in euro. Zo zie je direct hoeveel je uitgeeft en hoeveel je bespaart."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is een gebruikelijke korting bij uitverkoop?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bij de reguliere uitverkoop en sale liggen kortingen vaak tussen de 20% en 50%. Eindejaarsuitverkoop en opruiming gaan soms tot 70% of meer. Seizoensgebonden aanbiedingen starten veelal met 20% tot 30%, oplopend naarmate het seizoen vordert."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is deze kortingscalculator gratis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, de kortingscalculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen tijdslimiet. De calculator werkt direct in je browser, ook op je telefoon."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Thuis",
+      "item": "https://rekengemak.nl/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Korting Berekenen",
+      "item": "https://rekengemak.nl/korting-berekenen/"
+    }
+  ]
+}
+</script>
+
+<script>
+/* ═══ FORMAT HELPERS ═══════════════════════════════════════════════════ */
+var fmtEUR = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
+var fmtPct = new Intl.NumberFormat('nl-NL', { maximumFractionDigits: 2 });
+
+function parseNL(str) {
+  if (!str) return NaN;
+  return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+}
+
+/* ═══ BEREKEN PER TAB ══════════════════════════════════════════════════ */
+function calc(tab) {
+  switch (tab) {
+
+    case 1: {
+      var prijs   = parseNL(document.getElementById('p1-prijs').value);
+      var korting = parseNL(document.getElementById('p1-korting').value);
+      if (isNaN(prijs) || isNaN(korting) || prijs <= 0 || korting < 0 || korting > 100) {
+        setResult(1, null); return;
+      }
+      var na        = prijs * (1 - korting / 100);
+      var besparing = prijs * (korting / 100);
+      setResult(1, fmtEUR.format(na));
+      document.getElementById('res-1-besparing').textContent = fmtEUR.format(besparing);
+      document.getElementById('res-1-pct').textContent = fmtPct.format(korting) + '%';
+      break;
+    }
+
+    case 2: {
+      var origineel = parseNL(document.getElementById('p2-origineel').value);
+      var nieuw     = parseNL(document.getElementById('p2-nieuw').value);
+      if (isNaN(origineel) || isNaN(nieuw) || origineel <= 0 || nieuw < 0 || nieuw > origineel) {
+        setResult(2, null); return;
+      }
+      var pct       = ((origineel - nieuw) / origineel) * 100;
+      var besparing2 = origineel - nieuw;
+      setResult(2, fmtPct.format(pct) + '%');
+      document.getElementById('res-2-besparing').textContent = fmtEUR.format(besparing2);
+      break;
+    }
+
+    case 3: {
+      var betaald = parseNL(document.getElementById('p3-betaald').value);
+      var pct3    = parseNL(document.getElementById('p3-pct').value);
+      if (isNaN(betaald) || isNaN(pct3) || betaald <= 0 || pct3 < 0 || pct3 >= 100) {
+        setResult(3, null); return;
+      }
+      var orig      = betaald / (1 - pct3 / 100);
+      var besparing3 = orig - betaald;
+      setResult(3, fmtEUR.format(orig));
+      document.getElementById('res-3-besparing').textContent = fmtEUR.format(besparing3);
+      break;
+    }
+  }
+}
+
+/* ═══ SET RESULT ════════════════════════════════════════════════════════ */
+function setResult(tab, val) {
+  var el = document.getElementById('res-' + tab);
+  if (!el) return;
+
+  if (val === null) {
+    el.textContent      = '--';
+    el.style.color      = 'var(--text-secondary)';
+    el.style.fontSize   = '1.2rem';
+    el.style.fontWeight = '400';
+    /* Reset sublines */
+    ['res-1-besparing','res-1-pct',
+     'res-2-besparing',
+     'res-3-besparing'].forEach(function(id) {
+      var sub = document.getElementById(id);
+      if (sub) sub.textContent = '--';
+    });
+    return;
+  }
+  el.textContent      = val;
+  el.style.color      = 'var(--success)';
+  el.style.fontSize   = '2.25rem';
+  el.style.fontWeight = '700';
+}
+
+/* ═══ RESET PANEL ═══════════════════════════════════════════════════════ */
+function resetPanel(tab) {
+  var panel = document.getElementById('panel-' + tab);
+  panel.querySelectorAll('input').forEach(function(i) { i.value = ''; });
+  setResult(tab, null);
+}
+
+/* ═══ TAB SWITCH ════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  for (var i = 1; i <= 3; i++) {
+    document.getElementById('tab-'   + i).classList.toggle('active', i === tab);
+    document.getElementById('tab-'   + i).setAttribute('aria-selected', i === tab);
+    document.getElementById('panel-' + i).classList.toggle('active', i === tab);
+  }
+}
+
+/* ═══ COPY ══════════════════════════════════════════════════════════════ */
+function copyVal(id) {
+  var el  = document.getElementById(id);
+  var txt = el ? el.textContent.trim() : '';
+  if (!txt || txt === '--') return;
+  navigator.clipboard.writeText(txt).then(function() {
+    var panel = el.closest('.result-box');
+    var btn   = panel ? panel.querySelector('.btn-copy') : null;
+    if (!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = 'Gekopieerd!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+/* ═══ DARK MODE TOGGLE ══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+</script>
+
+</body>
+</html>
