@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+    (function() {
+      var t = localStorage.getItem('rekengemak-theme');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy beleid - RekenGemak</title>
+  <meta name="description" content="Privacy beleid van RekenGemak. Lees hoe wij omgaan met je gegevens.">
+  <link rel="canonical" href="https://rekengemak.nl/privacy/">
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --bg-primary: #0D1117;
+      --bg-card: #161B22;
+      --bg-input: #21262D;
+      --border: #30363D;
+      --accent: #1F5C99;
+      --accent-hover: #2272C3;
+      --success: #2EA043;
+      --text-primary: #E6EDF3;
+      --text-secondary: #8B949E;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --radius: 10px;
+      --transition: 0.15s ease;
+    }
+    [data-theme="light"] {
+      --bg-primary: #F6F8FA;
+      --bg-card: #FFFFFF;
+      --bg-input: #F0F3F6;
+      --border: #D0D7DE;
+      --text-primary: #1F2328;
+      --text-secondary: #636C76;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    header {
+      position: sticky; top: 0; z-index: 100; height: 56px;
+      background: var(--bg-card); border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px); display: flex; align-items: center;
+      justify-content: space-between; padding: 0 var(--space-lg);
+    }
+    .logo { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); text-decoration: none; }
+    .theme-toggle {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text-secondary); cursor: pointer; width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+      transition: border-color var(--transition);
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
+    main { max-width: 680px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
+    h1 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; margin-bottom: var(--space-lg); }
+    h2 { font-size: 1.1rem; font-weight: 600; color: var(--accent); margin: var(--space-lg) 0 var(--space-sm); }
+    p, li { color: var(--text-secondary); margin-bottom: var(--space-sm); }
+    ul { padding-left: var(--space-lg); margin-bottom: var(--space-md); }
+    a { color: var(--accent); }
+    footer {
+      background: var(--bg-card); border-top: 1px solid var(--border);
+      padding: var(--space-lg); margin-top: var(--space-xl); text-align: center;
+      font-size: 0.8rem; color: var(--text-secondary);
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">RekenGemak</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Wissel thema">
+      <span id="theme-icon">&#9789;</span>
+    </button>
+  </header>
+  <main>
+    <h1>Privacy beleid</h1>
+
+    <h2>Gegevensverwerking</h2>
+    <p>RekenGemak verwerkt geen persoonlijke gegevens. Alle berekeningen worden lokaal in je browser uitgevoerd. Er worden geen gegevens naar een server verstuurd.</p>
+
+    <h2>Cookies</h2>
+    <p>RekenGemak gebruikt alleen functionele cookies:</p>
+    <ul>
+      <li><strong>rekengemak-theme</strong> - Slaat je voorkeur voor licht of donker thema op (localStorage).</li>
+    </ul>
+
+    <h2>Advertenties</h2>
+    <p>RekenGemak toont advertenties via Google AdSense. Google kan cookies plaatsen om advertenties te personaliseren. Lees het <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacybeleid van Google</a> voor meer informatie.</p>
+
+    <h2>Analytics</h2>
+    <p>We gebruiken Cloudflare Web Analytics, een privacyvriendelijke analysetool die geen cookies plaatst en geen persoonlijke gegevens verzamelt.</p>
+
+    <h2>Contact</h2>
+    <p>Vragen over dit privacybeleid? Neem contact op via <a href="mailto:info@rekengemak.nl">info@rekengemak.nl</a>.</p>
+
+    <p style="margin-top: var(--space-lg); font-size: 0.85rem;">Laatst bijgewerkt: maart 2026</p>
+  </main>
+  <footer>
+    <p>&copy; 2026 RekenGemak &middot; <a href="/privacy/">Privacy beleid</a> &middot; <a href="/contact/">Contact</a></p>
+  </footer>
+  <script>
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('rekengemak-theme', next);
+      document.getElementById('theme-icon').innerHTML = next === 'dark' ? '&#9789;' : '&#9788;';
+    }
+    (function() {
+      var theme = document.documentElement.getAttribute('data-theme');
+      document.getElementById('theme-icon').innerHTML = theme === 'dark' ? '&#9789;' : '&#9788;';
+    })();
+  </script>
+</body>
+</html>

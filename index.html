@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+    (function() {
+      var t = localStorage.getItem('rekengemak-theme');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RekenGemak - Gratis Online Rekenhulpen voor NL & BE</title>
+  <meta name="description" content="Gratis online rekenhulpen voor Nederland en Belgie. BTW berekenen, procenten, korting, uurloon, vakantiegeld en meer. Snel, gratis en zonder registratie.">
+  <link rel="canonical" href="https://rekengemak.nl/">
+  <style>
+    :root,
+    [data-theme="dark"] {
+      --bg-primary: #0D1117;
+      --bg-card: #161B22;
+      --bg-input: #21262D;
+      --border: #30363D;
+      --accent: #1F5C99;
+      --accent-hover: #2272C3;
+      --success: #2EA043;
+      --text-primary: #E6EDF3;
+      --text-secondary: #8B949E;
+      --result-bg: #1C3A5A;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --radius: 10px;
+      --transition: 0.15s ease;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #F6F8FA;
+      --bg-card: #FFFFFF;
+      --bg-input: #F0F3F6;
+      --border: #D0D7DE;
+      --result-bg: #DDE8F5;
+      --text-primary: #1F2328;
+      --text-secondary: #636C76;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 56px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-lg);
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: border-color var(--transition);
+    }
+
+    .theme-toggle:hover { border-color: var(--accent); }
+
+    /* Main */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .hero {
+      max-width: 860px;
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2rem);
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Tool Grid */
+    .category { margin-bottom: var(--space-xl); }
+
+    .category h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .tool-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: border-color var(--transition);
+      display: block;
+    }
+
+    .tool-card:hover { border-color: var(--accent); }
+
+    .tool-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+    }
+
+    .tool-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .tool-card .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      margin-bottom: var(--space-sm);
+    }
+
+    .badge.soon {
+      background: var(--bg-input);
+      color: var(--text-secondary);
+    }
+
+    /* Ad slots */
+    .ad-slot {
+      margin: var(--space-xl) 0;
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: var(--space-xl) var(--space-lg);
+      margin-top: var(--space-xl);
+    }
+
+    .footer-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg);
+    }
+
+    .footer-grid h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .footer-grid a {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 3px 0;
+      transition: color var(--transition);
+    }
+
+    .footer-grid a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .footer-bottom a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-bottom a:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">RekenGemak</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Wissel thema">
+      <span id="theme-icon">&#9789;</span>
+    </button>
+  </header>
+
+  <div id="ad-top" class="ad-slot"></div>
+
+  <main>
+    <div class="hero">
+      <h1>Gratis online rekenhulpen voor Nederland en Belgie</h1>
+      <p>Snel en eenvoudig berekenen. Geen registratie nodig, altijd gratis.</p>
+    </div>
+
+    <div class="category">
+      <h2>Financieel</h2>
+      <div class="tools-grid">
+        <a href="/btw-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>BTW Berekenen</h3>
+          <p>Bereken btw inclusief of exclusief voor Nederland en Belgie.</p>
+        </a>
+        <a href="/procenten-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Procenten Berekenen</h3>
+          <p>Bereken percentages, verhogingen en verlagingen in een paar klikken.</p>
+        </a>
+        <a href="/korting-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Korting Berekenen</h3>
+          <p>Bereken hoeveel je bespaart met een kortingspercentage.</p>
+        </a>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2>Werk &amp; Salaris</h2>
+      <div class="tools-grid">
+        <a href="/uurloon-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Uurloon Berekenen</h3>
+          <p>Reken je maandsalaris om naar uurloon, inclusief vakantiegeld.</p>
+        </a>
+        <a href="/vakantiegeld-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Vakantiegeld Berekenen</h3>
+          <p>Bereken hoeveel vakantiegeld je krijgt op basis van je bruto salaris.</p>
+        </a>
+        <a href="/vakantiedagen-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Vakantiedagen Berekenen</h3>
+          <p>Bereken je wettelijke en bovenwettelijke vakantiedagen.</p>
+        </a>
+      </div>
+    </div>
+
+    <div id="ad-middle" class="ad-slot"></div>
+
+    <div class="category">
+      <h2>Tekst</h2>
+      <div class="tools-grid">
+        <a href="/woorden-tellen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Woorden Tellen</h3>
+          <p>Tel woorden, tekens, zinnen en leestijd van je tekst.</p>
+        </a>
+        <a href="/tekens-tellen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Tekens Tellen</h3>
+          <p>Tel tekens met limieten voor X, Instagram en LinkedIn.</p>
+        </a>
+        <a href="/tekst-vergelijken/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Tekst Vergelijken</h3>
+          <p>Vergelijk twee teksten en zie de verschillen direct gemarkeerd.</p>
+        </a>
+      </div>
+    </div>
+
+    <div class="category">
+      <h2>Dagelijks gebruik</h2>
+      <div class="tools-grid">
+        <a href="/minimumloon-berekenen/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Minimumloon Berekenen</h3>
+          <p>Bekijk het actuele minimumloon per uur, dag, week en maand.</p>
+        </a>
+        <a href="/willekeurig-getal/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Willekeurig Getal</h3>
+          <p>Genereer willekeurige getallen met optie voor bulk en CSV-export.</p>
+        </a>
+        <a href="/wachtwoord-generator/" class="tool-card">
+          <span class="badge soon">Binnenkort</span>
+          <h3>Wachtwoord Generator</h3>
+          <p>Maak sterke, veilige wachtwoorden met aanpasbare instellingen.</p>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <div id="ad-bottom" class="ad-slot"></div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <h4>Financieel</h4>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div>
+        <h4>Werk &amp; Salaris</h4>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      </div>
+      <div>
+        <h4>Tekst</h4>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div>
+        <h4>Dagelijks</h4>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 RekenGemak &middot; <a href="/privacy/">Privacy beleid</a> &middot; <a href="/contact/">Contact</a></p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('rekengemak-theme', next);
+      document.getElementById('theme-icon').innerHTML = next === 'dark' ? '&#9789;' : '&#9788;';
+    }
+
+    (function() {
+      var theme = document.documentElement.getAttribute('data-theme');
+      document.getElementById('theme-icon').innerHTML = theme === 'dark' ? '&#9789;' : '&#9788;';
+    })();
+  </script>
+</body>
+</html>
