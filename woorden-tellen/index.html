@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+    (function() {
+      var t = localStorage.getItem('rekengemak-theme');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Woorden Tellen Online Gratis -- Woordenteller | RekenGemak</title>
+  <meta name="description" content="Tel woorden, tekens, zinnen en alinea's in je tekst. Gratis online woordenteller met leestijdschatting. Plak je tekst en zie direct alle statistieken.">
+  <link rel="canonical" href="https://rekengemak.nl/woorden-tellen/">
+  <meta property="og:title" content="Woorden Tellen Online Gratis -- Woordenteller | RekenGemak">
+  <meta property="og:description" content="Tel woorden, tekens, zinnen en alinea's in je tekst. Gratis online woordenteller met leestijdschatting. Plak je tekst en zie direct alle statistieken.">
+  <meta property="og:url" content="https://rekengemak.nl/woorden-tellen/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ═══════════════════════════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+/* ═══ 4. TOOL CARD ═══════════════════════════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* ═══ TEXTAREA ════════════════════════════════════════════════════════ */
+.textarea-wrap {
+  position: relative;
+  margin-bottom: var(--space-md);
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color var(--transition);
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ═══ STATS BAR ═══════════════════════════════════════════════════════ */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+@media (max-width: 480px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+
+.stat-item {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: 12px var(--space-md);
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 3px;
+  display: block;
+}
+
+.stat-item.stat-leestijd {
+  grid-column: 1 / -1;
+  border-left-color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  text-align: left;
+}
+
+.stat-item.stat-leestijd .stat-num {
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+
+/* Toolbar boven textarea */
+.textarea-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-bottom: 6px;
+}
+
+/* ═══ 5. BUTTONS ═══════════════════════════════════════════════════════════════════════════ */
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ 6. ARTICLE & FAQ ═══════════════════════════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ═══════════════════════════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════════════════════════════ */
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">RekenGemak</a>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Wissel thema">
+      <span class="icon-dark">&#9789;</span>
+      <span class="icon-light">&#9788;</span>
+    </button>
+  </header>
+
+  <div id="ad-top" class="ad-slot"></div>
+
+  <main>
+    <div class="hero">
+      <nav aria-label="Breadcrumb">
+        <a href="/">Thuis</a> &rsaquo; <span>Woorden Tellen</span>
+      </nav>
+      <h1>Woorden Tellen</h1>
+      <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+        Plak of typ je tekst en zie direct het aantal woorden, tekens, zinnen en de geschatte leestijd.
+      </p>
+    </div>
+
+    <section class="tool-card" aria-label="Woorden Tellen">
+
+      <!-- Toolbar -->
+      <div class="textarea-toolbar">
+        <button class="btn-secondary" onclick="clearText()" id="btn-wis"
+                style="padding:6px 14px;font-size:0.85rem;min-height:auto;margin-top:0;">
+          Wis tekst
+        </button>
+        <button class="btn-copy" onclick="copyStats()" id="btn-copy-stats">
+          Kopieer statistieken
+        </button>
+      </div>
+
+      <!-- Textarea -->
+      <div class="textarea-wrap">
+        <textarea id="tekst-input"
+                  placeholder="Plak of typ hier je tekst..."
+                  oninput="updateStats()"
+                  aria-label="Tekst invoer"></textarea>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat-item">
+          <span class="stat-num" id="stat-woorden">0</span>
+          <span class="stat-label">Woorden</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="stat-tekens">0</span>
+          <span class="stat-label">Tekens</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="stat-tekens-no-spatie">0</span>
+          <span class="stat-label">Tekens (excl. spaties)</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="stat-zinnen">0</span>
+          <span class="stat-label">Zinnen</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" id="stat-alineas">0</span>
+          <span class="stat-label">Alinea's</span>
+        </div>
+        <!-- Leestijd: volle breedte -->
+        <div class="stat-item stat-leestijd">
+          <span class="stat-num" id="stat-leestijd">0 min</span>
+          <span class="stat-label">Geschatte leestijd (200 woorden/min)</span>
+        </div>
+      </div>
+
+    </section>
+
+    <div id="ad-middle" class="ad-slot"></div>
+
+    <article class="content">
+      <h2>Hoe werkt de woordenteller?</h2>
+      <p>Plak je tekst in het grote invoerveld of typ direct. De statistieken worden meteen bijgewerkt zonder dat je op een knop hoeft te drukken. Je ziet het aantal woorden, tekens inclusief en exclusief spaties, zinnen en alinea's.</p>
+      <p>Onderaan staat de geschatte leestijd op basis van 200 woorden per minuut. Dit is een handige richtlijn voor blogposts, nieuwsbrieven en presentaties.</p>
+      <p>Wil je de statistieken bewaren? Klik op "Kopieer statistieken" om alle cijfers in een keer naar je klembord te kopiëren. Met "Wis tekst" begin je opnieuw.</p>
+
+      <h2>Voor wie is deze rekenhulp?</h2>
+      <ul>
+        <li>Studenten en scholieren die het minimumaantal woorden voor een opdracht willen controleren</li>
+        <li>Bloggers en schrijvers die de leestijd van hun artikel willen inschatten</li>
+        <li>Marketeers die teksten schrijven voor sociale media met een tekenlimiet</li>
+        <li>Vertalers die het aantal woorden van een brondocument willen tellen voor een prijsopgave</li>
+        <li>Iedereen die snel wil weten hoe lang een tekst is</li>
+      </ul>
+
+      <h2>Veelgestelde vragen</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <h3>Hoe tel je woorden in een tekst?</h3>
+          <p>Plak je tekst in het invoerveld van de woordenteller. Het aantal woorden wordt direct geteld. Woorden worden gescheiden door spaties. Leestekens en cijfers tellen mee als onderdeel van een woord als ze direct aan een letter grenzen.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Wat is het verschil tussen tekens met en zonder spaties?</h3>
+          <p>Tekens inclusief spaties telt elk karakter in de tekst, inclusief spaties, enters en leestekens. Tekens exclusief spaties telt alleen de zichtbare karakters. Platforms als Twitter en LinkedIn gebruiken vaak de telling inclusief spaties voor hun tekenlimiet.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoe wordt de leestijd berekend?</h3>
+          <p>De leestijd is gebaseerd op een gemiddelde leessnelheid van 200 woorden per minuut. Dit is een veelgebruikte standaard voor Nederlands tekst. Bij korte teksten van minder dan 200 woorden toont de calculator de leestijd in seconden.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoe worden zinnen geteld?</h3>
+          <p>Zinnen worden geteld op basis van eindleestekens: punt, uitroepteken en vraagteken. Een zin eindigt dus bij een punt, uitroepteken of vraagteken. Tekst zonder eindleesteken telt als 1 zin als er tekst aanwezig is.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Waarvoor gebruik je een woordenteller?</h3>
+          <p>Een woordenteller gebruik je voor het controleren van een minimumaantal woorden voor een scriptie of artikel, het bewaken van de maximale tekenlimiet voor sociale media, het inschatten van de leestijd van een blog of nieuwsbrief, en het tellen van woorden in een vertaalopdracht voor prijsberekening.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoeveel woorden heeft een A4 pagina?</h3>
+          <p>Een standaard A4 pagina met lettergrootte 12pt en regelafstand 1,5 bevat ongeveer 400 tot 500 woorden. Bij dubbele regelafstand is dat 250 tot 300 woorden. Voor wetenschappelijke teksten met voetnoten en afbeeldingen kan dit lager uitvallen.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Wordt mijn tekst opgeslagen?</h3>
+          <p>Nee, de tekst die je invoert wordt niet opgeslagen en niet verzonden naar een server. De woordenteller werkt volledig in je browser. Als je de pagina sluit of vernieuwt, is de tekst weg.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Is de woordenteller gratis?</h3>
+          <p>Ja, de woordenteller van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen limiet op de hoeveelheid tekst die je kunt invoeren. De tool werkt direct in je browser, ook op je telefoon.</p>
+        </div>
+      </div>
+
+      <h2>Gerelateerde rekenhulpen</h2>
+      <div class="related-tools">
+        <a href="/tekens-tellen/">Tekens tellen</a>
+        <a href="/tekst-vergelijken/">Tekst vergelijken</a>
+        <a href="/procenten-berekenen/">Procenten berekenen</a>
+        <a href="/btw-berekenen/">BTW berekenen</a>
+        <a href="/korting-berekenen/">Korting berekenen</a>
+      </div>
+    </article>
+  </main>
+
+  <div id="ad-bottom" class="ad-slot"></div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <strong>Financieel</strong>
+        <ul>
+          <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+          <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+          <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Werk &amp; Salaris</strong>
+        <ul>
+          <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+          <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+          <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Tekst</strong>
+        <ul>
+          <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+          <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+          <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Dagelijks</strong>
+        <ul>
+          <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+          <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+          <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 RekenGemak &middot; <a href="/privacy/">Privacy beleid</a> &middot; <a href="/contact/">Contact</a>
+    </div>
+  </footer>
+
+  <!-- JSON-LD Schemas -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Woorden Tellen \u2014 RekenGemak",
+    "url": "https://rekengemak.nl/woorden-tellen/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "inLanguage": "nl",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Hoe tel je woorden in een tekst?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Plak je tekst in het invoerveld van de woordenteller. Het aantal woorden wordt direct geteld. Woorden worden gescheiden door spaties. Leestekens en cijfers tellen mee als onderdeel van een woord als ze direct aan een letter grenzen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wat is het verschil tussen tekens met en zonder spaties?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tekens inclusief spaties telt elk karakter in de tekst, inclusief spaties, enters en leestekens. Tekens exclusief spaties telt alleen de zichtbare karakters. Platforms als Twitter en LinkedIn gebruiken vaak de telling inclusief spaties voor hun tekenlimiet."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe wordt de leestijd berekend?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "De leestijd is gebaseerd op een gemiddelde leessnelheid van 200 woorden per minuut. Dit is een veelgebruikte standaard voor Nederlands tekst. Bij korte teksten van minder dan 200 woorden toont de calculator de leestijd in seconden."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe worden zinnen geteld?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Zinnen worden geteld op basis van eindleestekens: punt, uitroepteken en vraagteken. Een zin eindigt dus bij een punt, uitroepteken of vraagteken. Tekst zonder eindleesteken telt als 1 zin als er tekst aanwezig is."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Waarvoor gebruik je een woordenteller?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Een woordenteller gebruik je voor het controleren van een minimumaantal woorden voor een scriptie of artikel, het bewaken van de maximale tekenlimiet voor sociale media, het inschatten van de leestijd van een blog of nieuwsbrief, en het tellen van woorden in een vertaalopdracht voor prijsberekening."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoeveel woorden heeft een A4 pagina?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Een standaard A4 pagina met lettergrootte 12pt en regelafstand 1,5 bevat ongeveer 400 tot 500 woorden. Bij dubbele regelafstand is dat 250 tot 300 woorden. Voor wetenschappelijke teksten met voetnoten en afbeeldingen kan dit lager uitvallen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wordt mijn tekst opgeslagen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nee, de tekst die je invoert wordt niet opgeslagen en niet verzonden naar een server. De woordenteller werkt volledig in je browser. Als je de pagina sluit of vernieuwt, is de tekst weg."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is de woordenteller gratis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja, de woordenteller van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen limiet op de hoeveelheid tekst die je kunt invoeren. De tool werkt direct in je browser, ook op je telefoon."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Thuis",
+        "item": "https://rekengemak.nl/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Woorden Tellen",
+        "item": "https://rekengemak.nl/woorden-tellen/"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+/* ═══ STATS UPDATE — REAL-TIME ═════════════════════════════════════════ */
+function updateStats() {
+  var tekst = document.getElementById('tekst-input').value;
+
+  /* Woorden: split op whitespace, filter lege strings */
+  var woorden = tekst.trim() === ''
+    ? 0
+    : tekst.trim().split(/\s+/).filter(function(w) { return w.length > 0; }).length;
+
+  /* Tekens (inclusief spaties) */
+  var tekens = tekst.length;
+
+  /* Tekens exclusief spaties */
+  var tekensNoSpatie = tekst.replace(/\s/g, '').length;
+
+  /* Zinnen: eindigen op . ! ? */
+  var zinnen = 0;
+  if (tekst.trim().length > 0) {
+    var matches = tekst.match(/[^.!?]*[.!?]+/g);
+    zinnen = matches ? matches.length : 1;
+  }
+
+  /* Alinea's: gescheiden door 1+ lege regels */
+  var alineas = 0;
+  if (tekst.trim().length > 0) {
+    alineas = tekst.trim().split(/\n\s*\n/).filter(function(p) {
+      return p.trim().length > 0;
+    }).length;
+    if (alineas === 0) alineas = 1;
+  }
+
+  /* Leestijd: 200 woorden per minuut */
+  var leestijdMin = woorden / 200;
+  var leestijdTekst;
+  if (woorden === 0) {
+    leestijdTekst = '0 min';
+  } else if (leestijdMin < 1) {
+    var seconden = Math.ceil(leestijdMin * 60);
+    leestijdTekst = '< 1 min (' + seconden + ' sec)';
+  } else {
+    leestijdTekst = Math.ceil(leestijdMin) + ' min';
+  }
+
+  /* Update DOM */
+  document.getElementById('stat-woorden').textContent        = woorden;
+  document.getElementById('stat-tekens').textContent         = tekens;
+  document.getElementById('stat-tekens-no-spatie').textContent = tekensNoSpatie;
+  document.getElementById('stat-zinnen').textContent         = zinnen;
+  document.getElementById('stat-alineas').textContent        = alineas;
+  document.getElementById('stat-leestijd').textContent       = leestijdTekst;
+}
+
+/* ═══ CLEAR TEXT ════════════════════════════════════════════════════════ */
+function clearText() {
+  document.getElementById('tekst-input').value = '';
+  updateStats();
+  document.getElementById('tekst-input').focus();
+}
+
+/* ═══ COPY STATISTICS ═══════════════════════════════════════════════════ */
+function copyStats() {
+  var woorden        = document.getElementById('stat-woorden').textContent;
+  var tekens         = document.getElementById('stat-tekens').textContent;
+  var tekensNoSpatie = document.getElementById('stat-tekens-no-spatie').textContent;
+  var zinnen         = document.getElementById('stat-zinnen').textContent;
+  var alineas        = document.getElementById('stat-alineas').textContent;
+  var leestijd       = document.getElementById('stat-leestijd').textContent;
+
+  var tekst =
+    'Woorden: '                  + woorden        + '\n' +
+    'Tekens (incl. spaties): '   + tekens         + '\n' +
+    'Tekens (excl. spaties): '   + tekensNoSpatie + '\n' +
+    'Zinnen: '                   + zinnen         + '\n' +
+    'Alineas: '                  + alineas        + '\n' +
+    'Leestijd: '                 + leestijd;
+
+  navigator.clipboard.writeText(tekst).then(function() {
+    var btn  = document.getElementById('btn-copy-stats');
+    var orig = btn.textContent;
+    btn.textContent = 'Gekopieerd!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+/* ═══ DARK MODE TOGGLE ══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+  </script>
+</body>
+</html>
