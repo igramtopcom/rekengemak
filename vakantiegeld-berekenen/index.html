@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vakantiegeld Berekenen 2026 -- Gratis Calculator | RekenGemak</title>
+  <meta name="description" content="Bereken je vakantiegeld 2026 snel en gratis. Voer je bruto maandsalaris in en zie direct hoeveel vakantiegeld je in mei ontvangt. Voor heel en deeltijdwerk.">
+  <link rel="canonical" href="https://rekengemak.nl/vakantiegeld-berekenen/">
+  <meta property="og:title"       content="Vakantiegeld Berekenen 2026 -- Gratis Calculator | RekenGemak">
+  <meta property="og:description" content="Bereken je vakantiegeld 2026 snel en gratis. Voer je bruto maandsalaris in en zie direct hoeveel vakantiegeld je in mei ontvangt. Voor heel en deeltijdwerk.">
+  <meta property="og:url"         content="https://rekengemak.nl/vakantiegeld-berekenen/">
+  <meta property="og:type"        content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+  /* --accent en --success NIET wijzigen */
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem; /* >=16px - iOS niet zoomen */
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+.badge-updated {
+  display: inline-block; margin-top: 6px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 500;
+  background: rgba(31, 92, 153, 0.15);
+  color: var(--accent);
+}
+
+/* ═══ 4. TOOL CARD ════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* Input group */
+.input-group { margin-bottom: var(--space-md); }
+.input-group label {
+  display: block; margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.input-wrap {
+  display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+.input-prefix {
+  padding: 0 12px; color: var(--text-secondary);
+  font-weight: 500; border-right: 1px solid var(--border);
+  height: 48px; display: flex; align-items: center;
+}
+.input-wrap input {
+  flex: 1; height: 48px; padding: 0 14px;
+  background: transparent; border: none; outline: none;
+  font-size: 1.1rem; color: var(--text-primary);
+}
+
+/* ═══ SLIDER: Aantal maanden gewerkt ═════════════════════════════════ */
+.slider-wrap {
+  margin-bottom: var(--space-md);
+}
+.slider-wrap label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.slider-wrap .slider-value {
+  font-weight: 700; color: var(--text-primary);
+}
+input[type="range"] {
+  width: 100%; height: 6px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ═══ 5. RESULT BOX ═══════════════════════════════════════════════════ */
+.result-box {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-md);
+}
+.result-label {
+  font-size: 0.8rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.result-main {
+  font-size: 2.25rem; font-weight: 700; color: var(--success);
+  font-variant-numeric: tabular-nums; line-height: 1.2;
+}
+.result-main.empty { color: var(--text-secondary); font-size: 1.1rem; font-weight: 400; }
+
+/* Result rows */
+.result-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 8px;
+}
+.result-row:first-child { margin-top: 0; }
+
+/* Nut sao chep */
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+/* ═══ BUTTONS ══════════════════════════════════════════════════════════ */
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ DISCLAIMER ══════════════════════════════════════════════════════ */
+.disclaimer {
+  font-size: 0.8rem; font-style: italic;
+  color: var(--text-secondary);
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+/* ═══ 6. ARTICLE & FAQ ════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+/* FAQ */
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════ */
+/* Mobile default (<640px) */
+.result-main { font-size: 1.8rem; }
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+
+@media (min-width: 640px) {
+  .result-main { font-size: 2.25rem; }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">RekenGemak</a>
+  <button onclick="toggleTheme()" aria-label="Thema wisselen" class="theme-btn">
+    <span class="icon-dark">&#127769;</span>
+    <span class="icon-light">&#9728;&#65039;</span>
+  </button>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+
+<div class="hero">
+  <nav aria-label="Breadcrumb">
+    <a href="/">Thuis</a> &rsaquo; <span>Vakantiegeld Berekenen</span>
+  </nav>
+  <h1>Vakantiegeld Berekenen 2026</h1>
+  <span class="badge-updated">Bijgewerkt: januari 2026</span>
+  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+    Bereken snel hoeveel vakantiegeld je in mei 2026 ontvangt op basis van je bruto maandsalaris.
+  </p>
+</div>
+
+<section class="tool-card" aria-label="Vakantiegeld Berekenen">
+
+  <!-- Input 1: Bruto maandsalaris -->
+  <div class="input-group">
+    <label for="salaris">Bruto maandsalaris</label>
+    <div class="input-wrap">
+      <span class="input-prefix">&euro;</span>
+      <input id="salaris" type="text" inputmode="decimal"
+             autocomplete="off" placeholder="bijv. 3000"
+             oninput="recalc()">
+    </div>
+  </div>
+
+  <!-- Input 2: Aantal maanden gewerkt (slider + getal) -->
+  <div class="slider-wrap">
+    <label for="maanden">
+      <span>Maanden gewerkt dit jaar</span>
+      <span class="slider-value" id="maanden-value">12</span>
+    </label>
+    <input type="range" id="maanden" min="1" max="12" value="12"
+           oninput="updateSlider(); recalc()">
+  </div>
+
+  <!-- Result box: 4 rijen -->
+  <div class="result-box">
+    <div class="result-label">Vakantiegeld te ontvangen</div>
+    <div class="result-main empty" id="res-vakantiegeld">--</div>
+
+    <div class="result-row" style="margin-top:12px;">
+      <span style="font-size:0.875rem;color:var(--text-secondary);">Bruto jaarsalaris</span>
+      <span id="res-jaarsalaris" style="font-size:0.95rem;color:var(--text-primary);">--</span>
+    </div>
+    <div class="result-row">
+      <span style="font-size:0.875rem;color:var(--text-secondary);">Volledig vakantiegeld (8%)</span>
+      <span id="res-volledig" style="font-size:0.95rem;color:var(--text-primary);">--</span>
+    </div>
+    <div class="result-row">
+      <span style="font-size:0.875rem;color:var(--text-secondary);">Gewerkte periode</span>
+      <span id="res-periode" style="font-size:0.95rem;color:var(--text-primary);">--</span>
+    </div>
+
+    <button class="btn-copy" onclick="copyVal('res-vakantiegeld')"
+            aria-label="Kopieer vakantiegeld" style="margin-top:12px;">Kopieer</button>
+  </div>
+
+  <!-- Reset -->
+  <button class="btn-secondary" onclick="resetTool()" style="margin-top:12px;">Wis alles</button>
+
+  <!-- Disclaimer -->
+  <p class="disclaimer">
+    Dit is een indicatieve berekening op basis van 8% van het bruto jaarsalaris.
+    Het werkelijke bedrag kan afwijken door toeslagen, variabele lonen of cao-afspraken.
+    Raadpleeg je salarisstrook of werkgever voor het exacte bedrag.
+  </p>
+
+</section>
+
+<div id="ad-middle"></div>
+
+<article class="content">
+
+  <h2>Hoe werkt de vakantiegeldcalculator?</h2>
+  <p>Vul je bruto maandsalaris in het invoerveld in. De calculator rekent direct uit hoeveel vakantiegeld je ontvangt op basis van 8% van je bruto jaarsalaris.</p>
+  <p>Ben je pas later in het jaar begonnen, of heb je een deel van het jaar niet gewerkt? Stel de schuifregelaar in op het aantal maanden dat je hebt gewerkt. De calculator past het bedrag automatisch aan op basis van je gewerkte periode.</p>
+  <p>Voorbeeld: je verdient &euro; 3.000 bruto per maand en hebt 12 maanden gewerkt. Je bruto jaarsalaris is dan &euro; 36.000. Het vakantiegeld bedraagt 8% daarvan, ofwel &euro; 2.880. Ben je pas 6 maanden in dienst, dan ontvang je de helft: &euro; 1.440.</p>
+  <p>Let op: dit is een indicatieve berekening. Het werkelijke bedrag kan afwijken door toeslagen of cao-afspraken.</p>
+
+  <h2>Voor wie is deze rekenhulp?</h2>
+  <ul>
+    <li>Werknemers in loondienst die willen weten hoeveel vakantiegeld ze in mei ontvangen</li>
+    <li>Mensen die pas halverwege het jaar zijn begonnen en een pro-rata berekening willen</li>
+    <li>Parttime medewerkers die vakantiegeld willen berekenen op hun maandsalaris</li>
+    <li>HR-medewerkers die een snelle indicatie willen geven aan nieuwe collega's</li>
+    <li>Iedereen die wil controleren of het uitbetaalde vakantiegeld klopt</li>
+  </ul>
+
+  <h2>Veelgestelde vragen</h2>
+  <div class="faq">
+
+    <div class="faq-item">
+      <h3>Hoeveel vakantiegeld krijg ik in 2026?</h3>
+      <p>Je vakantiegeld bedraagt minimaal 8% van je bruto jaarsalaris. Bij een bruto maandsalaris van &euro; 3.000 is dat &euro; 2.880 per jaar, ofwel &euro; 2.880 vakantiegeld als je het hele jaar hebt gewerkt. De meeste werkgevers betalen vakantiegeld uit in mei.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wanneer wordt vakantiegeld uitbetaald?</h3>
+      <p>De meeste werkgevers betalen vakantiegeld uit in mei. De exacte datum staat in je arbeidscontract of cao. Sommige werkgevers betalen vakantiegeld maandelijks uit samen met het salaris, maar de meerderheid doet dit eenmalig in mei.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Hoe wordt vakantiegeld berekend?</h3>
+      <p>Vakantiegeld is minimaal 8% van je bruto jaarsalaris. Je berekent dit door je bruto maandsalaris te vermenigvuldigen met 12 en daarna met 0,08. Bij een salaris van &euro; 2.500 per maand is dat &euro; 2.500 x 12 x 0,08 = &euro; 2.400 vakantiegeld.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Krijg ik vakantiegeld als ik pas halverwege het jaar ben begonnen?</h3>
+      <p>Ja, vakantiegeld bouw je op over de maanden dat je hebt gewerkt. Ben je in juli begonnen, dan heb je aan het einde van het jaar 6 maanden opgebouwd. Je vakantiegeld is dan de helft van het volledige jaarbedrag. De calculator houdt hier automatisch rekening mee via de schuifregelaar.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is vakantiegeld hetzelfde als vakantiedagen?</h3>
+      <p>Nee, vakantiegeld en vakantiedagen zijn twee aparte dingen. Vakantiegeld is een geldbedrag van 8% van je jaarsalaris dat je extra ontvangt. Vakantiedagen zijn de vrije dagen waar je recht op hebt, wettelijk minimaal 4 keer de werkweek per jaar.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Krijg ik vakantiegeld als zzp'er?</h3>
+      <p>Als zzp'er heb je geen wettelijk recht op vakantiegeld. Je bent zelf verantwoordelijk voor het apart zetten van geld voor vakantie. Sommige opdrachtgevers betalen wel een toeslag boven op het uurtarief voor vakantiegeld, maar dit is niet verplicht.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Betaal ik belasting over vakantiegeld?</h3>
+      <p>Ja, vakantiegeld is belast loon. Je werkgever houdt loonbelasting in volgens de tabel bijzondere beloningen. Daardoor lijkt het nettobedrag lager dan verwacht. Het exacte nettobedrag hangt af van je belastingschijf en persoonlijke situatie.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Kan mijn werkgever meer dan 8% vakantiegeld betalen?</h3>
+      <p>Ja, 8% is het wettelijk minimum. Veel cao's en arbeidscontracten kennen een hoger percentage, bijvoorbeeld 8,33% of zelfs meer. Kijk in je cao of arbeidscontract voor het percentage dat voor jou van toepassing is.</p>
+    </div>
+
+  </div>
+
+  <h2>Gerelateerde rekenhulpen</h2>
+  <div class="related-tools">
+    <a href="/uurloon-berekenen/">Uurloon berekenen</a>
+    <a href="/vakantiedagen-berekenen/">Vakantiedagen berekenen</a>
+    <a href="/minimumloon-berekenen/">Minimumloon berekenen</a>
+    <a href="/btw-berekenen/">BTW berekenen</a>
+    <a href="/procenten-berekenen/">Procenten berekenen</a>
+  </div>
+
+</article>
+
+<div id="ad-bottom"></div>
+
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong>Financieel</strong>
+      <ul>
+        <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+        <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+        <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Werk &amp; Salaris</strong>
+      <ul>
+        <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+        <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+        <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Tekst</strong>
+      <ul>
+        <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+        <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+        <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Dagelijks</strong>
+      <ul>
+        <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+        <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+        <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-bottom">
+    <a href="/privacy/">Privacybeleid</a> &middot;
+    <a href="/contact/">Contact</a> &middot;
+    &copy; 2026 RekenGemak
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Vakantiegeld Berekenen 2026 - RekenGemak",
+  "url": "https://rekengemak.nl/vakantiegeld-berekenen/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "inLanguage": "nl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoeveel vakantiegeld krijg ik in 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Je vakantiegeld bedraagt minimaal 8% van je bruto jaarsalaris. Bij een bruto maandsalaris van 3.000 euro is dat 2.880 euro per jaar, ofwel 2.880 euro vakantiegeld als je het hele jaar hebt gewerkt. De meeste werkgevers betalen vakantiegeld uit in mei."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wanneer wordt vakantiegeld uitbetaald?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "De meeste werkgevers betalen vakantiegeld uit in mei. De exacte datum staat in je arbeidscontract of cao. Sommige werkgevers betalen vakantiegeld maandelijks uit samen met het salaris, maar de meerderheid doet dit eenmalig in mei."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe wordt vakantiegeld berekend?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vakantiegeld is minimaal 8% van je bruto jaarsalaris. Je berekent dit door je bruto maandsalaris te vermenigvuldigen met 12 en daarna met 0,08. Bij een salaris van 2.500 euro per maand is dat 2.500 x 12 x 0,08 = 2.400 euro vakantiegeld."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Krijg ik vakantiegeld als ik pas halverwege het jaar ben begonnen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, vakantiegeld bouw je op over de maanden dat je hebt gewerkt. Ben je in juli begonnen, dan heb je aan het einde van het jaar 6 maanden opgebouwd. Je vakantiegeld is dan de helft van het volledige jaarbedrag. De calculator houdt hier automatisch rekening mee via de schuifregelaar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is vakantiegeld hetzelfde als vakantiedagen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nee, vakantiegeld en vakantiedagen zijn twee aparte dingen. Vakantiegeld is een geldbedrag van 8% van je jaarsalaris dat je extra ontvangt. Vakantiedagen zijn de vrije dagen waar je recht op hebt, wettelijk minimaal 4 keer de werkweek per jaar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Krijg ik vakantiegeld als zzp'er?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Als zzp'er heb je geen wettelijk recht op vakantiegeld. Je bent zelf verantwoordelijk voor het apart zetten van geld voor vakantie. Sommige opdrachtgevers betalen wel een toeslag boven op het uurtarief voor vakantiegeld, maar dit is niet verplicht."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Betaal ik belasting over vakantiegeld?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, vakantiegeld is belast loon. Je werkgever houdt loonbelasting in volgens de tabel bijzondere beloningen. Daardoor lijkt het nettobedrag lager dan verwacht. Het exacte nettobedrag hangt af van je belastingschijf en persoonlijke situatie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kan mijn werkgever meer dan 8% vakantiegeld betalen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, 8% is het wettelijk minimum. Veel cao's en arbeidscontracten kennen een hoger percentage, bijvoorbeeld 8,33% of zelfs meer. Kijk in je cao of arbeidscontract voor het percentage dat voor jou van toepassing is."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Thuis",
+      "item": "https://rekengemak.nl/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Vakantiegeld Berekenen",
+      "item": "https://rekengemak.nl/vakantiegeld-berekenen/"
+    }
+  ]
+}
+</script>
+
+<script>
+/* ═══ FORMAT HELPERS ═══════════════════════════════════════════════════ */
+var fmtEUR = new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' });
+
+function parseNL(str) {
+  return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+}
+
+/* ═══ SLIDER ═══════════════════════════════════════════════════════════ */
+function updateSlider() {
+  var val = document.getElementById('maanden').value;
+  document.getElementById('maanden-value').textContent = val;
+}
+
+/* ═══ VAKANTIEGELD FORMULE ══════════════════════════════════════════════
+   Vakantiegeld = 8% x bruto maandsalaris x 12 x (maanden / 12)
+   Vereenvoudigd: 8% x bruto maandsalaris x maanden
+════════════════════════════════════════════════════════════════════════ */
+function calcVakantiegeld(maandSalaris, maandenGewerkt) {
+  var jaarSalaris = maandSalaris * 12;
+  var volledig    = jaarSalaris * 0.08;
+  var proRata     = volledig * (maandenGewerkt / 12);
+  return {
+    vakantiegeld: proRata,
+    jaarSalaris:  jaarSalaris,
+    volledig:     volledig,
+    maanden:      maandenGewerkt
+  };
+}
+
+/* ═══ RECALC ════════════════════════════════════════════════════════════ */
+function recalc() {
+  var raw     = document.getElementById('salaris').value.trim();
+  var maanden = parseInt(document.getElementById('maanden').value);
+  var amt     = parseNL(raw);
+
+  if (!raw || isNaN(amt) || amt <= 0) {
+    setResults(null); return;
+  }
+
+  var r = calcVakantiegeld(amt, maanden);
+  setResults(r);
+}
+
+function setResults(r) {
+  var mainEl    = document.getElementById('res-vakantiegeld');
+  var jaarEl    = document.getElementById('res-jaarsalaris');
+  var vollEl    = document.getElementById('res-volledig');
+  var periodeEl = document.getElementById('res-periode');
+
+  if (!r) {
+    mainEl.textContent = '--';
+    mainEl.classList.add('empty');
+    jaarEl.textContent    = '--';
+    vollEl.textContent    = '--';
+    periodeEl.textContent = '--';
+    return;
+  }
+
+  mainEl.classList.remove('empty');
+  mainEl.textContent    = fmtEUR.format(r.vakantiegeld);
+  jaarEl.textContent    = fmtEUR.format(r.jaarSalaris);
+  vollEl.textContent    = fmtEUR.format(r.volledig);
+  periodeEl.textContent = r.maanden + (r.maanden === 1 ? ' maand' : ' maanden');
+}
+
+/* ═══ RESET ═════════════════════════════════════════════════════════════ */
+function resetTool() {
+  document.getElementById('salaris').value = '';
+  document.getElementById('maanden').value = 12;
+  updateSlider();
+  setResults(null);
+}
+
+/* ═══ COPY ══════════════════════════════════════════════════════════════ */
+function copyVal(id) {
+  var el  = document.getElementById(id);
+  var txt = el ? el.textContent.trim() : '';
+  if (!txt || txt === '--') return;
+  navigator.clipboard.writeText(txt).then(function() {
+    var btn = document.querySelector('.btn-copy');
+    if (!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = 'Gekopieerd!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+/* ═══ DARK MODE TOGGLE ════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+</script>
+
+</body>
+</html>
