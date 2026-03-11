@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+    (function() {
+      var t = localStorage.getItem('rekengemak-theme');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vakantiedagen Berekenen 2026 -- Gratis Calculator | RekenGemak</title>
+  <meta name="description" content="Bereken je wettelijke vakantiedagen op basis van je werkweek en dienstverband. Inclusief bovenwettelijke dagen en pro-rata berekening. Gratis en direct resultaat.">
+  <link rel="canonical" href="https://rekengemak.nl/vakantiedagen-berekenen/">
+  <meta property="og:title" content="Vakantiedagen Berekenen 2026 -- Gratis Calculator | RekenGemak">
+  <meta property="og:description" content="Bereken je wettelijke vakantiedagen op basis van je werkweek en dienstverband. Inclusief bovenwettelijke dagen en pro-rata berekening. Gratis en direct resultaat.">
+  <meta property="og:url" content="https://rekengemak.nl/vakantiedagen-berekenen/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ═══════════════════════════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+.badge-updated {
+  display: inline-block; margin-top: 6px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 500;
+  background: rgba(31, 92, 153, 0.15);
+  color: var(--accent);
+}
+
+/* ═══ 4. TOOL CARD ═══════════════════════════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* Input group */
+.input-group { margin-bottom: var(--space-md); }
+.input-group label {
+  display: block; margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.input-wrap {
+  display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+.input-prefix {
+  padding: 0 12px; color: var(--text-secondary);
+  font-weight: 500; border-right: 1px solid var(--border);
+  height: 48px; display: flex; align-items: center;
+}
+.input-wrap input {
+  flex: 1; height: 48px; padding: 0 14px;
+  background: transparent; border: none; outline: none;
+  font-size: 1.1rem; color: var(--text-primary);
+}
+
+/* Slider */
+.slider-wrap {
+  margin-bottom: var(--space-md);
+}
+.slider-wrap label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.slider-wrap .slider-value {
+  font-weight: 700; color: var(--text-primary);
+}
+input[type="range"] {
+  width: 100%; height: 6px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ═══ RESULT GRID ═══════════════════════════════════════════════════════════════════════════ */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+@media (max-width: 480px) {
+  .result-grid { grid-template-columns: 1fr; }
+}
+.result-grid-item {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+.result-grid-item .result-label {
+  font-size: 0.75rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.result-grid-item .result-num {
+  font-size: 1.8rem; font-weight: 700;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+}
+.result-grid-item .result-unit {
+  font-size: 0.85rem; color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* ═══ 5. BUTTONS ═══════════════════════════════════════════════════════════════════════════ */
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ DISCLAIMER ═══════════════════════════════════════════════════════════════════════════ */
+.disclaimer {
+  font-size: 0.8rem; font-style: italic;
+  color: var(--text-secondary);
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+/* ═══ 6. ARTICLE & FAQ ═══════════════════════════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+/* FAQ */
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ═══════════════════════════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════════════════════════════ */
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">RekenGemak</a>
+    <button class="theme-btn" onclick="toggleTheme()" aria-label="Wissel thema">
+      <span class="icon-dark">&#9789;</span>
+      <span class="icon-light">&#9788;</span>
+    </button>
+  </header>
+
+  <div id="ad-top" class="ad-slot"></div>
+
+  <main>
+    <div class="hero">
+      <nav aria-label="Breadcrumb">
+        <a href="/">Thuis</a> &rsaquo; <span>Vakantiedagen Berekenen</span>
+      </nav>
+      <h1>Vakantiedagen Berekenen 2026</h1>
+      <span class="badge-updated">Bijgewerkt: januari 2026</span>
+      <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+        Bereken je wettelijke vakantiedagen op basis van je werkweek. Inclusief pro-rata en bovenwettelijke dagen.
+      </p>
+    </div>
+
+    <section class="tool-card" aria-label="Vakantiedagen Berekenen">
+
+      <!-- Input 1: Uren per week (slider) -->
+      <div class="slider-wrap">
+        <label for="uren">
+          <span>Uren per week</span>
+          <span class="slider-value" id="uren-value">40</span>
+        </label>
+        <input type="range" id="uren" min="8" max="40" step="1" value="40"
+               oninput="updateSlider('uren'); recalc()">
+      </div>
+
+      <!-- Input 2: Bovenwettelijke dagen (optioneel) -->
+      <div class="input-group">
+        <label for="bovenwettelijk">
+          Bovenwettelijke vakantiedagen
+          <span style="font-weight:400;font-size:0.8rem;"> (optioneel, staat in je cao of contract)</span>
+        </label>
+        <div class="input-wrap">
+          <input id="bovenwettelijk" type="text" inputmode="decimal"
+                 autocomplete="off" placeholder="bijv. 5 (of leeg laten)"
+                 oninput="recalc()">
+        </div>
+      </div>
+
+      <!-- Input 3: Maanden in dienst (slider) -->
+      <div class="slider-wrap">
+        <label for="maanden">
+          <span>Maanden in dienst dit jaar</span>
+          <span class="slider-value" id="maanden-value">12</span>
+        </label>
+        <input type="range" id="maanden" min="1" max="12" step="1" value="12"
+               oninput="updateSlider('maanden'); recalc()">
+      </div>
+
+      <!-- Result grid: 2x2 -->
+      <div class="result-grid" id="result-grid">
+        <div class="result-grid-item">
+          <div class="result-label">Wettelijke dagen</div>
+          <div class="result-num" id="res-wettelijk">--</div>
+          <div class="result-unit">dagen per jaar</div>
+        </div>
+        <div class="result-grid-item">
+          <div class="result-label">Totaal vakantiedagen</div>
+          <div class="result-num" id="res-totaal">--</div>
+          <div class="result-unit">dagen per jaar</div>
+        </div>
+        <div class="result-grid-item">
+          <div class="result-label">Totaal in uren</div>
+          <div class="result-num" id="res-uren">--</div>
+          <div class="result-unit">uur per jaar</div>
+        </div>
+        <div class="result-grid-item">
+          <div class="result-label">Pro-rata (jouw periode)</div>
+          <div class="result-num" id="res-prorata">--</div>
+          <div class="result-unit" id="res-prorata-unit">dagen</div>
+        </div>
+      </div>
+
+      <!-- Copy + Reset -->
+      <div style="display:flex;gap:var(--space-sm);margin-top:var(--space-md);flex-wrap:wrap;">
+        <button class="btn-copy" onclick="copyResult()" id="btn-copy-main">Kopieer totaal</button>
+        <button class="btn-secondary" onclick="resetTool()">Wis alles</button>
+      </div>
+
+      <!-- Disclaimer -->
+      <p class="disclaimer">
+        Dit is een indicatieve berekening op basis van het wettelijk minimum van 4 keer de werkweek.
+        Je werkelijke recht op vakantiedagen kan hoger zijn door cao-afspraken of je arbeidscontract.
+        Raadpleeg je werkgever of hr-afdeling voor het exacte aantal.
+      </p>
+
+    </section>
+
+    <div id="ad-middle" class="ad-slot"></div>
+
+    <article class="content">
+      <h2>Hoe werkt de vakantiedagencalculator?</h2>
+      <p>Stel het aantal uren in dat je per week werkt met de eerste schuifregelaar. De calculator berekent direct je wettelijk minimum: 4 keer je werkweek in dagen. Werk je 40 uur per week, dan is dat 20 vakantiedagen. Werk je 32 uur, dan is dat 16 dagen.</p>
+      <p>Heb je via je cao of contract meer vakantiedagen dan het wettelijk minimum? Vul dan het aantal bovenwettelijke dagen in het invoerveld in.</p>
+      <p>Ben je pas later dit jaar in dienst gekomen of wil je weten hoeveel dagen je hebt opgebouwd? Stel de tweede schuifregelaar in op het aantal maanden dat je in dienst bent. De pro-rata berekening past het totaal automatisch aan.</p>
+      <p>De calculator toont ook het totaal in uren, handig als je werkgever vakantie in uren registreert.</p>
+
+      <h2>Voor wie is deze rekenhulp?</h2>
+      <ul>
+        <li>Werknemers die willen controleren of ze het juiste aantal vakantiedagen krijgen</li>
+        <li>Nieuwe medewerkers die hun pro-rata vakantiedagen willen berekenen</li>
+        <li>Deeltijdwerkers die hun vakantiedagenrecht naar rato willen weten</li>
+        <li>HR-medewerkers die snel vakantiedagen voor nieuwe collega's willen bepalen</li>
+        <li>Iedereen die zijn vakantiedagensaldo wil omzetten naar uren</li>
+      </ul>
+
+      <h2>Veelgestelde vragen</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <h3>Hoeveel vakantiedagen heb ik wettelijk recht op in 2026?</h3>
+          <p>Het wettelijk minimum is 4 keer de overeengekomen werkweek per jaar. Werk je 5 dagen per week, dan heb je recht op minimaal 20 vakantiedagen. Werk je 4 dagen per week, dan is dat 16 dagen. Veel cao's kennen meer vakantiedagen dan dit wettelijk minimum.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoe bereken je vakantiedagen bij deeltijdwerk?</h3>
+          <p>Bij deeltijdwerk bereken je vakantiedagen naar rato van je werkweek. Werk je 32 uur per week (4 dagen), dan is je wettelijk minimum 4 x 4 = 16 vakantiedagen. De calculator doet dit automatisch als je het aantal uren per week invult.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Wat zijn bovenwettelijke vakantiedagen?</h3>
+          <p>Bovenwettelijke vakantiedagen zijn extra vakantiedagen bovenop het wettelijk minimum van 4 keer de werkweek. Ze zijn vastgelegd in je cao of arbeidscontract. Veel werkgevers bieden 25 of meer vakantiedagen per jaar bij een 5-daagse werkweek.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoe werkt de pro-rata berekening van vakantiedagen?</h3>
+          <p>Als je niet het hele jaar in dienst bent, bouw je vakantiedagen op naar rato. Ben je 6 maanden in dienst bij een recht op 20 vakantiedagen per jaar, dan heb je recht op 10 dagen. De calculator berekent dit automatisch met de schuifregelaar voor maanden in dienst.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Kun je vakantiedagen ook in uren uitdrukken?</h3>
+          <p>Ja, sommige werkgevers registreren vakantie in uren in plaats van dagen. Je berekent dit door het aantal vakantiedagen te vermenigvuldigen met het aantal uur per werkdag. Bij 20 vakantiedagen en 8 uur per dag is dat 160 vakantie-uren. De calculator toont dit automatisch.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Vervallen vakantiedagen als je ze niet opneemt?</h3>
+          <p>Wettelijke vakantiedagen vervallen 6 maanden na het einde van het kalenderjaar waarin je ze hebt opgebouwd. Dat betekent dat vakantiedagen van 2026 vervallen op 1 juli 2027. Bovenwettelijke vakantiedagen hebben meestal een verjaringstermijn van 5 jaar, maar check je cao.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Hoeveel vakantiedagen krijg je bij een nulurencontract?</h3>
+          <p>Bij een nulurencontract bouw je vakantiedagen op over de uren die je daadwerkelijk hebt gewerkt. Het wettelijk minimum is ook hier 4 keer de feitelijke werkweek. Werkgevers mogen een toeslag van 1/12 deel van het loon uitbetalen als vakantie-equivalent per maand.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Is deze vakantiedagencalculator gratis?</h3>
+          <p>Ja, de vakantiedagencalculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen tijdslimiet. De calculator werkt direct in je browser, ook op je telefoon.</p>
+        </div>
+      </div>
+
+      <h2>Gerelateerde rekenhulpen</h2>
+      <div class="related-tools">
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld berekenen</a>
+        <a href="/uurloon-berekenen/">Uurloon berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon berekenen</a>
+        <a href="/btw-berekenen/">BTW berekenen</a>
+        <a href="/procenten-berekenen/">Procenten berekenen</a>
+      </div>
+    </article>
+  </main>
+
+  <div id="ad-bottom" class="ad-slot"></div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <strong>Financieel</strong>
+        <ul>
+          <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+          <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+          <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Werk &amp; Salaris</strong>
+        <ul>
+          <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+          <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+          <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Tekst</strong>
+        <ul>
+          <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+          <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+          <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Dagelijks</strong>
+        <ul>
+          <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+          <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+          <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 RekenGemak &middot; <a href="/privacy/">Privacy beleid</a> &middot; <a href="/contact/">Contact</a>
+    </div>
+  </footer>
+
+  <!-- JSON-LD Schemas -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Vakantiedagen Berekenen 2026 \u2014 RekenGemak",
+    "url": "https://rekengemak.nl/vakantiedagen-berekenen/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "inLanguage": "nl",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Hoeveel vakantiedagen heb ik wettelijk recht op in 2026?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Het wettelijk minimum is 4 keer de overeengekomen werkweek per jaar. Werk je 5 dagen per week, dan heb je recht op minimaal 20 vakantiedagen. Werk je 4 dagen per week, dan is dat 16 dagen. Veel cao's kennen meer vakantiedagen dan dit wettelijk minimum."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe bereken je vakantiedagen bij deeltijdwerk?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bij deeltijdwerk bereken je vakantiedagen naar rato van je werkweek. Werk je 32 uur per week (4 dagen), dan is je wettelijk minimum 4 x 4 = 16 vakantiedagen. De calculator doet dit automatisch als je het aantal uren per week invult."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wat zijn bovenwettelijke vakantiedagen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bovenwettelijke vakantiedagen zijn extra vakantiedagen bovenop het wettelijk minimum van 4 keer de werkweek. Ze zijn vastgelegd in je cao of arbeidscontract. Veel werkgevers bieden 25 of meer vakantiedagen per jaar bij een 5-daagse werkweek."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoe werkt de pro-rata berekening van vakantiedagen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Als je niet het hele jaar in dienst bent, bouw je vakantiedagen op naar rato. Ben je 6 maanden in dienst bij een recht op 20 vakantiedagen per jaar, dan heb je recht op 10 dagen. De calculator berekent dit automatisch met de schuifregelaar voor maanden in dienst."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Kun je vakantiedagen ook in uren uitdrukken?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja, sommige werkgevers registreren vakantie in uren in plaats van dagen. Je berekent dit door het aantal vakantiedagen te vermenigvuldigen met het aantal uur per werkdag. Bij 20 vakantiedagen en 8 uur per dag is dat 160 vakantie-uren. De calculator toont dit automatisch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Vervallen vakantiedagen als je ze niet opneemt?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Wettelijke vakantiedagen vervallen 6 maanden na het einde van het kalenderjaar waarin je ze hebt opgebouwd. Dat betekent dat vakantiedagen van 2026 vervallen op 1 juli 2027. Bovenwettelijke vakantiedagen hebben meestal een verjaringstermijn van 5 jaar, maar check je cao."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Hoeveel vakantiedagen krijg je bij een nulurencontract?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bij een nulurencontract bouw je vakantiedagen op over de uren die je daadwerkelijk hebt gewerkt. Het wettelijk minimum is ook hier 4 keer de feitelijke werkweek. Werkgevers mogen een toeslag van 1/12 deel van het loon uitbetalen als vakantie-equivalent per maand."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is deze vakantiedagencalculator gratis?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja, de vakantiedagencalculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen tijdslimiet. De calculator werkt direct in je browser, ook op je telefoon."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Thuis",
+        "item": "https://rekengemak.nl/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Vakantiedagen Berekenen",
+        "item": "https://rekengemak.nl/vakantiedagen-berekenen/"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+/* ═══ FORMAT HELPERS ═══════════════════════════════════════════════════ */
+var fmtNum = new Intl.NumberFormat('nl-NL', { maximumFractionDigits: 1 });
+
+function parseNL(str) {
+  if (!str || str.trim() === '') return 0;
+  return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+}
+
+/* ═══ SLIDER UPDATE ════════════════════════════════════════════════════ */
+function updateSlider(id) {
+  var val = document.getElementById(id).value;
+  document.getElementById(id + '-value').textContent = val;
+}
+
+/* ═══ VAKANTIEDAGEN FORMULE ═════════════════════════════════════════════
+   Wettelijk minimum: 4 x werkweek in dagen
+   wettelijkDagen = 4 * (urenPerWeek / 8)
+   40u/w = 20 dagen, 32u/w = 16 dagen, 24u/w = 12 dagen
+   Uren = totaalDagen * (urenPerWeek / 5)
+   Pro-rata = totaalDagen * (maanden / 12)
+════════════════════════════════════════════════════════════════════════ */
+function calcVakantiedagen(urenPerWeek, extraDagen, maanden) {
+  var wettelijk      = 4 * (urenPerWeek / 8);
+  var bovenwettelijk = extraDagen || 0;
+  var totaal         = wettelijk + bovenwettelijk;
+  var uren           = totaal * (urenPerWeek / 5);
+  var proRata        = totaal * (maanden / 12);
+
+  return {
+    wettelijk:      wettelijk,
+    bovenwettelijk: bovenwettelijk,
+    totaal:         totaal,
+    uren:           uren,
+    proRata:        proRata,
+    maanden:        maanden
+  };
+}
+
+/* ═══ RECALC ════════════════════════════════════════════════════════════ */
+function recalc() {
+  var urenPerWeek = parseInt(document.getElementById('uren').value);
+  var extraRaw    = document.getElementById('bovenwettelijk').value.trim();
+  var extraDagen  = extraRaw === '' ? 0 : parseNL(extraRaw);
+  var maanden     = parseInt(document.getElementById('maanden').value);
+
+  if (urenPerWeek < 1) { setResults(null); return; }
+
+  var r = calcVakantiedagen(urenPerWeek, extraDagen, maanden);
+  setResults(r);
+}
+
+/* ═══ SET RESULTS ═══════════════════════════════════════════════════════ */
+function setResults(r) {
+  var ids = ['res-wettelijk', 'res-totaal', 'res-uren', 'res-prorata'];
+
+  if (!r) {
+    ids.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.textContent = '--';
+        el.style.color = 'var(--text-secondary)';
+      }
+    });
+    return;
+  }
+
+  function setNum(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = fmtNum.format(val);
+    el.style.color = 'var(--success)';
+  }
+
+  setNum('res-wettelijk', r.wettelijk);
+  setNum('res-totaal',    r.totaal);
+  setNum('res-uren',      r.uren);
+  setNum('res-prorata',   r.proRata);
+
+  var unitEl = document.getElementById('res-prorata-unit');
+  if (unitEl) {
+    unitEl.textContent = r.maanden === 12
+      ? 'dagen (volledig jaar)'
+      : 'dagen (' + r.maanden + ' van 12 mnd)';
+  }
+}
+
+/* ═══ COPY ══════════════════════════════════════════════════════════════ */
+function copyResult() {
+  var el  = document.getElementById('res-totaal');
+  var txt = el ? el.textContent.trim() : '';
+  if (!txt || txt === '--') return;
+  navigator.clipboard.writeText(txt + ' vakantiedagen').then(function() {
+    var btn = document.getElementById('btn-copy-main');
+    if (!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = 'Gekopieerd!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+/* ═══ RESET ═════════════════════════════════════════════════════════════ */
+function resetTool() {
+  document.getElementById('uren').value        = 40;
+  document.getElementById('maanden').value     = 12;
+  document.getElementById('bovenwettelijk').value = '';
+  updateSlider('uren');
+  updateSlider('maanden');
+  recalc();
+}
+
+/* ═══ DARK MODE TOGGLE ══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+
+/* ═══ INIT ══════════════════════════════════════════════════════════════ */
+recalc();
+  </script>
+</body>
+</html>
