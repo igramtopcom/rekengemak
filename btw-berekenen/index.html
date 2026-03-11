@@ -219,6 +219,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
   margin-top: 6px; display: flex; align-items: center; gap: 8px;
 }
 .result-empty { color: var(--text-secondary); font-style: italic; }
+.result-main.empty { color: var(--text-secondary); font-size: 1.1rem; font-weight: 400; }
 
 /* Nút sao chép */
 .btn-copy {
@@ -310,13 +311,13 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
 /* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════ */
 /* Mobile default (<640px) */
 .result-main { font-size: 1.8rem; }
-#ad-top      { min-height: 50px; text-align: center; margin-bottom: 24px; }
-#ad-middle   { min-height: 250px; text-align: center; margin: 32px 0; }
-#ad-bottom   { min-height: 250px; text-align: center; margin-top: 32px; }
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
 
 @media (min-width: 640px) {
   .result-main { font-size: 2.25rem; }
-  #ad-top      { min-height: 90px; }
 }
 @media (max-width: 480px) {
   .toggle-row { flex-direction: column; align-items: flex-start; gap: 8px; }
@@ -368,9 +369,9 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
       <label for="rate-nl">BTW-tarief</label>
       <div class="input-wrap">
         <select id="rate-nl" oninput="recalc('nl')">
-          <option value="0.21" selected>21% &mdash; Standaard</option>
-          <option value="0.09">9% &mdash; Verlaagd</option>
-          <option value="0.00">0% &mdash; Vrijgesteld</option>
+          <option value="0.21" selected>21% - Standaard</option>
+          <option value="0.09">9% - Verlaagd</option>
+          <option value="0.00">0% - Vrijgesteld</option>
         </select>
       </div>
     </div>
@@ -400,7 +401,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
     <!-- Result box NL -->
     <div class="result-box" id="result-nl">
       <div class="result-label">Totaal inclusief btw</div>
-      <div class="result-main" id="res-incl-nl">--</div>
+      <div class="result-main empty" id="res-incl-nl">--</div>
 
       <div class="result-sub">
         <span id="res-btw-nl" style="color:var(--text-secondary);">BTW: --</span>
@@ -423,9 +424,9 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
       <label for="rate-be">BTW-tarief</label>
       <div class="input-wrap">
         <select id="rate-be" oninput="recalc('be')">
-          <option value="0.21" selected>21% &mdash; Standaard</option>
-          <option value="0.06">6% &mdash; Verlaagd</option>
-          <option value="0.00">0% &mdash; Vrijgesteld</option>
+          <option value="0.21" selected>21% - Standaard</option>
+          <option value="0.06">6% - Verlaagd</option>
+          <option value="0.00">0% - Vrijgesteld</option>
         </select>
       </div>
     </div>
@@ -455,7 +456,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
     <!-- Result box BE -->
     <div class="result-box" id="result-be">
       <div class="result-label">Totaal inclusief btw</div>
-      <div class="result-main" id="res-incl-be">--</div>
+      <div class="result-main empty" id="res-incl-be">--</div>
       <div class="result-sub">
         <span id="res-btw-be" style="color:var(--text-secondary);">BTW: --</span>
         <button class="btn-copy" onclick="copyVal('res-incl-be')" aria-label="Kopieer totaalbedrag">Kopieer</button>
@@ -754,10 +755,12 @@ function setResults(land, r) {
 
   if (!r) {
     inclEl.textContent = '--';
+    inclEl.classList.add('empty');
     btwEl.textContent  = 'BTW: --';
     exclEl.textContent = 'Excl. btw: --';
     return;
   }
+  inclEl.classList.remove('empty');
   inclEl.textContent = fmtEUR.format(r.incl);
   btwEl.textContent  = 'BTW: ' + fmtEUR.format(r.btw);
   exclEl.textContent = 'Excl. btw: ' + fmtEUR.format(r.excl);
