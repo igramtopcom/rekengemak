@@ -688,6 +688,23 @@ select option {
     <li>Iedereen die snel een willekeurig getal nodig heeft zonder spreadsheet of app</li>
   </ul>
 
+  <h2>Hoe willekeurig zijn de getallen?</h2>
+  <p>De generator gebruikt de Web Cryptography API van je browser via
+<code>crypto.getRandomValues()</code>. Dit is cryptografisch veilig,
+beter dan de standaard <code>Math.random()</code> die de meeste andere
+online tools gebruiken.</p>
+
+  <p><code>Math.random()</code> is een pseudowillekeurige generator.
+De reeks getallen is voorspelbaar als je het beginpunt kent. Dat is
+prima voor spellen, maar onvoldoende voor loterijen of steekproeven.
+<code>crypto.getRandomValues()</code> werkt op basis van echte entropie
+vanuit het besturingssysteem en is voor praktische toepassingen
+niet te voorspellen.</p>
+
+  <h2>Toepassingen</h2>
+  <p>De generator wordt veel gebruikt voor het trekken van een willekeurige winnaar uit een lijst deelnemers, het bepalen van de volgorde van presentaties of wedstrijden, het simuleren van een dobbelsteen (bereik 1 tot 6) of een muntworp (bereik 1 tot 2), en het selecteren van een willekeurige steekproef uit een grotere groep.</p>
+  <p>Heb je een lijst met namen en wil je een willekeurige volgorde bepalen? Genereer dan voor elk deelnemer een willekeurig getal en sorteer op die uitkomst. Bij 100 deelnemers kies je een bereik van 1 tot 10.000 om de kans op gelijke getallen klein te houden.</p>
+
   <h2>Veelgestelde vragen</h2>
   <div class="faq">
     <div class="faq-item">
