@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tekst Vergelijken Online Gratis -- Verschillen Vinden | RekenGemak</title>
+  <meta name="description" content="Vergelijk twee teksten en zie direct de verschillen. Gratis online tekstvergelijker met woordniveau diff. Handig voor revisies, vertalingen en tekstcontrole.">
+  <link rel="canonical" href="https://rekengemak.nl/tekst-vergelijken/">
+  <meta property="og:title"       content="Tekst Vergelijken Online Gratis -- Verschillen Vinden | RekenGemak">
+  <meta property="og:description" content="Vergelijk twee teksten en zie direct de verschillen. Gratis online tekstvergelijker met woordniveau diff. Handig voor revisies, vertalingen en tekstcontrole.">
+  <meta property="og:url"         content="https://rekengemak.nl/tekst-vergelijken/">
+  <meta property="og:type"        content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ═══════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+/* ═══ 4. TOOL CARD ═══════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* ═══ TEXTAREA (van T-010) ═══════════════════════════════════════════════ */
+.textarea-wrap {
+  position: relative;
+  margin-bottom: var(--space-md);
+}
+
+textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color var(--transition);
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ═══ TWEE KOLOMMEN INPUT ═════════════════════════════════════════════════ */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+@media (max-width: 600px) {
+  .compare-grid { grid-template-columns: 1fr; }
+}
+
+.compare-col label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ═══ DIFF OUTPUT ═════════════════════════════════════════════════════════ */
+.diff-output {
+  display: none;
+  margin-top: var(--space-md);
+}
+
+.diff-output.visible {
+  display: block;
+}
+
+.diff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.diff-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.diff-stats {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.diff-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  line-height: 1.8;
+  font-size: 1rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Verwijderde woorden */
+.diff-del {
+  background: rgba(224, 82, 82, 0.18);
+  color: #E05252;
+  text-decoration: line-through;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* Toegevoegde woorden */
+.diff-add {
+  background: rgba(46, 160, 67, 0.18);
+  color: var(--success);
+  text-decoration: underline;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* Identieke tekst */
+.diff-same {
+  color: var(--text-primary);
+}
+
+/* Legenda */
+.diff-legend {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-dot.del { background: rgba(224, 82, 82, 0.4); }
+.legend-dot.add { background: rgba(46, 160, 67, 0.4); }
+
+/* Identiek-melding */
+.diff-identical {
+  text-align: center;
+  padding: var(--space-lg);
+  color: var(--success);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* ═══ 5. BUTTONS ═════════════════════════════════════════════════════════ */
+.btn-primary {
+  height: 48px;
+  padding: 0 24px;
+  background: var(--accent); color: white;
+  font-size: 1rem; font-weight: 600; border-radius: var(--radius);
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ 6. ARTICLE & FAQ ═══════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ═══════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════════ */
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">RekenGemak</a>
+  <button onclick="toggleTheme()" aria-label="Thema wisselen" class="theme-btn">
+    <span class="icon-dark">&#9789;</span>
+    <span class="icon-light">&#9788;</span>
+  </button>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+
+<div class="hero">
+  <nav aria-label="Breadcrumb">
+    <a href="/">Thuis</a> &rsaquo; <span>Tekst Vergelijken</span>
+  </nav>
+  <h1>Tekst Vergelijken</h1>
+  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+    Plak twee versies van een tekst en zie direct welke woorden zijn toegevoegd of verwijderd.
+  </p>
+</div>
+
+<section class="tool-card" aria-label="Tekst Vergelijken">
+
+  <!-- Twee tekstkolommen -->
+  <div class="compare-grid">
+    <div class="compare-col">
+      <label for="tekst-a">Originele tekst</label>
+      <div class="textarea-wrap">
+        <textarea id="tekst-a"
+                  placeholder="Plak hier de originele tekst"
+                  aria-label="Originele tekst"></textarea>
+      </div>
+    </div>
+    <div class="compare-col">
+      <label for="tekst-b">Nieuwe tekst</label>
+      <div class="textarea-wrap">
+        <textarea id="tekst-b"
+                  placeholder="Plak hier de nieuwe tekst"
+                  aria-label="Nieuwe tekst"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actieknoppen -->
+  <div style="display:flex;gap:var(--space-sm);flex-wrap:wrap;">
+    <button class="btn-primary" onclick="runDiff()" id="btn-vergelijk">
+      Vergelijk teksten
+    </button>
+    <button class="btn-secondary" onclick="resetTool()" style="margin-top:0;">
+      Wis alles
+    </button>
+  </div>
+
+  <!-- Diff output -->
+  <div class="diff-output" id="diff-output">
+
+    <div class="diff-header">
+      <span class="diff-title">Resultaat</span>
+      <span class="diff-stats" id="diff-stats"></span>
+    </div>
+
+    <div class="diff-box" id="diff-box"></div>
+
+    <div class="diff-legend">
+      <div class="legend-item">
+        <div class="legend-dot del"></div>
+        <span>Verwijderd</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot add"></div>
+        <span>Toegevoegd</span>
+      </div>
+    </div>
+
+    <div style="margin-top:var(--space-md);">
+      <button class="btn-copy" onclick="copyDiff()" id="btn-copy-diff">
+        Kopieer resultaat (platte tekst)
+      </button>
+    </div>
+
+  </div>
+
+</section>
+
+<div id="ad-middle"></div>
+
+<article class="content">
+
+  <h2>Hoe werkt de tekstvergelijker?</h2>
+  <p>Plak de originele tekst in het linker invoerveld en de gewijzigde versie in het rechter veld. Klik op "Vergelijk teksten" en de tool laat direct zien wat er is veranderd.</p>
+  <p>Verwijderde woorden zijn rood gekleurd en doorgestreept. Toegevoegde woorden zijn groen en onderstreept. Woorden die niet zijn gewijzigd, blijven gewoon leesbaar staan. Zo zie je in een oogopslag hoe groot de revisie is en wat er precies is aangepast.</p>
+  <p>Met "Kopieer resultaat" sla je de diff op als platte tekst met [DEL] en [ADD] markeringen. Handig om in een e-mail of document te plakken.</p>
+
+  <h2>Voor wie is deze rekenhulp?</h2>
+  <ul>
+    <li>Schrijvers en redacteuren die twee versies van een tekst willen vergelijken</li>
+    <li>Vertalers die een bronvertaling willen controleren op ongewenste wijzigingen</li>
+    <li>Juristen en contractbeheerders die documentversies willen vergelijken</li>
+    <li>Studenten die een eerste en tweede conceptversie naast elkaar willen leggen</li>
+    <li>Iedereen die snel wil zien wat er is veranderd tussen twee teksten</li>
+  </ul>
+
+  <h2>Veelgestelde vragen</h2>
+  <div class="faq">
+
+    <div class="faq-item">
+      <h3>Hoe werkt de tekstvergelijker?</h3>
+      <p>Plak de originele tekst in het linker veld en de nieuwe versie in het rechter veld. Klik op 'Vergelijk teksten' en de tool markeert direct welke woorden zijn verwijderd (rood, doorgestreept) en welke zijn toegevoegd (groen, onderstreept). Ongewijzigde woorden blijven gewoon zichtbaar.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Op welk niveau worden de teksten vergeleken?</h3>
+      <p>De vergelijking werkt op woordniveau. Elk woord in de originele tekst wordt vergeleken met de nieuwe tekst. Dit is handig voor het controleren van revisies, omdat je precies ziet welke woorden zijn gewijzigd, verplaatst of vervangen. Kleine spellingwijzigingen worden ook opgemerkt.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Waarvoor gebruik je een tekstvergelijker?</h3>
+      <p>Een tekstvergelijker gebruik je voor het controleren van tekstrevisiess, het vergelijken van twee versies van een vertaling, het opsporen van ongewenste wijzigingen in contracten of juridische teksten, en het controleren of een herziene tekst alleen de beoogde aanpassingen bevat.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Werkt de vergelijker ook met lange teksten?</h3>
+      <p>Ja, de vergelijker werkt met teksten van elke lengte. Bij zeer lange teksten kan de berekening een halve seconde langer duren. Het resultaat is altijd nauwkeurig, ongeacht de lengte van de tekst.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Worden hoofdletters en leestekens meegenomen?</h3>
+      <p>Ja, de vergelijking is hoofdlettergevoelig. 'Hallo' en 'hallo' worden als twee verschillende woorden beschouwd. Ook leestekens worden meegenomen: een punt of komma aan het einde van een woord telt mee als onderdeel van dat woord.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Kan ik het resultaat opslaan of exporteren?</h3>
+      <p>Ja, met de knop 'Kopieer resultaat' kopieer je de volledige diff als platte tekst naar je klembord. Verwijderde woorden worden gemarkeerd met [DEL: woord] en toegevoegde woorden met [ADD: woord]. Zo kun je het resultaat plakken in een e-mail, document of teksteditor.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wat betekent het als er geen verschillen worden gevonden?</h3>
+      <p>Als de twee teksten identiek zijn, toont de vergelijker de melding 'Teksten zijn identiek.' Dit betekent dat er geen enkel woord of teken verschilt tussen de twee versies, inclusief spaties en leestekens.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wordt mijn tekst opgeslagen?</h3>
+      <p>Nee, de teksten die je invoert worden niet opgeslagen en niet verzonden naar een server. De vergelijking gebeurt volledig in je browser. Als je de pagina sluit of vernieuwt, zijn beide teksten weg.</p>
+    </div>
+
+  </div>
+
+  <h2>Gerelateerde rekenhulpen</h2>
+  <div class="related-tools">
+    <a href="/woorden-tellen/">Woorden tellen</a>
+    <a href="/tekens-tellen/">Tekens tellen</a>
+    <a href="/procenten-berekenen/">Procenten berekenen</a>
+    <a href="/btw-berekenen/">BTW berekenen</a>
+    <a href="/korting-berekenen/">Korting berekenen</a>
+  </div>
+
+</article>
+
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong>Financieel</strong>
+      <ul>
+        <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+        <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+        <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Werk &amp; Salaris</strong>
+      <ul>
+        <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+        <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+        <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Tekst</strong>
+      <ul>
+        <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+        <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+        <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Dagelijks</strong>
+      <ul>
+        <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+        <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+        <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-bottom">
+    <a href="/privacy/">Privacybeleid</a> &middot;
+    <a href="/contact/">Contact</a> &middot;
+    &copy; 2026 RekenGemak
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Tekst Vergelijken -- RekenGemak",
+  "url": "https://rekengemak.nl/tekst-vergelijken/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "inLanguage": "nl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoe werkt de tekstvergelijker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Plak de originele tekst in het linker veld en de nieuwe versie in het rechter veld. Klik op 'Vergelijk teksten' en de tool markeert direct welke woorden zijn verwijderd (rood, doorgestreept) en welke zijn toegevoegd (groen, onderstreept). Ongewijzigde woorden blijven gewoon zichtbaar."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Op welk niveau worden de teksten vergeleken?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "De vergelijking werkt op woordniveau. Elk woord in de originele tekst wordt vergeleken met de nieuwe tekst. Dit is handig voor het controleren van revisies, omdat je precies ziet welke woorden zijn gewijzigd, verplaatst of vervangen. Kleine spellingwijzigingen worden ook opgemerkt."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Waarvoor gebruik je een tekstvergelijker?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Een tekstvergelijker gebruik je voor het controleren van tekstrevisiess, het vergelijken van twee versies van een vertaling, het opsporen van ongewenste wijzigingen in contracten of juridische teksten, en het controleren of een herziene tekst alleen de beoogde aanpassingen bevat."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Werkt de vergelijker ook met lange teksten?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, de vergelijker werkt met teksten van elke lengte. Bij zeer lange teksten kan de berekening een halve seconde langer duren. Het resultaat is altijd nauwkeurig, ongeacht de lengte van de tekst."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Worden hoofdletters en leestekens meegenomen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, de vergelijking is hoofdlettergevoelig. 'Hallo' en 'hallo' worden als twee verschillende woorden beschouwd. Ook leestekens worden meegenomen: een punt of komma aan het einde van een woord telt mee als onderdeel van dat woord."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kan ik het resultaat opslaan of exporteren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, met de knop 'Kopieer resultaat' kopieer je de volledige diff als platte tekst naar je klembord. Verwijderde woorden worden gemarkeerd met [DEL: woord] en toegevoegde woorden met [ADD: woord]. Zo kun je het resultaat plakken in een e-mail, document of teksteditor."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat betekent het als er geen verschillen worden gevonden?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Als de twee teksten identiek zijn, toont de vergelijker de melding 'Teksten zijn identiek.' Dit betekent dat er geen enkel woord of teken verschilt tussen de twee versies, inclusief spaties en leestekens."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wordt mijn tekst opgeslagen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nee, de teksten die je invoert worden niet opgeslagen en niet verzonden naar een server. De vergelijking gebeurt volledig in je browser. Als je de pagina sluit of vernieuwt, zijn beide teksten weg."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Thuis",
+      "item": "https://rekengemak.nl/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Tekst Vergelijken",
+      "item": "https://rekengemak.nl/tekst-vergelijken/"
+    }
+  ]
+}
+</script>
+
+<script>
+/* ═══ WORD-LEVEL DIFF ALGORITME ═════════════════════════════════════════
+   Implementatie van LCS diff op woordniveau.
+   Invoer: twee strings.
+   Uitvoer: array van { type: 'same'|'del'|'add', text: string }
+════════════════════════════════════════════════════════════════════════ */
+
+/* Splits tekst in tokens: woorden + witruimte als aparte tokens */
+function tokenize(str) {
+  return str.split(/(\s+)/);
+}
+
+/* LCS-gebaseerde diff */
+function diffTokens(a, b) {
+  var m = a.length;
+  var n = b.length;
+
+  /* DP tabel voor LCS */
+  var dp = [];
+  for (var i = 0; i <= m; i++) {
+    dp[i] = new Array(n + 1).fill(0);
+  }
+  for (var i = 1; i <= m; i++) {
+    for (var j = 1; j <= n; j++) {
+      if (a[i-1] === b[j-1]) {
+        dp[i][j] = dp[i-1][j-1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+      }
+    }
+  }
+
+  /* Backtrack om diff te reconstrueren */
+  var result = [];
+  var i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
+      result.unshift({ type: 'same', text: a[i-1] });
+      i--; j--;
+    } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+      result.unshift({ type: 'add', text: b[j-1] });
+      j--;
+    } else {
+      result.unshift({ type: 'del', text: a[i-1] });
+      i--;
+    }
+  }
+  return result;
+}
+
+/* ═══ RUN DIFF ══════════════════════════════════════════════════════════ */
+function runDiff() {
+  var a = document.getElementById('tekst-a').value;
+  var b = document.getElementById('tekst-b').value;
+
+  var output = document.getElementById('diff-output');
+  var box    = document.getElementById('diff-box');
+  var stats  = document.getElementById('diff-stats');
+
+  /* Lege invoer afhandelen */
+  if (!a.trim() && !b.trim()) {
+    output.classList.remove('visible');
+    return;
+  }
+
+  var tokensA = tokenize(a);
+  var tokensB = tokenize(b);
+  var diff    = diffTokens(tokensA, tokensB);
+
+  /* Tel wijzigingen */
+  var nDel = 0, nAdd = 0;
+  diff.forEach(function(d) {
+    if (d.type === 'del' && d.text.trim()) nDel++;
+    if (d.type === 'add' && d.text.trim()) nAdd++;
+  });
+
+  /* Render */
+  box.innerHTML = '';
+
+  if (nDel === 0 && nAdd === 0) {
+    /* Identieke teksten */
+    box.innerHTML = '<div class="diff-identical">Teksten zijn identiek.</div>';
+    stats.textContent = '';
+  } else {
+    diff.forEach(function(d) {
+      var span = document.createElement('span');
+      span.textContent = d.text;
+      if (d.type === 'del') span.className = 'diff-del';
+      else if (d.type === 'add') span.className = 'diff-add';
+      else span.className = 'diff-same';
+      box.appendChild(span);
+    });
+    stats.textContent =
+      nDel + ' verwijderd' +
+      ' \u00b7 ' + nAdd + ' toegevoegd';
+  }
+
+  output.classList.add('visible');
+}
+
+/* ═══ RESET ═════════════════════════════════════════════════════════════ */
+function resetTool() {
+  document.getElementById('tekst-a').value = '';
+  document.getElementById('tekst-b').value = '';
+  document.getElementById('diff-output').classList.remove('visible');
+  document.getElementById('diff-box').innerHTML = '';
+  document.getElementById('diff-stats').textContent = '';
+  document.getElementById('tekst-a').focus();
+}
+
+/* ═══ COPY DIFF ═════════════════════════════════════════════════════════
+   Kopieert platte tekst: [DEL: woord] en [ADD: woord] notatie
+════════════════════════════════════════════════════════════════════════ */
+function copyDiff() {
+  var box   = document.getElementById('diff-box');
+  var spans = box.querySelectorAll('span');
+  var txt   = '';
+  spans.forEach(function(s) {
+    if (s.classList.contains('diff-del')) {
+      txt += '[DEL: ' + s.textContent + ']';
+    } else if (s.classList.contains('diff-add')) {
+      txt += '[ADD: ' + s.textContent + ']';
+    } else {
+      txt += s.textContent;
+    }
+  });
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).then(function() {
+    var btn = document.getElementById('btn-copy-diff');
+    if (!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = 'Gekopieerd!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+}
+
+/* ═══ DARK MODE TOGGLE ══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+</script>
+
+</body>
+</html>
