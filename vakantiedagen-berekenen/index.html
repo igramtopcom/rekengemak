@@ -379,6 +379,99 @@ input[type="range"] {
 #ad-top      { text-align: center; margin-bottom: var(--space-lg); }
 #ad-middle   { text-align: center; margin: var(--space-xl) 0; }
 #ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+
+/* ═══ FORMULA BLOK ═════════════════════════════════════════════════════ */
+.formula-blok {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+  font-size: 0.875rem;
+}
+.formula-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+.formula-stap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+.formula-stap:last-child { border-bottom: none; }
+.formula-stap .fs-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  min-width: 140px;
+  flex-shrink: 0;
+}
+.formula-stap .fs-calc { color: var(--text-primary); }
+.formula-stap .fs-result {
+  color: var(--success);
+  font-weight: 700;
+  margin-left: auto;
+}
+
+/* ═══ GESCHIEDENIS ═════════════════════════════════════════════════════ */
+.geschiedenis-wrap {
+  margin-top: var(--space-md);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-md);
+}
+.geschiedenis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+.geschiedenis-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+.geschiedenis-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 10px;
+  background: var(--bg-input);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.geschiedenis-item:hover { background: var(--result-bg); }
+.geschiedenis-item .gh-invoer {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+.geschiedenis-item .gh-uitkomst {
+  color: var(--success);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.geschiedenis-item .gh-tijd {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
   </style>
 </head>
 <body>
@@ -519,6 +612,20 @@ input[type="range"] {
 
     </section>
 
+<div class="formula-blok" id="formula-blok" style="display:none;">
+  <div class="formula-title">Zo wordt dit berekend</div>
+  <div class="formula-stappen" id="formula-stappen"></div>
+</div>
+
+<div class="geschiedenis-wrap" id="geschiedenis-wrap" style="display:none;">
+  <div class="geschiedenis-header">
+    <span class="geschiedenis-title">Recente berekeningen</span>
+    <button class="btn-secondary" onclick="wisGeschiedenis()"
+            style="padding:3px 10px;font-size:0.8rem;">Wis</button>
+  </div>
+  <div class="geschiedenis-list" id="geschiedenis-list"></div>
+</div>
+
     <div id="ad-middle" class="ad-slot"></div>
 
     <article class="content">
@@ -530,12 +637,32 @@ input[type="range"] {
 
       <h2>Voor wie is deze rekenhulp?</h2>
       <ul>
-        <li>Werknemers die willen controleren of ze het juiste aantal vakantiedagen krijgen</li>
-        <li>Nieuwe medewerkers die hun pro-rata vakantiedagen willen berekenen</li>
-        <li>Deeltijdwerkers die hun vakantiedagenrecht naar rato willen weten</li>
-        <li>HR-medewerkers die snel vakantiedagen voor nieuwe collega's willen bepalen</li>
-        <li>Iedereen die zijn vakantiedagensaldo wil omzetten naar uren</li>
+        <li>Je bent in april in dienst gekomen en wilt weten hoeveel
+            vakantiedagen je pro-rata hebt opgebouwd voor eind mei.</li>
+        <li>Je werkgever geeft 5 bovenwettelijke dagen. Je wilt het totaal
+            per jaar overzien inclusief die extra dagen.</li>
+        <li>Je werkt 32 uur per week en wilt weten hoeveel vakantiedagen
+            dat in uren en in dagen is.</li>
+        <li>Je neemt ontslag en wilt nagaan hoeveel openstaande vakantiedagen
+            je werkgever nog moet uitbetalen.</li>
       </ul>
+
+      <h2>Hoe worden vakantiedagen berekend?</h2>
+      <p>De wettelijke vakantiedagen zijn 4 keer het aantal uren per werkweek.
+      Werk je 40 uur per week, dan heb je recht op 4 x 40 = 160 vakantie-uren
+      per jaar, gelijk aan 20 dagen.</p>
+
+      <p><strong>Formule wettelijke vakantiedagen:</strong><br>
+      4 x (uren per week / 8)<br>
+      Voorbeeld bij 24 uur per week: 4 x (24 / 8) = 12 vakantiedagen</p>
+
+      <p><strong>Pro-rata berekening:</strong><br>
+      vakantiedagen = totaal x (gewerkte maanden / 12)<br>
+      Voorbeeld: 20 dagen bij 8 maanden in dienst = 20 x (8/12) = 13,3 dagen</p>
+
+      <p>Bovenwettelijke vakantiedagen zijn extra dagen bovenop het wettelijk
+      minimum. Veel cao's geven 5 tot 10 extra dagen. Gebruik het invoerveld
+      "Bovenwettelijk" om ze mee te tellen in de berekening.</p>
 
       <h2>Veelgestelde vragen</h2>
       <div class="faq">
@@ -790,10 +917,31 @@ function recalc() {
   var extraDagen  = extraRaw === '' ? 0 : parseNL(extraRaw);
   var maanden     = parseInt(document.getElementById('maanden').value);
 
-  if (urenPerWeek < 1) { setResults(null); return; }
+  if (urenPerWeek < 1) {
+    setResults(null);
+    document.getElementById('formula-blok').style.display = 'none';
+    return;
+  }
 
   var r = calcVakantiedagen(urenPerWeek, extraDagen, maanden);
   setResults(r);
+
+  /* Feature C: URL deeplink */
+  updateUrl(urenPerWeek, maanden, extraDagen);
+
+  /* Feature A: Formula blok */
+  toonFormula([
+    { label: 'Wettelijk',  calc: '4 x (' + urenPerWeek + ' / 8)',  result: r.wettelijk + ' dagen' },
+    { label: 'Pro-rata',   calc: (r.wettelijk + r.bovenwettelijk) + ' x (' + maanden + ' / 12)', result: r.proRata.toFixed(1) + ' dagen' },
+    { label: 'Totaal',     calc: r.wettelijk + ' + ' + r.bovenwettelijk + ' (bovenwettelijk)', result: (r.wettelijk + r.bovenwettelijk) + ' dagen (vol jaar)' }
+  ]);
+
+  /* Feature B: Geschiedenis */
+  slaGeschiedenisOp(
+    urenPerWeek + 'u/w, ' + maanden + ' mnd' + (extraDagen ? ', +' + extraDagen + ' bw' : ''),
+    fmtNum.format(r.proRata) + ' dagen',
+    { uren: urenPerWeek, maanden: maanden, bovenwettelijk: extraRaw }
+  );
 }
 
 /* ═══ SET RESULTS ═══════════════════════════════════════════════════════ */
@@ -876,8 +1024,106 @@ function toggleMenu() {
   nav.setAttribute('aria-hidden', !open);
 }
 
+/* ═══ FEATURE A — FORMULA BLOK ════════════════════════════════════════ */
+function toonFormula(stappen) {
+  var blok = document.getElementById('formula-blok');
+  var cont = document.getElementById('formula-stappen');
+  if (!stappen || !stappen.length) { blok.style.display = 'none'; return; }
+  cont.innerHTML = stappen.map(function(s) {
+    return '<div class="formula-stap">' +
+      '<span class="fs-label">' + s.label + '</span>' +
+      '<span class="fs-calc">' + s.calc + '</span>' +
+      '<span class="fs-result">= ' + s.result + '</span>' +
+    '</div>';
+  }).join('');
+  blok.style.display = 'block';
+}
+
+/* ═══ FEATURE B — GESCHIEDENIS ════════════════════════════════════════ */
+var GESCHIEDENIS_KEY = 'rg-geschiedenis-vakantiedagen';
+var MAX_GESCHIEDENIS = 5;
+
+function laadGeschiedenis() {
+  try { return JSON.parse(localStorage.getItem(GESCHIEDENIS_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function slaGeschiedenisOp(labelTekst, uitkomstTekst, veldwaarden) {
+  var lijst = laadGeschiedenis();
+  lijst.unshift({
+    label: labelTekst,
+    uitkomst: uitkomstTekst,
+    velden: veldwaarden,
+    tijd: new Date().toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' })
+  });
+  if (lijst.length > MAX_GESCHIEDENIS) lijst = lijst.slice(0, MAX_GESCHIEDENIS);
+  localStorage.setItem(GESCHIEDENIS_KEY, JSON.stringify(lijst));
+  renderGeschiedenis();
+}
+
+function renderGeschiedenis() {
+  var lijst = laadGeschiedenis();
+  var wrap  = document.getElementById('geschiedenis-wrap');
+  var cont  = document.getElementById('geschiedenis-list');
+  if (!lijst.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  cont.innerHTML = lijst.map(function(item) {
+    return '<div class="geschiedenis-item" onclick="herstelBerekening(\'' +
+      encodeURIComponent(JSON.stringify(item.velden)) + '\')">' +
+      '<span class="gh-invoer">' + item.label + '</span>' +
+      '<span class="gh-uitkomst">' + item.uitkomst + '</span>' +
+      '<span class="gh-tijd">' + item.tijd + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function wisGeschiedenis() {
+  localStorage.removeItem(GESCHIEDENIS_KEY);
+  renderGeschiedenis();
+}
+
+function herstelBerekening(veldwaardenEncoded) {
+  var velden = JSON.parse(decodeURIComponent(veldwaardenEncoded));
+  herstelFormulier(velden);
+}
+
+function herstelFormulier(velden) {
+  document.getElementById('uren').value = velden.uren;
+  updateSlider('uren');
+  document.getElementById('maanden').value = velden.maanden;
+  updateSlider('maanden');
+  document.getElementById('bovenwettelijk').value = velden.bovenwettelijk || '';
+  recalc();
+}
+
+/* ═══ FEATURE C — URL DEEPLINK ════════════════════════════════════════ */
+function leesUrlParams() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('uren')) {
+    document.getElementById('uren').value = parseInt(params.get('uren'));
+    updateSlider('uren');
+  }
+  if (params.get('maanden')) {
+    document.getElementById('maanden').value = parseInt(params.get('maanden'));
+    updateSlider('maanden');
+  }
+  if (params.get('bovenwettelijk')) {
+    document.getElementById('bovenwettelijk').value = params.get('bovenwettelijk');
+  }
+  recalc();
+}
+
+function updateUrl(uren, maanden, bovenwettelijk) {
+  var params = new URLSearchParams();
+  params.set('uren', uren);
+  params.set('maanden', maanden);
+  params.set('bovenwettelijk', bovenwettelijk);
+  history.replaceState(null, '', '?' + params.toString());
+}
+
 /* ═══ INIT ══════════════════════════════════════════════════════════════ */
-recalc();
+leesUrlParams();
+renderGeschiedenis();
   </script>
 </body>
 </html>

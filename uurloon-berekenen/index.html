@@ -452,6 +452,99 @@ input[type="range"] {
 @media (min-width: 640px) {
   .result-main { font-size: 2.25rem; }
 }
+
+/* ═══ FORMULA BLOK ═════════════════════════════════════════════════════ */
+.formula-blok {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+  font-size: 0.875rem;
+}
+.formula-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+.formula-stap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+.formula-stap:last-child { border-bottom: none; }
+.formula-stap .fs-label {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  min-width: 140px;
+  flex-shrink: 0;
+}
+.formula-stap .fs-calc { color: var(--text-primary); }
+.formula-stap .fs-result {
+  color: var(--success);
+  font-weight: 700;
+  margin-left: auto;
+}
+
+/* ═══ GESCHIEDENIS ═════════════════════════════════════════════════════ */
+.geschiedenis-wrap {
+  margin-top: var(--space-md);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-md);
+}
+.geschiedenis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+.geschiedenis-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+.geschiedenis-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 10px;
+  background: var(--bg-input);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.geschiedenis-item:hover { background: var(--result-bg); }
+.geschiedenis-item .gh-invoer {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+.geschiedenis-item .gh-uitkomst {
+  color: var(--success);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.geschiedenis-item .gh-tijd {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
   </style>
 </head>
 <body>
@@ -661,6 +754,20 @@ input[type="range"] {
       </div>
     </section>
 
+<div class="formula-blok" id="formula-blok" style="display:none;">
+  <div class="formula-title">Zo wordt dit berekend</div>
+  <div class="formula-stappen" id="formula-stappen"></div>
+</div>
+
+<div class="geschiedenis-wrap" id="geschiedenis-wrap" style="display:none;">
+  <div class="geschiedenis-header">
+    <span class="geschiedenis-title">Recente berekeningen</span>
+    <button class="btn-secondary" onclick="wisGeschiedenis()"
+            style="padding:3px 10px;font-size:0.8rem;">Wis</button>
+  </div>
+  <div class="geschiedenis-list" id="geschiedenis-list"></div>
+</div>
+
     <div id="ad-middle" class="ad-slot"></div>
 
     <article class="content">
@@ -672,12 +779,36 @@ input[type="range"] {
 
       <h2>Voor wie is deze rekenhulp?</h2>
       <ul>
-        <li>Werknemers die willen weten wat hun maandsalaris per uur is</li>
-        <li>Zzp'ers die hun uurtarief willen baseren op een gewenst netto-inkomen</li>
-        <li>HR-medewerkers en recruiters die salarissen en tarieven vergelijken</li>
-        <li>Werkzoekenden die een jobaanbieding met uur- of maandloon willen vergelijken</li>
-        <li>Deeltijdwerkers die het effect van hun werkuren op het uurloon willen zien</li>
+        <li>Je vergelijkt twee jobaanbiedingen: de ene vermeldt een
+            maandsalaris, de andere een uurloon. Je wilt ze op dezelfde
+            basis vergelijken.</li>
+        <li>Je gaat als zzp'er aan de slag en wilt weten welk uurtarief je
+            minimaal moet rekenen om hetzelfde te verdienen als in loondienst.</li>
+        <li>Je werkt parttime en je werkgever wil het uurtarief omrekenen
+            naar een fulltime equivalent voor een salarisvoorstel.</li>
+        <li>Je factureert uren en wilt controleren of je maandelijkse opbrengst
+            overeenkomt met het gewenste jaarsalaris.</li>
       </ul>
+
+      <h2>Hoe bereken je je uurloon?</h2>
+      <p>Het uurloon bereken je vanuit je bruto maandsalaris en het aantal uren
+      per week. Nederland telt 52 weken per jaar.</p>
+
+      <p><strong>Maandsalaris naar uurloon:</strong><br>
+      uurloon = maandsalaris x 12 / (uren per week x 52)<br>
+      Voorbeeld: &euro; 3.000 per maand bij 40 uur per week<br>
+      = &euro; 3.000 x 12 / (40 x 52) = &euro; 36.000 / 2.080 = &euro; 17,31 per uur</p>
+
+      <p>Wil je vakantiegeld meenemen? Vermenigvuldig het uurloon met 1,08:<br>
+      &euro; 17,31 x 1,08 = &euro; 18,69 per uur inclusief 8% vakantiegeld</p>
+
+      <p><strong>Uurloon naar maandsalaris:</strong><br>
+      maandsalaris = uurloon x uren per week x 52 / 12<br>
+      Voorbeeld: &euro; 17,31 x 40 x 52 / 12 = &euro; 3.000 per maand</p>
+
+      <p>Ben je zzp'er? Houd dan rekening met vakantiegeld (8%), vakantiedagen
+      (7,7%), pensioen (gemiddeld 15%) en arbeidsongeschiktheidsverzekering.
+      Dat maakt een opslag van 30 tot 40% boven op het loondienst-equivalent.</p>
 
       <h2>Veelgestelde vragen</h2>
       <div class="faq">
@@ -922,7 +1053,11 @@ function calc(tab) {
     var uren    = parseInt(document.getElementById('p1-uren').value);
     var vg      = document.getElementById('p1-vg').checked;
 
-    if (isNaN(salaris) || salaris <= 0) { setResult(1, null); return; }
+    if (isNaN(salaris) || salaris <= 0) {
+      setResult(1, null);
+      document.getElementById('formula-blok').style.display = 'none';
+      return;
+    }
 
     var factor     = vg ? 1.08 : 1;
     var jaarSal    = salaris * 12 * factor;
@@ -932,6 +1067,23 @@ function calc(tab) {
     setResult(1, fmtEUR.format(uurloon));
     document.getElementById('res-1-jaar').textContent  = fmtEUR.format(jaarSal);
     document.getElementById('res-1-uren').textContent  = fmtNum.format(jaarUren) + ' uur';
+
+    /* Feature C: URL deeplink */
+    updateUrl(salaris, uren, 'naar-uur');
+
+    /* Feature A: Formula blok */
+    toonFormula([
+      { label: 'Jaarsalaris',   calc: fmtEUR.format(salaris) + ' x 12' + (vg ? ' x 1,08' : ''), result: fmtEUR.format(jaarSal) },
+      { label: 'Uren per jaar', calc: uren + ' x 52',           result: jaarUren + ' uur' },
+      { label: 'Uurloon',       calc: fmtEUR.format(jaarSal) + ' / ' + jaarUren, result: fmtEUR.format(uurloon) }
+    ]);
+
+    /* Feature B: Geschiedenis */
+    slaGeschiedenisOp(
+      fmtEUR.format(salaris) + ' / ' + uren + 'u' + (vg ? ' +VG' : ''),
+      fmtEUR.format(uurloon) + '/uur',
+      { salaris: document.getElementById('p1-salaris').value, uren: uren, richting: 'naar-uur', vg: vg }
+    );
   }
 
   if (tab === 2) {
@@ -939,7 +1091,11 @@ function calc(tab) {
     var uren2    = parseInt(document.getElementById('p2-uren').value);
     var vg2      = document.getElementById('p2-vg').checked;
 
-    if (isNaN(uurloon2) || uurloon2 <= 0) { setResult(2, null); return; }
+    if (isNaN(uurloon2) || uurloon2 <= 0) {
+      setResult(2, null);
+      document.getElementById('formula-blok').style.display = 'none';
+      return;
+    }
 
     var factor2   = vg2 ? 1.08 : 1;
     var jaarUren2 = uren2 * 52;
@@ -949,6 +1105,23 @@ function calc(tab) {
     setResult(2, fmtEUR.format(maand2));
     document.getElementById('res-2-jaar').textContent  = fmtEUR.format(jaarSal2 / factor2);
     document.getElementById('res-2-uren').textContent  = fmtNum.format(jaarUren2) + ' uur';
+
+    /* Feature C: URL deeplink */
+    updateUrl(uurloon2, uren2, 'naar-maand');
+
+    /* Feature A: Formula blok */
+    toonFormula([
+      { label: 'Uren per jaar', calc: uren2 + ' x 52',          result: jaarUren2 + ' uur' },
+      { label: 'Jaarsalaris',   calc: fmtEUR.format(uurloon2) + ' x ' + jaarUren2, result: fmtEUR.format(jaarSal2) },
+      { label: 'Maandsalaris',  calc: fmtEUR.format(jaarSal2) + ' / 12' + (vg2 ? ' / 1,08' : ''), result: fmtEUR.format(maand2) }
+    ]);
+
+    /* Feature B: Geschiedenis */
+    slaGeschiedenisOp(
+      fmtEUR.format(uurloon2) + '/uur / ' + uren2 + 'u' + (vg2 ? ' +VG' : ''),
+      fmtEUR.format(maand2) + '/mnd',
+      { uurloon: document.getElementById('p2-uurloon').value, uren: uren2, richting: 'naar-maand', vg: vg2 }
+    );
   }
 }
 
@@ -1028,6 +1201,121 @@ function toggleMenu() {
   btn.setAttribute('aria-expanded', open);
   nav.setAttribute('aria-hidden', !open);
 }
+
+/* ═══ FEATURE A — FORMULA BLOK ════════════════════════════════════════ */
+function toonFormula(stappen) {
+  var blok = document.getElementById('formula-blok');
+  var cont = document.getElementById('formula-stappen');
+  if (!stappen || !stappen.length) { blok.style.display = 'none'; return; }
+  cont.innerHTML = stappen.map(function(s) {
+    return '<div class="formula-stap">' +
+      '<span class="fs-label">' + s.label + '</span>' +
+      '<span class="fs-calc">' + s.calc + '</span>' +
+      '<span class="fs-result">= ' + s.result + '</span>' +
+    '</div>';
+  }).join('');
+  blok.style.display = 'block';
+}
+
+/* ═══ FEATURE B — GESCHIEDENIS ════════════════════════════════════════ */
+var GESCHIEDENIS_KEY = 'rg-geschiedenis-uurloon';
+var MAX_GESCHIEDENIS = 5;
+
+function laadGeschiedenis() {
+  try { return JSON.parse(localStorage.getItem(GESCHIEDENIS_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function slaGeschiedenisOp(labelTekst, uitkomstTekst, veldwaarden) {
+  var lijst = laadGeschiedenis();
+  lijst.unshift({
+    label: labelTekst,
+    uitkomst: uitkomstTekst,
+    velden: veldwaarden,
+    tijd: new Date().toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' })
+  });
+  if (lijst.length > MAX_GESCHIEDENIS) lijst = lijst.slice(0, MAX_GESCHIEDENIS);
+  localStorage.setItem(GESCHIEDENIS_KEY, JSON.stringify(lijst));
+  renderGeschiedenis();
+}
+
+function renderGeschiedenis() {
+  var lijst = laadGeschiedenis();
+  var wrap  = document.getElementById('geschiedenis-wrap');
+  var cont  = document.getElementById('geschiedenis-list');
+  if (!lijst.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  cont.innerHTML = lijst.map(function(item) {
+    return '<div class="geschiedenis-item" onclick="herstelBerekening(\'' +
+      encodeURIComponent(JSON.stringify(item.velden)) + '\')">' +
+      '<span class="gh-invoer">' + item.label + '</span>' +
+      '<span class="gh-uitkomst">' + item.uitkomst + '</span>' +
+      '<span class="gh-tijd">' + item.tijd + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function wisGeschiedenis() {
+  localStorage.removeItem(GESCHIEDENIS_KEY);
+  renderGeschiedenis();
+}
+
+function herstelBerekening(veldwaardenEncoded) {
+  var velden = JSON.parse(decodeURIComponent(veldwaardenEncoded));
+  herstelFormulier(velden);
+}
+
+function herstelFormulier(velden) {
+  if (velden.richting === 'naar-uur') {
+    switchTab(1);
+    document.getElementById('p1-salaris').value = velden.salaris;
+    setSlider('p1-uren', 'p1-uren-value', velden.uren);
+    document.getElementById('p1-vg').checked = !!velden.vg;
+    calc(1);
+  } else {
+    switchTab(2);
+    document.getElementById('p2-uurloon').value = velden.uurloon;
+    setSlider('p2-uren', 'p2-uren-value', velden.uren);
+    document.getElementById('p2-vg').checked = !!velden.vg;
+    calc(2);
+  }
+}
+
+/* ═══ FEATURE C — URL DEEPLINK ════════════════════════════════════════ */
+function leesUrlParams() {
+  var params = new URLSearchParams(window.location.search);
+  var richting = params.get('richting') || 'naar-uur';
+  if (richting === 'naar-uur') {
+    if (params.get('salaris')) {
+      document.getElementById('p1-salaris').value = params.get('salaris');
+    }
+    if (params.get('uren')) {
+      setSlider('p1-uren', 'p1-uren-value', parseInt(params.get('uren')));
+    }
+    if (params.get('salaris')) calc(1);
+  } else {
+    switchTab(2);
+    if (params.get('salaris')) {
+      document.getElementById('p2-uurloon').value = params.get('salaris');
+    }
+    if (params.get('uren')) {
+      setSlider('p2-uren', 'p2-uren-value', parseInt(params.get('uren')));
+    }
+    if (params.get('salaris')) calc(2);
+  }
+}
+
+function updateUrl(bedrag, uren, richting) {
+  var params = new URLSearchParams();
+  params.set('salaris', bedrag);
+  params.set('uren', uren);
+  params.set('richting', richting);
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+/* ═══ INIT ═════════════════════════════════════════════════════════════ */
+leesUrlParams();
+renderGeschiedenis();
   </script>
 </body>
 </html>
