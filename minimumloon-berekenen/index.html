@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimumloon Berekenen 2026 -- Gratis Calculator | RekenGemak</title>
+  <meta name="description" content="Bereken het wettelijk minimumloon 2026 per uur, dag, week en maand. Inclusief leeftijdstabel voor jongeren van 15 tot 20 jaar. Bijgewerkt januari 2026.">
+  <link rel="canonical" href="https://rekengemak.nl/minimumloon-berekenen/">
+  <meta property="og:title"       content="Minimumloon Berekenen 2026 -- Gratis Calculator | RekenGemak">
+  <meta property="og:description" content="Bereken het wettelijk minimumloon 2026 per uur, dag, week en maand. Inclusief leeftijdstabel voor jongeren van 15 tot 20 jaar. Bijgewerkt januari 2026.">
+  <meta property="og:url"         content="https://rekengemak.nl/minimumloon-berekenen/">
+  <meta property="og:type"        content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ═══════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+.badge-updated {
+  display: inline-block; margin-top: 6px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 500;
+  background: rgba(31, 92, 153, 0.15);
+  color: var(--accent);
+}
+
+/* ═══ 4. TOOL CARD ═══════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* Input group */
+.input-group { margin-bottom: var(--space-md); }
+.input-group label {
+  display: block; margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.input-wrap {
+  display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+.input-wrap select {
+  flex: 1; height: 48px; padding: 0 14px;
+  background: transparent; border: none; outline: none;
+  font-size: 1.1rem; color: var(--text-primary);
+  appearance: none; cursor: pointer;
+}
+select option {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
+
+/* Slider */
+.slider-wrap {
+  margin-bottom: var(--space-md);
+}
+
+.slider-wrap label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.slider-wrap .slider-value {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ═══ 5. RESULT GRID ═════════════════════════════════════════════════════ */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+@media (max-width: 480px) {
+  .result-grid { grid-template-columns: 1fr; }
+}
+
+.result-grid-item {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+
+.result-grid-item .result-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.result-grid-item .result-num {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Leeftijdstabel */
+.leeftijd-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-md);
+  font-size: 0.9rem;
+}
+
+.leeftijd-tabel th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+
+.leeftijd-tabel td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.leeftijd-tabel tr:last-child td {
+  border-bottom: none;
+}
+
+.leeftijd-tabel tr.active-row td {
+  background: var(--result-bg);
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* Disclaimer */
+.disclaimer {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border);
+}
+
+/* ═══ 6. ARTICLE & FAQ ═══════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ═══════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════════ */
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">RekenGemak</a>
+  <button onclick="toggleTheme()" aria-label="Thema wisselen" class="theme-btn">
+    <span class="icon-dark">&#9789;</span>
+    <span class="icon-light">&#9788;</span>
+  </button>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+
+<div class="hero">
+  <nav aria-label="Breadcrumb">
+    <a href="/">Thuis</a> &rsaquo; <span>Minimumloon Berekenen</span>
+  </nav>
+  <h1>Minimumloon Berekenen 2026</h1>
+  <span class="badge-updated">Bijgewerkt: januari 2026</span>
+  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+    Bereken het wettelijk minimumloon 2026 per uur, dag, week en maand op basis van je leeftijd en werkweek.
+  </p>
+</div>
+
+<section class="tool-card" aria-label="Minimumloon Berekenen">
+
+  <!-- Input 1: Leeftijd dropdown -->
+  <div class="input-group">
+    <label for="leeftijd">Leeftijd</label>
+    <div class="input-wrap">
+      <select id="leeftijd" onchange="recalc()">
+        <option value="21">21 jaar of ouder</option>
+        <option value="20">20 jaar</option>
+        <option value="19">19 jaar</option>
+        <option value="18">18 jaar</option>
+        <option value="17">17 jaar</option>
+        <option value="16">16 jaar</option>
+        <option value="15">15 jaar</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Input 2: Uren per week (slider) -->
+  <div class="slider-wrap">
+    <label for="uren">
+      <span>Uren per week</span>
+      <span class="slider-value" id="uren-value">40</span>
+    </label>
+    <input type="range" id="uren" min="1" max="40" step="1" value="40"
+           oninput="updateSlider(); recalc()">
+  </div>
+
+  <!-- Result grid: 4 vakken -->
+  <div class="result-grid">
+    <div class="result-grid-item">
+      <div class="result-label">Per uur</div>
+      <div class="result-num" id="res-uur">--</div>
+    </div>
+    <div class="result-grid-item">
+      <div class="result-label">Per dag (8 uur)</div>
+      <div class="result-num" id="res-dag">--</div>
+    </div>
+    <div class="result-grid-item">
+      <div class="result-label">Per week</div>
+      <div class="result-num" id="res-week">--</div>
+    </div>
+    <div class="result-grid-item">
+      <div class="result-label">Per maand</div>
+      <div class="result-num" id="res-maand">--</div>
+    </div>
+  </div>
+
+  <!-- Leeftijdspercentage toelichting (alleen voor < 21) -->
+  <div id="jeugd-toelichting" style="display:none;
+       margin-top:var(--space-md);padding:12px var(--space-md);
+       background:var(--bg-input);border-radius:var(--radius);
+       font-size:0.9rem;color:var(--text-secondary);">
+    <span id="jeugd-tekst"></span>
+  </div>
+
+  <!-- Leeftijdstabel -->
+  <div style="margin-top:var(--space-lg);">
+    <div style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);
+                text-transform:uppercase;letter-spacing:0.05em;
+                margin-bottom:var(--space-sm);">
+      Leeftijdstabel 2026
+    </div>
+    <table class="leeftijd-tabel" id="leeftijd-tabel">
+      <thead>
+        <tr>
+          <th>Leeftijd</th>
+          <th>% van minimum</th>
+          <th>Per uur</th>
+          <th>Per maand (40u/w)</th>
+        </tr>
+      </thead>
+      <tbody id="tabel-body">
+        <!-- Dynamisch gevuld door JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Disclaimer -->
+  <p class="disclaimer">
+    Dit is een indicatieve berekening op basis van het wettelijk minimumloon per 1 januari 2026
+    (&euro; 13,68 per uur). Het minimumloon wordt elk jaar per 1 januari en 1 juli aangepast.
+    Raadpleeg de Rijksoverheid voor de meest actuele bedragen.
+  </p>
+
+</section>
+
+<div id="ad-middle"></div>
+
+<article class="content">
+
+  <h2>Hoe werkt de minimumloon calculator?</h2>
+  <p>Kies je leeftijd uit het dropdown-menu en stel het aantal uren per week in met de schuifregelaar. De calculator toont direct het wettelijk minimumloon per uur, dag, week en maand.</p>
+  <p>Ben je jonger dan 21 jaar? Dan zie je ook welk percentage van het volwassen minimumloon voor jouw leeftijd geldt. In de leeftijdstabel onderaan de tool staan alle bedragen voor 15 tot en met 21 jaar overzichtelijk naast elkaar.</p>
+  <p>De bedragen zijn bruto en gebaseerd op het minimumloon per 1 januari 2026 van &euro; 13,68 per uur.</p>
+
+  <h2>Voor wie is deze rekenhulp?</h2>
+  <ul>
+    <li>Werknemers die willen controleren of ze het juiste loon ontvangen</li>
+    <li>Jongeren die willen weten wat hun wettelijk minimumloon is</li>
+    <li>Werkgevers die het minimumloon voor deeltijdwerkers willen berekenen</li>
+    <li>HR-medewerkers die snel het minimumloon voor een nieuwe medewerker willen opzoeken</li>
+    <li>Iedereen die wil weten wat het minimumloon per maand of jaar is</li>
+  </ul>
+
+  <h2>Veelgestelde vragen</h2>
+  <div class="faq">
+
+    <div class="faq-item">
+      <h3>Wat is het wettelijk minimumloon in 2026?</h3>
+      <p>Het wettelijk minimumloon voor werknemers van 21 jaar en ouder is per 1 januari 2026 vastgesteld op &euro; 13,68 per uur. Bij een werkweek van 40 uur komt dat neer op &euro; 547,20 per week en circa &euro; 2.371,20 per maand. Het minimumloon wordt elk jaar op 1 januari en 1 juli aangepast.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Hoe werkt het minimumloon voor jongeren?</h3>
+      <p>Jongeren van 15 tot en met 20 jaar hebben recht op een percentage van het volwassen minimumloon. In 2026 gelden de volgende percentages: 15 jaar = 30%, 16 jaar = 34%, 17 jaar = 39%, 18 jaar = 47%, 19 jaar = 55%, 20 jaar = 62,5%. Vanaf 21 jaar ontvang je het volledige minimumloon van &euro; 13,68 per uur.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wanneer wordt het minimumloon aangepast?</h3>
+      <p>Het wettelijk minimumloon wordt twee keer per jaar aangepast: op 1 januari en op 1 juli. De aanpassing is gekoppeld aan de ontwikkeling van de contractlonen in Nederland. De bedragen op deze pagina zijn geldig vanaf 1 januari 2026.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Geldt het minimumloon ook voor deeltijdwerkers?</h3>
+      <p>Ja, het minimumloon geldt per uur en is daarmee ook van toepassing op deeltijdwerkers. Je hebt recht op minimaal &euro; 13,68 per gewerkt uur, ongeacht het aantal uren per week. Met de schuifregelaar in de calculator bereken je je minimumloon op basis van je eigen werkweek.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wat is het minimumloon per maand bij 40 uur per week?</h3>
+      <p>Bij een werkweek van 40 uur en een uurtarief van &euro; 13,68 bedraagt het minimumloon circa &euro; 2.371,20 bruto per maand. Dit is berekend op basis van 52 weken per jaar gedeeld door 12 maanden. Werkgevers mogen niet minder betalen dan dit wettelijk vastgestelde bedrag.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Geldt het minimumloon ook voor zzp'ers?</h3>
+      <p>Nee, het wettelijk minimumloon geldt alleen voor werknemers in loondienst. Zelfstandigen zonder personeel (zzp'ers) bepalen zelf hun uurtarief en vallen niet onder de minimumloonwetgeving. Voor zzp-tarieven kun je de Uurloon-calculator op deze site gebruiken.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Wat gebeurt er als een werkgever minder dan het minimumloon betaalt?</h3>
+      <p>Een werkgever die minder betaalt dan het wettelijk minimumloon overtreedt de Wet minimumloon en minimumvakantiebijslag. De Nederlandse Arbeidsinspectie kan hiervoor een boete opleggen. Als werknemer heb je altijd recht op het verschil met het wettelijk minimumloon, ook achteraf.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is de minimumloon calculator gratis?</h3>
+      <p>Ja, de minimumloon calculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken. De bedragen zijn bijgewerkt per 1 januari 2026 en de calculator werkt direct in je browser, ook op je telefoon.</p>
+    </div>
+
+  </div>
+
+  <h2>Gerelateerde rekenhulpen</h2>
+  <div class="related-tools">
+    <a href="/uurloon-berekenen/">Uurloon berekenen</a>
+    <a href="/vakantiegeld-berekenen/">Vakantiegeld berekenen</a>
+    <a href="/vakantiedagen-berekenen/">Vakantiedagen berekenen</a>
+    <a href="/procenten-berekenen/">Procenten berekenen</a>
+    <a href="/btw-berekenen/">BTW berekenen</a>
+  </div>
+
+</article>
+
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong>Financieel</strong>
+      <ul>
+        <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+        <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+        <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Werk &amp; Salaris</strong>
+      <ul>
+        <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+        <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+        <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Tekst</strong>
+      <ul>
+        <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+        <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+        <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Dagelijks</strong>
+      <ul>
+        <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+        <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+        <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-bottom">
+    <a href="/privacy/">Privacybeleid</a> &middot;
+    <a href="/contact/">Contact</a> &middot;
+    &copy; 2026 RekenGemak
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Minimumloon Berekenen 2026 -- RekenGemak",
+  "url": "https://rekengemak.nl/minimumloon-berekenen/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "inLanguage": "nl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Wat is het wettelijk minimumloon in 2026?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Het wettelijk minimumloon voor werknemers van 21 jaar en ouder is per 1 januari 2026 vastgesteld op EUR 13,68 per uur. Bij een werkweek van 40 uur komt dat neer op EUR 547,20 per week en circa EUR 2.371,20 per maand. Het minimumloon wordt elk jaar op 1 januari en 1 juli aangepast."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe werkt het minimumloon voor jongeren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Jongeren van 15 tot en met 20 jaar hebben recht op een percentage van het volwassen minimumloon. In 2026 gelden de volgende percentages: 15 jaar = 30%, 16 jaar = 34%, 17 jaar = 39%, 18 jaar = 47%, 19 jaar = 55%, 20 jaar = 62,5%. Vanaf 21 jaar ontvang je het volledige minimumloon van EUR 13,68 per uur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wanneer wordt het minimumloon aangepast?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Het wettelijk minimumloon wordt twee keer per jaar aangepast: op 1 januari en op 1 juli. De aanpassing is gekoppeld aan de ontwikkeling van de contractlonen in Nederland. De bedragen op deze pagina zijn geldig vanaf 1 januari 2026."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Geldt het minimumloon ook voor deeltijdwerkers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, het minimumloon geldt per uur en is daarmee ook van toepassing op deeltijdwerkers. Je hebt recht op minimaal EUR 13,68 per gewerkt uur, ongeacht het aantal uren per week. Met de schuifregelaar in de calculator bereken je je minimumloon op basis van je eigen werkweek."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is het minimumloon per maand bij 40 uur per week?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bij een werkweek van 40 uur en een uurtarief van EUR 13,68 bedraagt het minimumloon circa EUR 2.371,20 bruto per maand. Dit is berekend op basis van 52 weken per jaar gedeeld door 12 maanden. Werkgevers mogen niet minder betalen dan dit wettelijk vastgestelde bedrag."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Geldt het minimumloon ook voor zzp'ers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nee, het wettelijk minimumloon geldt alleen voor werknemers in loondienst. Zelfstandigen zonder personeel (zzp'ers) bepalen zelf hun uurtarief en vallen niet onder de minimumloonwetgeving. Voor zzp-tarieven kun je de Uurloon-calculator op deze site gebruiken."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat gebeurt er als een werkgever minder dan het minimumloon betaalt?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Een werkgever die minder betaalt dan het wettelijk minimumloon overtreedt de Wet minimumloon en minimumvakantiebijslag. De Nederlandse Arbeidsinspectie kan hiervoor een boete opleggen. Als werknemer heb je altijd recht op het verschil met het wettelijk minimumloon, ook achteraf."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is de minimumloon calculator gratis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, de minimumloon calculator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken. De bedragen zijn bijgewerkt per 1 januari 2026 en de calculator werkt direct in je browser, ook op je telefoon."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Thuis",
+      "item": "https://rekengemak.nl/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Minimumloon Berekenen",
+      "item": "https://rekengemak.nl/minimumloon-berekenen/"
+    }
+  ]
+}
+</script>
+
+<script>
+/* ═══ MINIMUMLOON DATA 2026 ══════════════════════════════════════════════
+   Bijwerken: 1 januari en 1 juli elk jaar
+   Bron: rijksoverheid.nl
+════════════════════════════════════════════════════════════════════════ */
+var MINIMUMLOON = {
+  perUur: 13.68,  /* >= 21 jaar, per 1 januari 2026 */
+  leeftijd: {
+    15: 0.30,
+    16: 0.34,
+    17: 0.39,
+    18: 0.47,
+    19: 0.55,
+    20: 0.625
+  }
+};
+
+/* ═══ FORMAT ════════════════════════════════════════════════════════════ */
+var fmtEUR = new Intl.NumberFormat('nl-NL', {
+  style: 'currency', currency: 'EUR', minimumFractionDigits: 2
+});
+
+/* ═══ SLIDER ════════════════════════════════════════════════════════════ */
+function updateSlider() {
+  document.getElementById('uren-value').textContent =
+    document.getElementById('uren').value;
+}
+
+/* ═══ RECALC ════════════════════════════════════════════════════════════ */
+function recalc() {
+  var leeftijd    = parseInt(document.getElementById('leeftijd').value);
+  var urenPerWeek = parseInt(document.getElementById('uren').value);
+  var factor      = leeftijd >= 21 ? 1 : (MINIMUMLOON.leeftijd[leeftijd] || 1);
+  var uurloon     = MINIMUMLOON.perUur * factor;
+
+  var perUur   = uurloon;
+  var perDag   = uurloon * 8;
+  var perWeek  = uurloon * urenPerWeek;
+  var perMaand = uurloon * urenPerWeek * 52 / 12;
+
+  /* Result grid */
+  document.getElementById('res-uur').textContent   = fmtEUR.format(perUur);
+  document.getElementById('res-dag').textContent   = fmtEUR.format(perDag);
+  document.getElementById('res-week').textContent  = fmtEUR.format(perWeek);
+  document.getElementById('res-maand').textContent = fmtEUR.format(perMaand);
+
+  /* Jeugd toelichting */
+  var toel = document.getElementById('jeugd-toelichting');
+  var txt  = document.getElementById('jeugd-tekst');
+  if (leeftijd < 21) {
+    var pct = Math.round(factor * 100);
+    txt.textContent = 'Jongeren van ' + leeftijd + ' jaar ontvangen ' + pct +
+      '% van het wettelijk minimumloon. Dat is ' + fmtEUR.format(uurloon) +
+      ' per uur (volwassen minimumloon: ' + fmtEUR.format(MINIMUMLOON.perUur) + ' per uur).';
+    toel.style.display = 'block';
+  } else {
+    toel.style.display = 'none';
+  }
+
+  /* Markeer actieve rij in tabel */
+  highlightRow(leeftijd);
+}
+
+/* ═══ LEEFTIJDSTABEL BOUWEN ═════════════════════════════════════════════ */
+function buildTabel() {
+  var tbody  = document.getElementById('tabel-body');
+  var rijen  = [
+    { leeftijd: '21+', factor: 1 },
+    { leeftijd: '20',  factor: MINIMUMLOON.leeftijd[20] },
+    { leeftijd: '19',  factor: MINIMUMLOON.leeftijd[19] },
+    { leeftijd: '18',  factor: MINIMUMLOON.leeftijd[18] },
+    { leeftijd: '17',  factor: MINIMUMLOON.leeftijd[17] },
+    { leeftijd: '16',  factor: MINIMUMLOON.leeftijd[16] },
+    { leeftijd: '15',  factor: MINIMUMLOON.leeftijd[15] }
+  ];
+
+  tbody.innerHTML = '';
+  rijen.forEach(function(r) {
+    var uurloon  = MINIMUMLOON.perUur * r.factor;
+    var maandloon = uurloon * 40 * 52 / 12;
+    var tr = document.createElement('tr');
+    tr.dataset.leeftijd = r.leeftijd;
+    tr.innerHTML =
+      '<td>' + r.leeftijd + ' jaar</td>' +
+      '<td>' + Math.round(r.factor * 100) + '%</td>' +
+      '<td>' + fmtEUR.format(uurloon) + '</td>' +
+      '<td>' + fmtEUR.format(maandloon) + '</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function highlightRow(leeftijd) {
+  var rows = document.querySelectorAll('.leeftijd-tabel tbody tr');
+  rows.forEach(function(row) {
+    row.classList.remove('active-row');
+    var key = row.dataset.leeftijd;
+    if (leeftijd >= 21 && key === '21+') row.classList.add('active-row');
+    if (leeftijd < 21  && key === String(leeftijd)) row.classList.add('active-row');
+  });
+}
+
+/* ═══ DARK MODE TOGGLE ══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+
+/* ═══ INIT ══════════════════════════════════════════════════════════════ */
+buildTabel();
+recalc();  /* Toon direct resultaat met defaults: 21 jaar, 40u/w */
+</script>
+
+</body>
+</html>
