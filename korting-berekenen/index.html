@@ -363,6 +363,23 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
 @media (min-width: 640px) {
   .result-main { font-size: 2.25rem; }
 }
+/* FORMULA BLOK */
+.formula-blok { background: var(--bg-input); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: var(--space-md); margin-top: var(--space-md); font-size: 0.875rem; }
+.formula-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: var(--space-sm); }
+.formula-stap { display: flex; align-items: baseline; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--border); color: var(--text-secondary); font-family: 'Courier New', monospace; font-size: 0.85rem; flex-wrap: wrap; }
+.formula-stap:last-child { border-bottom: none; }
+.formula-stap .fs-label { font-family: system-ui, sans-serif; font-size: 0.8rem; color: var(--text-secondary); min-width: 140px; flex-shrink: 0; }
+.formula-stap .fs-calc { color: var(--text-primary); }
+.formula-stap .fs-result { color: var(--success); font-weight: 700; margin-left: auto; }
+/* GESCHIEDENIS */
+.geschiedenis-wrap { margin-top: var(--space-md); border-top: 1px solid var(--border); padding-top: var(--space-md); }
+.geschiedenis-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm); }
+.geschiedenis-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+.geschiedenis-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; background: var(--bg-input); border-radius: 6px; margin-bottom: 4px; font-size: 0.85rem; cursor: pointer; transition: background var(--transition); gap: 12px; flex-wrap: wrap; }
+.geschiedenis-item:hover { background: var(--result-bg); }
+.geschiedenis-item .gh-invoer { color: var(--text-secondary); font-size: 0.8rem; }
+.geschiedenis-item .gh-uitkomst { color: var(--success); font-weight: 600; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.geschiedenis-item .gh-tijd { font-size: 0.75rem; color: var(--text-secondary); }
   </style>
 </head>
 <body>
@@ -565,6 +582,20 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
 
 </section>
 
+<div class="formula-blok" id="formula-blok" style="display:none;">
+  <div class="formula-title">Zo wordt dit berekend</div>
+  <div class="formula-stappen" id="formula-stappen"></div>
+</div>
+
+<div class="geschiedenis-wrap" id="geschiedenis-wrap" style="display:none;">
+  <div class="geschiedenis-header">
+    <span class="geschiedenis-title">Recente berekeningen</span>
+    <button class="btn-secondary" onclick="wisGeschiedenis()"
+            style="padding:3px 10px;font-size:0.8rem;">Wis</button>
+  </div>
+  <div class="geschiedenis-list" id="geschiedenis-list"></div>
+</div>
+
 <div id="ad-middle"></div>
 
 <article class="content">
@@ -577,12 +608,35 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
 
   <h2>Voor wie is deze rekenhulp?</h2>
   <ul>
-    <li>Shoppers die willen weten wat ze betalen bij sale of aanbiedingen</li>
-    <li>Ondernemers die kortingen op facturen of offertes willen berekenen</li>
-    <li>Inkopers die kortingspercentages van leveranciers willen controleren</li>
-    <li>Consumenten die de originele prijs willen achterhalen uit een kortingsprijs</li>
-    <li>Iedereen die snel een kortingsberekening wil doen zonder rekenwerk</li>
+    <li>Je ziet "40% korting" bij een jas van &euro; 129 en wilt snel weten
+        wat je werkelijk betaalt.</li>
+    <li>Je verkoopt tweedehands spullen en wil de prijs met een percentage
+        verlagen, maar weet niet hoeveel dat in euro's is.</li>
+    <li>Je zag een product eerder voor &euro; 95 en nu voor &euro; 67. Je wilt
+        weten hoeveel procent korting dat eigenlijk is.</li>
+    <li>Je weet de kortingsprijs en het percentage, maar niet de originele
+        prijs. Bijvoorbeeld: &euro; 54 na 10% korting.</li>
   </ul>
+
+  <h2>Drie manieren om korting te berekenen</h2>
+
+  <p><strong>1. Prijs na korting berekenen</strong><br>
+  Je weet de originele prijs en het kortingspercentage.<br>
+  Formule: prijs x (1 - korting / 100)<br>
+  Voorbeeld: &euro; 80 met 25% korting = &euro; 80 x 0,75 = &euro; 60</p>
+
+  <p><strong>2. Kortingspercentage berekenen</strong><br>
+  Je weet de oude en nieuwe prijs.<br>
+  Formule: ((oud - nieuw) / oud) x 100<br>
+  Voorbeeld: van &euro; 80 naar &euro; 60 = ((80 - 60) / 80) x 100 = 25%</p>
+
+  <p><strong>3. Originele prijs terugrekenen</strong><br>
+  Je kent de prijs na korting en het percentage.<br>
+  Formule: prijs na korting / (1 - korting / 100)<br>
+  Voorbeeld: &euro; 60 bij 25% korting was &euro; 60 / 0,75 = &euro; 80</p>
+
+  <h2>Wanneer gebruik je welke berekening?</h2>
+  <p>Sta je bij een kassa en zie je een prijs "al verlaagd"? Dan gebruik je tab 1. Vergelijk je twee aanbiedingen en wil je weten welke procentueel beter is? Dan gebruik je tab 2. Zag je een advertentie met de kortingsprijs maar niet de originele prijs? Dan helpt tab 3.</p>
 
   <h2>Veelgestelde vragen</h2>
   <div class="faq">
@@ -814,20 +868,33 @@ function parseNL(str) {
 }
 
 /* ═══ BEREKEN PER TAB ══════════════════════════════════════════════════ */
+var activeTab = 1;
+
 function calc(tab) {
+  activeTab = tab;
   switch (tab) {
 
     case 1: {
       var prijs   = parseNL(document.getElementById('p1-prijs').value);
       var korting = parseNL(document.getElementById('p1-korting').value);
       if (isNaN(prijs) || isNaN(korting) || prijs <= 0 || korting < 0 || korting > 100) {
-        setResult(1, null); return;
+        setResult(1, null); document.getElementById('formula-blok').style.display = 'none'; return;
       }
       var na        = prijs * (1 - korting / 100);
       var besparing = prijs * (korting / 100);
       setResult(1, fmtEUR.format(na));
       document.getElementById('res-1-besparing').textContent = fmtEUR.format(besparing);
       document.getElementById('res-1-pct').textContent = fmtPct.format(korting) + '%';
+      updateUrl();
+      toonFormula([
+        { label: 'Kortingsbedrag', calc: fmtEUR.format(prijs) + ' \u00d7 ' + fmtPct.format(korting) + '%', result: fmtEUR.format(besparing) },
+        { label: 'Prijs na korting', calc: fmtEUR.format(prijs) + ' - ' + fmtEUR.format(besparing), result: fmtEUR.format(na) }
+      ]);
+      slaGeschiedenisOp(
+        fmtEUR.format(prijs) + ' - ' + fmtPct.format(korting) + '%',
+        fmtEUR.format(na),
+        { tab: 1, v1: document.getElementById('p1-prijs').value, v2: document.getElementById('p1-korting').value }
+      );
       break;
     }
 
@@ -835,12 +902,22 @@ function calc(tab) {
       var origineel = parseNL(document.getElementById('p2-origineel').value);
       var nieuw     = parseNL(document.getElementById('p2-nieuw').value);
       if (isNaN(origineel) || isNaN(nieuw) || origineel <= 0 || nieuw < 0 || nieuw > origineel) {
-        setResult(2, null); return;
+        setResult(2, null); document.getElementById('formula-blok').style.display = 'none'; return;
       }
       var pct       = ((origineel - nieuw) / origineel) * 100;
       var besparing2 = origineel - nieuw;
       setResult(2, fmtPct.format(pct) + '%');
       document.getElementById('res-2-besparing').textContent = fmtEUR.format(besparing2);
+      updateUrl();
+      toonFormula([
+        { label: 'Verschil', calc: fmtEUR.format(origineel) + ' - ' + fmtEUR.format(nieuw), result: fmtEUR.format(besparing2) },
+        { label: 'Percentage', calc: '(' + fmtEUR.format(besparing2) + ' / ' + fmtEUR.format(origineel) + ') \u00d7 100', result: fmtPct.format(pct) + '%' }
+      ]);
+      slaGeschiedenisOp(
+        fmtEUR.format(origineel) + ' \u2192 ' + fmtEUR.format(nieuw),
+        fmtPct.format(pct) + '%',
+        { tab: 2, v1: document.getElementById('p2-origineel').value, v2: document.getElementById('p2-nieuw').value }
+      );
       break;
     }
 
@@ -848,12 +925,21 @@ function calc(tab) {
       var betaald = parseNL(document.getElementById('p3-betaald').value);
       var pct3    = parseNL(document.getElementById('p3-pct').value);
       if (isNaN(betaald) || isNaN(pct3) || betaald <= 0 || pct3 < 0 || pct3 >= 100) {
-        setResult(3, null); return;
+        setResult(3, null); document.getElementById('formula-blok').style.display = 'none'; return;
       }
       var orig      = betaald / (1 - pct3 / 100);
       var besparing3 = orig - betaald;
       setResult(3, fmtEUR.format(orig));
       document.getElementById('res-3-besparing').textContent = fmtEUR.format(besparing3);
+      updateUrl();
+      toonFormula([
+        { label: 'Originele prijs', calc: fmtEUR.format(betaald) + ' / (1 - ' + fmtPct.format(pct3) + ' / 100)', result: fmtEUR.format(orig) }
+      ]);
+      slaGeschiedenisOp(
+        fmtEUR.format(betaald) + ' bij ' + fmtPct.format(pct3) + '% korting',
+        fmtEUR.format(orig),
+        { tab: 3, v1: document.getElementById('p3-betaald').value, v2: document.getElementById('p3-pct').value }
+      );
       break;
     }
   }
@@ -935,6 +1021,136 @@ function toggleMenu() {
   btn.setAttribute('aria-expanded', open);
   nav.setAttribute('aria-hidden', !open);
 }
+
+/* ═══ FEATURE A — FORMULA BLOK ════════════════════════════════════════ */
+function toonFormula(stappen) {
+  var blok = document.getElementById('formula-blok');
+  var cont = document.getElementById('formula-stappen');
+  if (!stappen || !stappen.length) { blok.style.display = 'none'; return; }
+  cont.innerHTML = stappen.map(function(s) {
+    return '<div class="formula-stap">' +
+      '<span class="fs-label">' + s.label + '</span>' +
+      '<span class="fs-calc">' + s.calc + '</span>' +
+      '<span class="fs-result">= ' + s.result + '</span>' +
+    '</div>';
+  }).join('');
+  blok.style.display = 'block';
+}
+
+/* ═══ FEATURE B — GESCHIEDENIS ════════════════════════════════════════ */
+var GESCHIEDENIS_KEY = 'rg-geschiedenis-korting';
+var MAX_GESCHIEDENIS = 5;
+
+function laadGeschiedenis() {
+  try { return JSON.parse(localStorage.getItem(GESCHIEDENIS_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function slaGeschiedenisOp(labelTekst, uitkomstTekst, veldwaarden) {
+  var lijst = laadGeschiedenis();
+  lijst.unshift({
+    label: labelTekst,
+    uitkomst: uitkomstTekst,
+    velden: veldwaarden,
+    tijd: new Date().toLocaleTimeString('nl-NL', { hour:'2-digit', minute:'2-digit' })
+  });
+  if (lijst.length > MAX_GESCHIEDENIS) lijst = lijst.slice(0, MAX_GESCHIEDENIS);
+  localStorage.setItem(GESCHIEDENIS_KEY, JSON.stringify(lijst));
+  renderGeschiedenis();
+}
+
+function renderGeschiedenis() {
+  var lijst = laadGeschiedenis();
+  var wrap  = document.getElementById('geschiedenis-wrap');
+  var cont  = document.getElementById('geschiedenis-list');
+  if (!lijst.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  cont.innerHTML = lijst.map(function(item) {
+    return '<div class="geschiedenis-item" onclick="herstelBerekening(\'' +
+      encodeURIComponent(JSON.stringify(item.velden)) + '\')">' +
+      '<span class="gh-invoer">' + item.label + '</span>' +
+      '<span class="gh-uitkomst">' + item.uitkomst + '</span>' +
+      '<span class="gh-tijd">' + item.tijd + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function wisGeschiedenis() {
+  localStorage.removeItem(GESCHIEDENIS_KEY);
+  renderGeschiedenis();
+}
+
+function herstelBerekening(veldwaardenEncoded) {
+  var velden = JSON.parse(decodeURIComponent(veldwaardenEncoded));
+  herstelFormulier(velden);
+}
+
+function herstelFormulier(velden) {
+  var tab = velden.tab || 1;
+  switchTab(tab);
+  switch (tab) {
+    case 1:
+      document.getElementById('p1-prijs').value = velden.v1;
+      document.getElementById('p1-korting').value = velden.v2;
+      break;
+    case 2:
+      document.getElementById('p2-origineel').value = velden.v1;
+      document.getElementById('p2-nieuw').value = velden.v2;
+      break;
+    case 3:
+      document.getElementById('p3-betaald').value = velden.v1;
+      document.getElementById('p3-pct').value = velden.v2;
+      break;
+  }
+  calc(tab);
+}
+
+/* ═══ FEATURE C — URL DEEPLINK ════════════════════════════════════════ */
+function leesUrlParams() {
+  var params = new URLSearchParams(window.location.search);
+  var tab = parseInt(params.get('tab'));
+  if (!tab || tab < 1 || tab > 3) return;
+  switchTab(tab);
+  switch (tab) {
+    case 1:
+      if (params.get('prijs')) document.getElementById('p1-prijs').value = params.get('prijs');
+      if (params.get('korting')) document.getElementById('p1-korting').value = params.get('korting');
+      break;
+    case 2:
+      if (params.get('oud')) document.getElementById('p2-origineel').value = params.get('oud');
+      if (params.get('nieuw')) document.getElementById('p2-nieuw').value = params.get('nieuw');
+      break;
+    case 3:
+      if (params.get('betaald')) document.getElementById('p3-betaald').value = params.get('betaald');
+      if (params.get('pct')) document.getElementById('p3-pct').value = params.get('pct');
+      break;
+  }
+  calc(tab);
+}
+
+function updateUrl() {
+  var params = new URLSearchParams();
+  params.set('tab', activeTab);
+  switch (activeTab) {
+    case 1:
+      params.set('prijs', document.getElementById('p1-prijs').value);
+      params.set('korting', document.getElementById('p1-korting').value);
+      break;
+    case 2:
+      params.set('oud', document.getElementById('p2-origineel').value);
+      params.set('nieuw', document.getElementById('p2-nieuw').value);
+      break;
+    case 3:
+      params.set('betaald', document.getElementById('p3-betaald').value);
+      params.set('pct', document.getElementById('p3-pct').value);
+      break;
+  }
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+/* ═══ INIT ═════════════════════════════════════════════════════════════ */
+leesUrlParams();
+renderGeschiedenis();
 </script>
 
 </body>
