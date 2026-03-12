@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korting berekenen bij zakelijke inkopen: uitleg</title>
+  <meta name="description" content="Hoe bereken je korting bij zakelijke inkopen? Lees over staffelkortingen, nettoprijzen en hoe je de beste deal berekent bij leveranciers.">
+  <link rel="canonical" href="https://rekengemak.nl/kennisbank/korting-berekenen-zakelijk/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <meta property="og:title" content="Korting berekenen bij zakelijke inkopen: uitleg">
+  <meta property="og:description" content="Hoe bereken je korting bij zakelijke inkopen? Lees over staffelkortingen, nettoprijzen en hoe je de beste deal berekent bij leveranciers.">
+  <meta property="og:url" content="https://rekengemak.nl/kennisbank/korting-berekenen-zakelijk/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ KENNISBANK ARTIKEL ═════════════════════════════════════════════ */
+.kennisbank-artikel {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.artikel-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.artikel-intro {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+}
+.kennisbank-artikel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel ul,
+.kennisbank-artikel ol {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.scenario-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+.scenario-box .scenario-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--success);
+  margin-bottom: 6px;
+}
+.scenario-box p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+.cta-tool-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+.cta-tool-box p {
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); text-decoration: none; }
+.artikel-faq {
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-xl);
+}
+.artikel-faq .faq-item {
+  margin-bottom: var(--space-lg);
+}
+.artikel-faq h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/btw-berekenen/">BTW</a>
+      <a href="/procenten-berekenen/">Procenten</a>
+      <a href="/uurloon-berekenen/">Uurloon</a>
+      <a href="/woorden-tellen/">Tekst</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+  <article class="kennisbank-artikel">
+    <div class="artikel-meta">Bijgewerkt: maart 2026 · 5 min lezen</div>
+    <h1>Korting berekenen bij zakelijke inkopen</h1>
+
+    <p class="artikel-intro">
+      Bij zakelijke inkopen gaat het zelden om een simpele procentkorting.
+      Je krijgt te maken met staffelkortingen, nettoprijzen, vroegtijdig
+      betaalkortingen en jaarafspraken. Hier lees je hoe je die allemaal
+      uitrekent en vergelijkt.
+    </p>
+
+    <h2>Soorten kortingen bij zakelijke inkopen</h2>
+    <p>
+      De meest voorkomende kortingsvorm is de handelskorting: een vast
+      percentage op de catalogusprijs. "20% handelskorting op alle
+      orders" betekent dat je &euro; 800 betaalt voor een product met
+      catalogusprijs &euro; 1.000.
+    </p>
+    <p>
+      Staffelkorting geldt pas boven een bepaald volume. De leverancier
+      geeft 5% korting bij 10 stuks, 10% bij 25 stuks en 15% bij 50
+      stuks. Je moet dan berekenen of het goedkoper is meer te bestellen
+      dan je direct nodig hebt.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Staffelkorting: meer bestellen loont soms</div>
+      <p>
+        Een drukker rekent &euro; 0,50 per flyer, &euro; 0,35 bij 1.000 stuks en
+        &euro; 0,22 bij 5.000 stuks. Je hebt er 800 nodig. Kosten bij 800:
+        &euro; 400. Kosten bij 1.000: &euro; 350. Het extra bestellen van 200
+        stuks kost &euro; 350 - &euro; 400 = je bespaart &euro; 50. Als je de 200
+        extra flyers kunt gebruiken binnen een jaar, loont het.
+      </p>
+    </div>
+
+    <h2>Cumulatieve versus niet-cumulatieve kortingen</h2>
+    <p>
+      Soms gelden meerdere kortingen tegelijk. Een leverancier geeft
+      een handelskorting van 20% en een loyaliteitskorting van 5%.
+      Worden die kortingen cumulatief (op elkaar) of niet-cumulatief
+      (naast elkaar op de catalogusprijs) berekend?
+    </p>
+    <p>
+      Cumulatief: &euro; 1.000 minus 20% = &euro; 800, dan minus 5% = &euro; 760.
+      Niet-cumulatief: &euro; 1.000 minus 20% = &euro; 800, minus 5% van &euro; 1.000
+      = minus &euro; 50, eindprijs &euro; 750. Vraag je leverancier altijd expliciet
+      hoe ze de kortingen stapelen.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Cas die veel inkopers kennen</div>
+      <p>
+        Linda koopt kantoorbenodigdheden voor &euro; 2.400 per jaar.
+        Leverancier A biedt 10% handelskorting. Leverancier B biedt
+        geen korting maar rekent geen verzendkosten (normaal &euro; 15 per
+        order, Linda bestelt 12 keer per jaar). Leverancier A kost:
+        &euro; 2.400 x 0,90 = &euro; 2.160. Leverancier B kost: &euro; 2.400 + &euro; 0
+        verzending = &euro; 2.400. Conclusie: leverancier A is &euro; 240 goedkoper
+        per jaar. Maar Linda bestelt bij A op werkdagen en bij B zelfde
+        dag. De extra orderkosten van &euro; 180 per jaar voor de mensen die
+        het inboeken, verandert de afweging.
+      </p>
+    </div>
+
+    <h2>Vroegtijdig betalen: de cashkorting</h2>
+    <p>
+      Sommige leveranciers geven een cashkorting als je snel betaalt.
+      "2/10 netto 30" betekent: betaal je binnen 10 dagen, dan krijg
+      je 2% korting op het factuurbedrag. Betaal je later, dan is het
+      volledige bedrag binnen 30 dagen verschuldigd.
+    </p>
+    <p>
+      Die 2% in 20 dagen klinkt klein. Maar omgerekend naar een jaarbasis
+      is het een rendement van circa 36%. Als je bedrijf genoeg liquiditeit
+      heeft, is vroeg betalen voor de cashkorting bijna altijd
+      voordeliger dan het geld op een spaarrekening laten staan.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Berekening cashkorting</div>
+      <p>
+        Factuur: &euro; 5.000. Cashkorting 2% bij betaling binnen 10 dagen.
+        Korting: &euro; 100. Je betaalt &euro; 4.900. Betalingsmoment normaal:
+        dag 30. Betalingsmoment vroeg: dag 10. Verschil: 20 dagen.
+        Op jaarbasis: (365 / 20) x 2% = 36,5% rendement. Zelfs een
+        zakelijk krediet van 8% per jaar maakt vroeg betalen voor
+        de cashkorting voordeliger.
+      </p>
+    </div>
+
+    <div class="cta-tool-box">
+      <p>Bereken snel een kortingsprijs of het kortingspercentage bij twee prijzen.</p>
+      <a href="/korting-berekenen/" class="btn-primary">Naar de Korting calculator</a>
+    </div>
+
+    <p>Meer lezen? Bekijk ook: <a href="/kennisbank/wat-is-btw/">Wat is btw en hoe werkt het?</a> en <a href="/kennisbank/procentuele-loonstijging/">Procentuele loonstijging berekenen</a>.</p>
+
+    <div class="artikel-faq">
+      <h2>Veelgestelde vragen over zakelijke kortingen</h2>
+
+      <div class="faq-item">
+        <h3>Hoe onderhandel ik over een betere prijs bij een leverancier?</h3>
+        <p>Vraag altijd om een offerte van minimaal twee leveranciers. Laat de concurrerende offerte zien en vraag of je huidige leverancier dat kan evenaren. Bestel je grotere volumes of ben je een trouwe klant? Noem dat expliciet. Jaarafspraken met een vaste minimumafname geven leveranciers zekerheid, waarvoor ze vaak een lagere prijs geven.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Is een hoge korting altijd beter?</h3>
+        <p>Niet per se. Een 30% korting op een hoge catalogusprijs kan duurder zijn dan een product zonder korting bij een andere leverancier. Vergelijk altijd de nettoprijzen na korting, inclusief verzendkosten, levertijd en kwaliteitsverschillen.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Mag ik btw aftrekken op ingekochte goederen met korting?</h3>
+        <p>Je trekt de btw af over het bedrag dat je werkelijk betaalt na korting. Als je &euro; 800 betaalt na een korting van 20% op &euro; 1.000, trek je de btw over &euro; 800 af, niet over &euro; 1.000. Dit staat altijd vermeld op de factuur die je ontvangt.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Korting berekenen bij zakelijke inkopen",
+  "description": "Hoe bereken je korting bij zakelijke inkopen? Lees over staffelkortingen, nettoprijzen en hoe je de beste deal berekent bij leveranciers.",
+  "url": "https://rekengemak.nl/kennisbank/korting-berekenen-zakelijk/",
+  "datePublished": "2026-03-12",
+  "dateModified": "2026-03-12",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoe onderhandel ik over een betere prijs bij een leverancier?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vraag altijd om een offerte van minimaal twee leveranciers. Laat de concurrerende offerte zien en vraag of je huidige leverancier dat kan evenaren. Bestel je grotere volumes of ben je een trouwe klant? Noem dat expliciet. Jaarafspraken met een vaste minimumafname geven leveranciers zekerheid, waarvoor ze vaak een lagere prijs geven."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is een hoge korting altijd beter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Niet per se. Een 30% korting op een hoge catalogusprijs kan duurder zijn dan een product zonder korting bij een andere leverancier. Vergelijk altijd de nettoprijzen na korting, inclusief verzendkosten, levertijd en kwaliteitsverschillen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mag ik btw aftrekken op ingekochte goederen met korting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Je trekt de btw af over het bedrag dat je werkelijk betaalt na korting. Als je \u20ac 800 betaalt na een korting van 20% op \u20ac 1.000, trek je de btw over \u20ac 800 af, niet over \u20ac 1.000. Dit staat altijd vermeld op de factuur die je ontvangt."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+
+</body>
+</html>

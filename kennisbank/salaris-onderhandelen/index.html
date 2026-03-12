@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salaris onderhandelen: zo doe je het in 2026 | RekenGemak</title>
+  <meta name="description" content="Hoe onderhandel je over een hoger salaris? Lees welke strategie werkt, wat je moet zeggen en welke fouten je moet vermijden.">
+  <link rel="canonical" href="https://rekengemak.nl/kennisbank/salaris-onderhandelen/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <meta property="og:title"       content="Salaris onderhandelen: zo doe je het in 2026 | RekenGemak">
+  <meta property="og:description" content="Hoe onderhandel je over een hoger salaris? Lees welke strategie werkt, wat je moet zeggen en welke fouten je moet vermijden.">
+  <meta property="og:url"         content="https://rekengemak.nl/kennisbank/salaris-onderhandelen/">
+  <meta property="og:type"        content="article">
+  <style>
+/* === 1. CSS VARIABLES === */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* === 2. RESET === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* === 3. HEADER === */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* === 4. AD CONTAINERS === */
+.ad-top, .ad-bottom {
+  max-width: 900px;
+  margin: var(--space-md) auto;
+  padding: 0 var(--space-md);
+  text-align: center;
+}
+
+/* === 5. KENNISBANK ARTICLE === */
+.kennisbank-artikel {
+  max-width: 760px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.kennisbank-artikel .breadcrumb {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel .breadcrumb a {
+  color: var(--text-secondary);
+}
+.kennisbank-artikel .breadcrumb a:hover {
+  color: var(--accent);
+}
+.kennisbank-artikel h1 {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: var(--space-sm);
+}
+.artikel-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+.artikel-intro {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+}
+.kennisbank-artikel h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+.kennisbank-artikel p {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+}
+.scenario-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+}
+.scenario-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin-bottom: var(--space-sm);
+}
+.scenario-box p {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.cta-tool-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+.cta-tool-box p {
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.btn-primary:hover {
+  background: var(--accent-hover);
+  text-decoration: none;
+}
+
+/* FAQ */
+.faq-section {
+  margin-top: var(--space-xl);
+}
+.faq-section h2 {
+  margin-bottom: var(--space-md);
+}
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-sm);
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+}
+.faq-question::after {
+  content: "+";
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+.faq-item.open .faq-question::after {
+  content: "\2212";
+}
+.faq-answer {
+  display: none;
+  padding: 0 var(--space-lg) var(--space-lg);
+  background: var(--bg-card);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.faq-item.open .faq-answer {
+  display: block;
+}
+
+/* === 6. FOOTER === */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/btw-berekenen/">BTW</a>
+      <a href="/procenten-berekenen/">Procenten</a>
+      <a href="/uurloon-berekenen/">Uurloon</a>
+      <a href="/woorden-tellen/">Tekst</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="ad-top" id="ad-top"></div>
+
+<main>
+  <article class="kennisbank-artikel">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a> &rsaquo; <a href="/kennisbank/">Kennisbank</a> &rsaquo; Salaris onderhandelen
+    </nav>
+
+    <h1>Salaris onderhandelen: zo pak je het aan</h1>
+    <p class="artikel-meta">Leestijd: 6 min</p>
+
+    <p class="artikel-intro">
+      Veel mensen vragen te weinig of helemaal niet om een hoger salaris.
+      Terwijl onderhandelen in de meeste gevallen gewoon kan, en werkgevers
+      het verwachten. Hier lees je hoe je het aanpakt, wat je zegt en
+      wat je beter niet doet.
+    </p>
+
+    <h2>Wanneer onderhandel je?</h2>
+    <p>
+      Er zijn drie goede momenten om over salaris te praten. Het eerste
+      is bij een jobaanbieding. Voordat je tekent, is je positie het sterkst.
+      Het tweede is bij je jaarlijkse beoordelingsgesprek. Het derde is
+      wanneer je aantoonbaar meer verantwoordelijkheid hebt gekregen dan
+      bij indiensttreding.
+    </p>
+    <p>
+      Wacht niet tot je gefrustreerd bent. Onderhandelen vanuit een positie
+      van onvrede werkt bijna nooit goed. Ga het gesprek aan vanuit
+      concrete prestaties, niet vanuit gevoel.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Goed moment: jobaanbieding</div>
+      <p>
+        Daan krijgt een aanbod van &euro; 2.800 bruto. Hij weet dat de markt
+        voor zijn functie rond de &euro; 3.100 zit. Hij zegt: "Ik ben erg
+        enthousiast over de rol. Op basis van mijn ervaring en wat ik in
+        de markt zie, zou ik graag kijken naar &euro; 3.100. Is dat bespreekbaar?"
+        De werkgever komt met &euro; 2.950 en een review na 6 maanden. Daan
+        accepteert.
+      </p>
+    </div>
+
+    <h2>Hoe bereid je je voor?</h2>
+    <p>
+      Zoek marktinformatie op. Vergelijk salarissen via Glassdoor, LinkedIn
+      Salary, Nationale Vacaturebank of cao-tabellen van je sector.
+      Bereken je eigen marktwaarde op basis van opleiding, jaren ervaring
+      en specialistische kennis.
+    </p>
+    <p>
+      Schrijf drie tot vijf concrete prestaties op die je de afgelopen
+      twaalf maanden hebt geleverd. Gebruik cijfers: "Ik heb het
+      klanttevredenheidsscore met 15% verbeterd" is sterker dan
+      "Ik heb goed werk geleverd".
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Voorbereiding die werkt</div>
+      <p>
+        Sophie werkt als marketingmanager voor &euro; 3.400 bruto. Ze wil
+        naar &euro; 3.700. Ze noteert: ze heeft drie campagnes geleid met
+        een totale omzetbijdrage van &euro; 180.000, het team uitgebreid
+        van 2 naar 4 mensen en een nieuw CRM geimplementeerd onder
+        budget. Met die onderbouwing vraagt ze &euro; 3.750, zodat ze ruimte
+        heeft om naar &euro; 3.600 te bewegen.
+      </p>
+    </div>
+
+    <h2>Wat zeg je en wat zeg je niet?</h2>
+    <p>
+      Begin het gesprek niet met geld. Praat eerst over je prestaties en
+      de waarde die je toevoegt. Noem daarna een concreet bedrag. Noem
+      altijd een iets hoger bedrag dan je streefgetal, zodat je
+      onderhandelingsruimte hebt.
+    </p>
+    <p>
+      Gebruik geen persoonlijke redenen als onderbouwing. "Ik heb een
+      hogere huur" is geen argument voor een werkgever. Jouw waarde voor
+      het bedrijf is het enige relevante argument.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Zin die je beter niet zegt</div>
+      <p>
+        "Mijn collega verdient meer dan ik." Dit werkt zelden. Het zet
+        je collega in een ongemakkelijke positie en de werkgever in de
+        verdediging. Beter: "Op basis van mijn rol en verantwoordelijkheden
+        verwacht ik dat mijn salaris in lijn is met de markt. Ik zou
+        graag een gesprek hebben over [bedrag]."
+      </p>
+    </div>
+
+    <h2>Wat als ze nee zeggen?</h2>
+    <p>
+      Accepteer een nee niet direct als definitief. Vraag wat er nodig
+      is om je salaris binnen zes maanden te herzien. Vraag naar
+      alternatieve vergoedingen als het salaris echt vast zit: extra
+      vakantiedagen, thuiswerkvergoeding, opleidingsbudget of een
+      bonusregeling.
+    </p>
+    <p>
+      Leg de afspraken na het gesprek schriftelijk vast in een e-mail.
+      Zo voorkom je dat toezeggingen worden vergeten bij een
+      wisselende leidinggevende.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Als de werkgever zegt: budget is er niet</div>
+      <p>
+        Niels krijgt te horen dat er geen ruimte is voor salarisverhoging.
+        Hij vraagt: "Ik begrijp de situatie. Wat moet ik bereiken om bij
+        de volgende beoordeling wel in aanmerking te komen?" Ze spreken
+        af dat hij een nieuw klantensegment opzet. Na 8 maanden ligt er
+        een verhoging van &euro; 250. Door concreet te vragen wat nodig was,
+        creëerde hij een pad.
+      </p>
+    </div>
+
+    <div class="cta-tool-box">
+      <p>Bereken snel wat je bruto uurloon is of hoeveel een salarisverhoging netto oplevert.</p>
+      <a href="/uurloon-berekenen/" class="btn-primary">Naar de Uurloon calculator</a>
+    </div>
+
+    <p>Meer lezen? Bekijk ook: <a href="/kennisbank/bruto-netto-verschil/">Bruto en netto salaris: het verschil</a> en <a href="/kennisbank/procentuele-loonstijging/">Procentuele loonstijging berekenen</a>.</p>
+
+    <section class="faq-section">
+      <h2>Veelgestelde vragen</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          Hoeveel salarisverhoging is normaal per jaar?
+        </button>
+        <div class="faq-answer">
+          In Nederland lag de gemiddelde cao-loonstijging in 2025 rond de 5 tot 6%. Bij goede prestaties en een krappe arbeidsmarkt in jouw sector is 7 tot 10% bij een functiewijziging realistisch. Een jaarlijkse stap van 2 tot 4% is gebruikelijk bij een standaard beoordeling.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          Mag ik vragen wat mijn collega verdient?
+        </button>
+        <div class="faq-answer">
+          Je mag het vragen, maar een collega is niet verplicht te antwoorden. Werkgevers mogen je ook niet verbieden om over salaris te praten met collega's. Gebruik sectorgemiddelden als onderbouwing, niet individuele salarissen van collega's.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+          Hoe onderhandel ik als starter zonder ervaring?
+        </button>
+        <div class="faq-answer">
+          Focus op je opleiding, stage-ervaring, aangetoonde vaardigheden en snelheid van inwerken. Kijk naar de onderkant van de marktrange voor jouw functie en vraag dat bedrag. Werkgevers waarderen starters die weten wat de markt is, ook als ze nog weinig ervaring hebben.
+        </div>
+      </div>
+    </section>
+
+  </article>
+</main>
+
+<div class="ad-bottom" id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Salaris onderhandelen: zo pak je het aan",
+  "description": "Hoe onderhandel je over een hoger salaris? Lees welke strategie werkt, wat je moet zeggen en welke fouten je moet vermijden.",
+  "url": "https://rekengemak.nl/kennisbank/salaris-onderhandelen/",
+  "datePublished": "2026-03-12",
+  "dateModified": "2026-03-12",
+  "author": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://rekengemak.nl/" },
+    { "@type": "ListItem", "position": 2, "name": "Kennisbank", "item": "https://rekengemak.nl/kennisbank/" },
+    { "@type": "ListItem", "position": 3, "name": "Salaris onderhandelen" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoeveel salarisverhoging is normaal per jaar?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Nederland lag de gemiddelde cao-loonstijging in 2025 rond de 5 tot 6%. Bij goede prestaties en een krappe arbeidsmarkt in jouw sector is 7 tot 10% bij een functiewijziging realistisch. Een jaarlijkse stap van 2 tot 4% is gebruikelijk bij een standaard beoordeling."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mag ik vragen wat mijn collega verdient?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Je mag het vragen, maar een collega is niet verplicht te antwoorden. Werkgevers mogen je ook niet verbieden om over salaris te praten met collega\u2019s. Gebruik sectorgemiddelden als onderbouwing, niet individuele salarissen van collega\u2019s."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe onderhandel ik als starter zonder ervaring?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Focus op je opleiding, stage-ervaring, aangetoonde vaardigheden en snelheid van inwerken. Kijk naar de onderkant van de marktrange voor jouw functie en vraag dat bedrag. Werkgevers waarderen starters die weten wat de markt is, ook als ze nog weinig ervaring hebben."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+</body>
+</html>

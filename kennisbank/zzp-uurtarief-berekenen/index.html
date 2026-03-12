@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zzp-uurtarief berekenen: zo doe je dat in 2026</title>
+  <meta name="description" content="Wat moet je als zzp'er per uur vragen? Lees hoe je een realistisch uurtarief berekent op basis van je gewenste inkomen en kosten.">
+  <link rel="canonical" href="https://rekengemak.nl/kennisbank/zzp-uurtarief-berekenen/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <meta property="og:title" content="Zzp-uurtarief berekenen: zo doe je dat in 2026">
+  <meta property="og:description" content="Wat moet je als zzp'er per uur vragen? Lees hoe je een realistisch uurtarief berekent op basis van je gewenste inkomen en kosten.">
+  <meta property="og:url" content="https://rekengemak.nl/kennisbank/zzp-uurtarief-berekenen/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ KENNISBANK ARTIKEL ═════════════════════════════════════════════ */
+.kennisbank-artikel {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.artikel-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.artikel-intro {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+}
+.kennisbank-artikel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel ul,
+.kennisbank-artikel ol {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.scenario-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+.scenario-box .scenario-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--success);
+  margin-bottom: 6px;
+}
+.scenario-box p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+.cta-tool-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+.cta-tool-box p {
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); text-decoration: none; }
+.artikel-faq {
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-xl);
+}
+.artikel-faq .faq-item {
+  margin-bottom: var(--space-lg);
+}
+.artikel-faq h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/btw-berekenen/">BTW</a>
+      <a href="/procenten-berekenen/">Procenten</a>
+      <a href="/uurloon-berekenen/">Uurloon</a>
+      <a href="/woorden-tellen/">Tekst</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+  <article class="kennisbank-artikel">
+    <div class="artikel-meta">Bijgewerkt: maart 2026 · 6 min lezen</div>
+    <h1>Zzp-uurtarief berekenen: wat moet je vragen?</h1>
+
+    <p class="artikel-intro">
+      Veel zzp'ers vragen te weinig. Ze kijken naar hun oude loondienst-salaris
+      en zetten dat om naar een uurloon. Maar dat houdt geen rekening met
+      kosten, belasting, leegloop en pensioen. Hier lees je hoe je een
+      uurtarief berekent waar je echt van rond kunt komen.
+    </p>
+
+    <h2>Stap 1: bepaal je gewenste netto inkomen</h2>
+    <p>
+      Begin met wat je netto per maand wil overhouden. Stel dat je
+      &euro; 2.500 netto wil. Om dat te bereiken heb je als zzp'er een bruto
+      winst nodig van ongeveer &euro; 3.500 tot &euro; 4.000 per maand, afhankelijk
+      van je aftrekposten en belastingschijf.
+    </p>
+    <p>
+      Voeg daarna kosten toe die je werkgever vroeger betaalde: pensioen,
+      arbeidsongeschiktheidsverzekering (AOV), ziektekosten boven je
+      basisverzekering en vakantiegeld (8%).
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Kostenopbouw voor een zzp'er</div>
+      <p>
+        Gewenst netto: &euro; 2.500 per maand. Belasting en premies: +/- &euro; 1.100.
+        AOV-verzekering: &euro; 200 per maand. Pensioenopbouw (10%): &euro; 350.
+        Vakantiegeld reservering (8%): &euro; 280. Bedrijfskosten (software,
+        accountant, kantoor): &euro; 300. Totaal benodigde omzet per maand:
+        &euro; 4.730.
+      </p>
+    </div>
+
+    <h2>Stap 2: bereken je factureerbare uren</h2>
+    <p>
+      Je werkt niet 52 weken per jaar, 40 uur per week. Houd rekening
+      met vakantie (4 weken), feestdagen (8 dagen), ziekte (gemiddeld
+      5 dagen per jaar) en niet-factureerbare uren voor acquisitie,
+      administratie en netwerken.
+    </p>
+    <p>
+      Een realistisch aantal factureerbare uren per jaar is 1.000 tot
+      1.200. Gebruik 1.100 als startpunt. Dat is 22 uur per week
+      daadwerkelijk factureren bij een 40-urige werkweek.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Berekening uurtarief</div>
+      <p>
+        Benodigde omzet per maand: &euro; 4.730. Per jaar: &euro; 56.760.
+        Factureerbare uren per jaar: 1.100. Uurtarief exclusief btw:
+        &euro; 56.760 / 1.100 = &euro; 51,60 per uur. Afronden naar &euro; 55 per uur
+        geeft een kleine buffer voor tegenvallende maanden.
+      </p>
+    </div>
+
+    <h2>Stap 3: vergelijk met de markt</h2>
+    <p>
+      Controleer of je tarief marktconform is. Kijk op platforms als
+      Independer, Malt of Freelancer.nl voor uurtarieven in jouw sector.
+      Ben je starter? Dan kun je 15 tot 20% onder het markttarief beginnen
+      en dat verhogen na je eerste projecten.
+    </p>
+    <p>
+      Uurtarieven vari&euml;ren sterk per sector. Een IT-specialist vraagt
+      gemiddeld &euro; 85 tot &euro; 120 per uur. Een tekstschrijver vraagt
+      gemiddeld &euro; 65 tot &euro; 95. Een grafisch ontwerper zit op &euro; 55 tot
+      &euro; 85. Ken de bandbreedte in jouw vakgebied.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Te laag tarief: wat zijn de gevolgen?</div>
+      <p>
+        Sanne begint als UX-designer voor &euro; 45 per uur. Ze is blij met
+        haar opdrachten. Na een jaar merkt ze dat ze geen geld heeft
+        voor pensioen, haar AOV te duur vindt en geen vakantie heeft
+        kunnen nemen. Ze heeft eigenlijk een tarief van &euro; 70 nodig.
+        Haar klanten zijn gewend aan &euro; 45. Het verhogen van je tarief
+        bij bestaande klanten is moeilijker dan bij nieuwe beginnen.
+        Start daarom met het juiste tarief.
+      </p>
+    </div>
+
+    <h2>Hoe bespreek je je tarief met een klant?</h2>
+    <p>
+      Noem je tarief zonder verontschuldiging. "Mijn tarief is &euro; 75
+      per uur exclusief btw" is een volledige zin. Geen "normaal vraag
+      ik meer, maar...". Als een klant het te hoog vindt, vraag dan
+      wat zijn budget is. Soms pas je de scope aan in plaats van
+      je tarief.
+    </p>
+    <p>
+      Werk je met vaste prijzen per project? Bereken dan altijd het
+      uurloon-equivalent om te checken of je project winstgevend is.
+      Verdubbel je schatting van de benodigde uren voor nieuwe
+      projecttypes. Onervaren zzp'ers onderschatten de tijdsinvestering
+      structureel.
+    </p>
+
+    <div class="cta-tool-box">
+      <p>Bereken je uurloon vanuit een jaarsalaris of andersom.</p>
+      <a href="/uurloon-berekenen/" class="btn-primary">Naar de Uurloon calculator</a>
+    </div>
+
+    <p>Meer lezen? Bekijk ook: <a href="/kennisbank/btw-aangifte-zzp/">Btw-aangifte doen als zzp'er</a> en <a href="/kennisbank/salaris-onderhandelen/">Salaris onderhandelen</a>.</p>
+
+    <div class="artikel-faq">
+      <h2>Veelgestelde vragen over zzp-uurtarief berekenen</h2>
+
+      <div class="faq-item">
+        <h3>Moet ik btw rekenen boven op mijn uurtarief?</h3>
+        <p>Ja, tenzij je gebruik maakt van de KOR-regeling of je dienst is vrijgesteld van btw. Communiceer je tarief altijd exclusief btw aan zakelijke klanten. Aan particulieren communiceer je het inclusief btw. Vergeet niet btw te vermelden op je factuur.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Hoe verhoog ik mijn uurtarief bij bestaande klanten?</h3>
+        <p>Geef het 3 maanden van tevoren aan in een e-mail. Noem de nieuwe tariefsdatum en het nieuwe bedrag. Een korte toelichting als "aanpassing aan marktconforme tarieven" is voldoende. De meeste klanten accepteren een jaarlijkse verhoging van 5 tot 10% zonder discussie.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Wat is een realistisch zzp-inkomen in jaar 1?</h3>
+        <p>In het eerste jaar hebben de meeste zzp'ers 3 tot 6 maanden nodig om een stabiele stroom opdrachten op te bouwen. Reken op 60 tot 70% van je gewenste omzet in jaar 1. Zorg voor een buffer van minimaal 3 maanden vaste lasten voor je start.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Zzp-uurtarief berekenen: wat moet je vragen?",
+  "description": "Wat moet je als zzp'er per uur vragen? Lees hoe je een realistisch uurtarief berekent op basis van je gewenste inkomen en kosten.",
+  "url": "https://rekengemak.nl/kennisbank/zzp-uurtarief-berekenen/",
+  "datePublished": "2026-03-12",
+  "dateModified": "2026-03-12",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Moet ik btw rekenen boven op mijn uurtarief?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, tenzij je gebruik maakt van de KOR-regeling of je dienst is vrijgesteld van btw. Communiceer je tarief altijd exclusief btw aan zakelijke klanten. Aan particulieren communiceer je het inclusief btw. Vergeet niet btw te vermelden op je factuur."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe verhoog ik mijn uurtarief bij bestaande klanten?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Geef het 3 maanden van tevoren aan in een e-mail. Noem de nieuwe tariefsdatum en het nieuwe bedrag. Een korte toelichting als \"aanpassing aan marktconforme tarieven\" is voldoende. De meeste klanten accepteren een jaarlijkse verhoging van 5 tot 10% zonder discussie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is een realistisch zzp-inkomen in jaar 1?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In het eerste jaar hebben de meeste zzp'ers 3 tot 6 maanden nodig om een stabiele stroom opdrachten op te bouwen. Reken op 60 tot 70% van je gewenste omzet in jaar 1. Zorg voor een buffer van minimaal 3 maanden vaste lasten voor je start."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+
+</body>
+</html>

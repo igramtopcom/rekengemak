@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoeveel vakantiedagen heb ik recht op in 2026?</title>
+  <meta name="description" content="Het wettelijk minimum zijn 4 weken vakantie per jaar. Lees hoeveel dagen dat precies is, hoe pro-rata werkt en wanneer dagen vervallen.">
+  <link rel="canonical" href="https://rekengemak.nl/kennisbank/recht-op-vakantiedagen/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <meta property="og:title" content="Hoeveel vakantiedagen heb ik recht op in 2026?">
+  <meta property="og:description" content="Het wettelijk minimum zijn 4 weken vakantie per jaar. Lees hoeveel dagen dat precies is, hoe pro-rata werkt en wanneer dagen vervallen.">
+  <meta property="og:url" content="https://rekengemak.nl/kennisbank/recht-op-vakantiedagen/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ KENNISBANK ARTIKEL ═════════════════════════════════════════════ */
+.kennisbank-artikel {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.artikel-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.artikel-intro {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+}
+.kennisbank-artikel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel ul,
+.kennisbank-artikel ol {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.scenario-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+.scenario-box .scenario-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--success);
+  margin-bottom: 6px;
+}
+.scenario-box p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+.cta-tool-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+.cta-tool-box p {
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); text-decoration: none; }
+.artikel-faq {
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-xl);
+}
+.artikel-faq .faq-item {
+  margin-bottom: var(--space-lg);
+}
+.artikel-faq h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/btw-berekenen/">BTW</a>
+      <a href="/procenten-berekenen/">Procenten</a>
+      <a href="/uurloon-berekenen/">Uurloon</a>
+      <a href="/woorden-tellen/">Tekst</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+  <article class="kennisbank-artikel">
+    <div class="artikel-meta">Bijgewerkt: maart 2026 · 5 min lezen</div>
+    <h1>Hoeveel vakantiedagen heb je recht op?</h1>
+
+    <p class="artikel-intro">
+      Je hebt wettelijk recht op minimaal 4 weken vakantie per jaar.
+      Maar hoeveel dagen is dat precies als je parttime werkt? Wat als
+      je midden in het jaar begint? En wanneer vervallen je opgebouwde
+      dagen? Dit artikel geeft je alle antwoorden.
+    </p>
+
+    <h2>Het wettelijk minimum aan vakantiedagen</h2>
+    <p>
+      De wet zegt: minimaal 4 keer het aantal uren dat je per week werkt.
+      Werk je 40 uur per week, dan heb je recht op 4 x 40 = 160 uur
+      vakantie per jaar. Dat zijn 20 werkdagen bij een 5-daagse werkweek.
+    </p>
+    <p>
+      Werk je 24 uur per week over 3 dagen? Dan is je minimum 4 x 24 =
+      96 uur, ofwel 12 vakantiedagen. Je vakantierechten schalen altijd
+      mee met je werkweek.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Parttime met wisselende uren</div>
+      <p>
+        Tom werkt 32 uur per week, verdeeld over 4 dagen. Zijn wettelijke
+        vakantie: 4 x 32 = 128 uur per jaar. Bij 8 uur per dag zijn
+        dat 16 vakantiedagen. Zijn cao geeft 5 bovenwettelijke dagen extra,
+        dus heeft hij in totaal 21 vakantiedagen van 8 uur. Een vakantiedag
+        kost hem altijd 8 uur, ook als hij normaal maar 8 uur op die dag
+        zou werken.
+      </p>
+    </div>
+
+    <h2>Wettelijk en bovenwettelijk: wat is het verschil?</h2>
+    <p>
+      Wettelijke vakantiedagen zijn de 4 weken die de wet garandeert.
+      Bovenwettelijke dagen zijn extra, afgesproken in je cao of contract.
+      Veel cao's geven 5 extra dagen, sommige 10 of meer.
+    </p>
+    <p>
+      Het verschil is belangrijk bij uitbetaling en opname. Wettelijke
+      vakantiedagen vervallen na 6 maanden (de zogenaamde vervaltermijn).
+      Bovenwettelijke dagen verjaren pas na 5 jaar. Neem je wettelijke
+      dagen dus op voor 1 juli van het jaar na opbouw.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Veelgemaakte vergissing</div>
+      <p>
+        Anna heeft in 2025 20 wettelijke vakantiedagen opgebouwd. Ze neemt
+        er 15 op. De overige 5 denkt ze in 2026 nog te kunnen opnemen.
+        Maar op 1 juli 2026 vervallen die 5 wettelijke dagen automatisch.
+        De 10 bovenwettelijke dagen die ze heeft staan, blijven wel staan
+        tot 2030.
+      </p>
+    </div>
+
+    <h2>Pro-rata: ben je midden in het jaar begonnen?</h2>
+    <p>
+      Begin je na 1 januari bij een nieuwe werkgever? Dan bouw je
+      vakantiedagen pro-rata op. Je hebt pas aan het einde van het jaar
+      het volledige recht opgebouwd.
+    </p>
+    <p>
+      De berekening: totale jaarlijkse vakantiedagen x (gewerkte
+      maanden / 12). Ben je in april begonnen en werk je tot december?
+      Dat is 9 maanden. Bij 25 dagen per jaar: 25 x (9/12) = 18,75 dagen,
+      afgerond naar 19 dagen.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Bij ontslag: uitbetaling openstaande dagen</div>
+      <p>
+        Bas stopt per 1 april met zijn baan. Hij heeft nog 8 vakantiedagen
+        staan en neemt ze niet op voor zijn vertrek. Zijn werkgever moet
+        die 8 dagen uitbetalen bij de eindafrekening. De waarde per dag
+        is zijn bruto dagloon: maandsalaris x 12 / 260 werkdagen. Bij
+        &euro; 3.000 bruto is dat &euro; 3.000 x 12 / 260 = &euro; 138,46 per dag.
+        8 dagen = &euro; 1.107,69 bruto.
+      </p>
+    </div>
+
+    <div class="cta-tool-box">
+      <p>Bereken hoeveel vakantiedagen je hebt opgebouwd.</p>
+      <a href="/vakantiedagen-berekenen/" class="btn-primary">Naar de Vakantiedagen calculator</a>
+    </div>
+
+    <p>Meer lezen? Bekijk ook: <a href="/kennisbank/wanneer-vakantiegeld/">Wanneer krijg je vakantiegeld?</a> en <a href="/kennisbank/salaris-onderhandelen/">Salaris onderhandelen</a>.</p>
+
+    <div class="artikel-faq">
+      <h2>Veelgestelde vragen over vakantiedagen</h2>
+
+      <div class="faq-item">
+        <h3>Mag mijn werkgever mijn vakantiedagen weigeren?</h3>
+        <p>Je werkgever mag een vakantieaanvraag weigeren als er zwaarwegende bedrijfsbelangen zijn. Dat moet schriftelijk en binnen 2 weken na je aanvraag. Je werkgever mag vakantie niet structureel weigeren. Als dat toch gebeurt, kun je de kantonrechter inschakelen.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Bouw ik vakantiedagen op tijdens ziekte?</h3>
+        <p>Ja, over de volledige wettelijke vakantiedagen bouw je op tijdens ziekte. Dat is vastgelegd in de wet. Bovenwettelijke dagen hoef je niet op te bouwen tijdens ziekte, tenzij je cao dat anders regelt.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Mag ik vakantiedagen verkopen aan mijn werkgever?</h3>
+        <p>Ja, bovenwettelijke vakantiedagen mag je in overleg verkopen. Wettelijke vakantiedagen mag je alleen verkopen bij ontslag of als je contract eindigt. Onder normale omstandigheden zijn ze bedoeld voor daadwerkelijk rust.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Hoeveel vakantiedagen heb je recht op?",
+  "description": "Het wettelijk minimum zijn 4 weken vakantie per jaar. Lees hoeveel dagen dat precies is, hoe pro-rata werkt en wanneer dagen vervallen.",
+  "url": "https://rekengemak.nl/kennisbank/recht-op-vakantiedagen/",
+  "datePublished": "2026-03-12",
+  "dateModified": "2026-03-12",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Mag mijn werkgever mijn vakantiedagen weigeren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Je werkgever mag een vakantieaanvraag weigeren als er zwaarwegende bedrijfsbelangen zijn. Dat moet schriftelijk en binnen 2 weken na je aanvraag. Je werkgever mag vakantie niet structureel weigeren. Als dat toch gebeurt, kun je de kantonrechter inschakelen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Bouw ik vakantiedagen op tijdens ziekte?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, over de volledige wettelijke vakantiedagen bouw je op tijdens ziekte. Dat is vastgelegd in de wet. Bovenwettelijke dagen hoef je niet op te bouwen tijdens ziekte, tenzij je cao dat anders regelt."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mag ik vakantiedagen verkopen aan mijn werkgever?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, bovenwettelijke vakantiedagen mag je in overleg verkopen. Wettelijke vakantiedagen mag je alleen verkopen bij ontslag of als je contract eindigt. Onder normale omstandigheden zijn ze bedoeld voor daadwerkelijk rust."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+
+</body>
+</html>

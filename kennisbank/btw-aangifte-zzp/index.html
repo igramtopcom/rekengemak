@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Btw-aangifte zzp: stap voor stap uitleg 2026</title>
+  <meta name="description" content="Hoe doe je btw-aangifte als zzp'er? Lees wanneer je aangifte moet doen, hoe je het invult en welke fouten je moet vermijden.">
+  <link rel="canonical" href="https://rekengemak.nl/kennisbank/btw-aangifte-zzp/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <meta property="og:title" content="Btw-aangifte zzp: stap voor stap uitleg 2026">
+  <meta property="og:description" content="Hoe doe je btw-aangifte als zzp'er? Lees wanneer je aangifte moet doen, hoe je het invult en welke fouten je moet vermijden.">
+  <meta property="og:url" content="https://rekengemak.nl/kennisbank/btw-aangifte-zzp/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ KENNISBANK ARTIKEL ═════════════════════════════════════════════ */
+.kennisbank-artikel {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.artikel-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.artikel-intro {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+}
+.kennisbank-artikel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel ul,
+.kennisbank-artikel ol {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.scenario-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+.scenario-box .scenario-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--success);
+  margin-bottom: 6px;
+}
+.scenario-box p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+.cta-tool-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+.cta-tool-box p {
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); text-decoration: none; }
+.artikel-faq {
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-xl);
+}
+.artikel-faq .faq-item {
+  margin-bottom: var(--space-lg);
+}
+.artikel-faq h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/btw-berekenen/">BTW</a>
+      <a href="/procenten-berekenen/">Procenten</a>
+      <a href="/uurloon-berekenen/">Uurloon</a>
+      <a href="/woorden-tellen/">Tekst</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+  <article class="kennisbank-artikel">
+    <div class="artikel-meta">Bijgewerkt: maart 2026 · 6 min lezen</div>
+    <h1>Btw-aangifte doen als zzp'er: zo doe je het</h1>
+
+    <p class="artikel-intro">
+      Als zzp'er doe je btw-aangifte bij de Belastingdienst, meestal
+      eens per kwartaal. Voor veel starters is het de eerste keer
+      spannend. In dit artikel lees je precies wat je invult, wanneer
+      je het moet doen en wat er misgaat als je het vergeet.
+    </p>
+
+    <h2>Wanneer doe je aangifte?</h2>
+    <p>
+      De meeste zzp'ers doen btw-aangifte per kwartaal. De vier deadlines
+      per jaar zijn: 30 april (Q1), 31 juli (Q2), 31 oktober (Q3) en
+      31 januari (Q4). Je doet aangifte via Mijn Belastingdienst Zakelijk
+      met je DigiD of eHerkenning.
+    </p>
+    <p>
+      Haal je meer dan &euro; 15.000 btw per jaar op? Dan kan de Belastingdienst
+      je verplichten om maandelijks aangifte te doen. Dit horen start-ups
+      soms pas na het eerste boekjaar.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Veel gestelde vraag</div>
+      <p>
+        "Ik had dit kwartaal geen omzet. Moet ik dan nog aangifte doen?"
+        Ja. Zelfs bij nul omzet stuur je een aangifte in met alle nullen.
+        Doe je dat niet, dan krijg je een ambtshalve aanslag van de
+        Belastingdienst, waarbij zij een bedrag schatten. Dat is bijna
+        altijd te hoog.
+      </p>
+    </div>
+
+    <h2>Wat vul je in bij de aangifte?</h2>
+    <p>
+      Het aangifteformulier heeft vier hoofdvelden. Rubriek 1a is je omzet
+      belast met 21% en de btw die je daarover hebt berekend. Rubriek 1b
+      is je omzet belast met 9%. Rubriek 5b is de btw die je hebt betaald
+      op je inkopen, de zogenaamde voorbelasting. Rubriek 5g is de
+      eindberekening: te betalen of te ontvangen btw.
+    </p>
+    <p>
+      De eindberekening is eenvoudig: ontvangen btw minus betaalde btw.
+      Is het resultaat positief? Dan betaal je dat bedrag. Is het negatief?
+      Dan krijg je geld terug.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Stap-voor-stap voorbeeld</div>
+      <p>
+        Thomas is copywriter. In Q2 stuurde hij facturen voor in totaal
+        &euro; 8.000 exclusief btw, dus &euro; 1.680 btw (21%) ontvangen. Hij kocht
+        een laptop voor &euro; 1.210 inclusief btw: &euro; 210 btw betaald. Zijn
+        aangifte: rubriek 1a omzet &euro; 8.000, btw &euro; 1.680. Rubriek 5b
+        voorbelasting &euro; 210. Te betalen: &euro; 1.680 - &euro; 210 = &euro; 1.470.
+      </p>
+    </div>
+
+    <h2>Welke kosten mag je aftrekken?</h2>
+    <p>
+      Je mag de btw aftrekken van alle kosten die je maakt voor je
+      onderneming. Denk aan kantoorbenodigdheden, software-abonnementen,
+      telefoon (als die zakelijk is), reiskosten per auto en
+      trainingen of cursussen. Priv&eacute;kosten mag je niet aftrekken.
+    </p>
+    <p>
+      Gebruik je een auto zowel zakelijk als priv&eacute;? Dan mag je alleen het
+      zakelijke deel van de btw aftrekken. Houd een rittenregistratie bij
+      om dit te kunnen aantonen bij een controle.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Veelgemaakte fout</div>
+      <p>
+        Joanna werkt vanuit huis en trekt de btw af op haar volledige
+        internetabonnement en energierekening. Dat mag niet: thuiswerken
+        geeft recht op aftrek van de zakelijke fractie, maar priv&eacute;gebruik
+        telt niet mee. De Belastingdienst berekent bij een controle een
+        correctie plus boete.
+      </p>
+    </div>
+
+    <h2>Wat als je te laat bent?</h2>
+    <p>
+      Te late aangifte levert automatisch een verzuimboete op van &euro; 68.
+      Betaal je het verschuldigde btw-bedrag ook te laat? Dan komt er een
+      betalingsverzuimboete bij van 3% van het te betalen bedrag, met een
+      minimum van &euro; 50 en een maximum van &euro; 5.514. Bovendien rekent de
+      Belastingdienst belastingrente.
+    </p>
+    <p>
+      Ben je te laat maar heb je een goede reden? Bel de Belastingtelefoon
+      (0800-0543) voor een betalingsregeling. Dat voorkomt deurwaarderskosten.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Oplossing bij cashflowproblemen</div>
+      <p>
+        Pieter heeft een grote klant die altijd laat betaalt. In Q3 stuurde
+        hij facturen voor &euro; 20.000 maar ontving hij het geld pas in Q4.
+        Toch moet hij de btw al in Q3 afdragen. Tip: open een aparte
+        btw-spaarrekening en zet bij elke factuur direct het btw-deel
+        apart. Zo kom je nooit voor verrassingen te staan.
+      </p>
+    </div>
+
+    <div class="cta-tool-box">
+      <p>Bereken snel hoeveel btw je moet afdragen over je omzet.</p>
+      <a href="/btw-berekenen/" class="btn-primary">Naar de BTW calculator</a>
+    </div>
+
+    <p>Meer lezen? Bekijk ook: <a href="/kennisbank/wat-is-btw/">Wat is btw en hoe werkt het?</a> en <a href="/kennisbank/zzp-uurtarief-berekenen/">Zzp-uurtarief berekenen</a>.</p>
+
+    <div class="artikel-faq">
+      <h2>Veelgestelde vragen over btw-aangifte voor zzp'ers</h2>
+
+      <div class="faq-item">
+        <h3>Hoe lang moet ik mijn btw-administratie bewaren?</h3>
+        <p>De wettelijke bewaartermijn is 7 jaar. Bewaar facturen, bonnen en bankafschriften digitaal of fysiek. De Belastingdienst kan altijd over de afgelopen 7 jaar een controle uitvoeren.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Mag ik btw aftrekken op een zakelijk etentje?</h3>
+        <p>Nee. Kosten voor eten en drinken zijn uitgesloten van btw-aftrek, ook als het een zakelijk diner is. De inkomstenbelasting kent wel een aftrek voor relatiegeschenken en representatiekosten, maar dat is een ander systeem.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Wat is de Kleineondernemersregeling (KOR)?</h3>
+        <p>Met de KOR ben je vrijgesteld van btw als je jaaromzet onder &euro; 20.000 blijft. Je rekent geen btw aan klanten en doet geen btw-aangifte, maar je mag ook geen btw terugvragen op inkopen. Aanmelden kan via de Belastingdienst, minimaal 4 weken voor aanvang van een kwartaal.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Ik heb een factuur vergeten te boeken. Wat nu?</h3>
+        <p>Je kunt een eerder ingediende aangifte corrigeren via een suppletie. Dat doe je ook via Mijn Belastingdienst Zakelijk. Doe dit zo snel mogelijk. Vrijwillig corrigeren leidt doorgaans tot geen of een lagere boete dan wanneer de Belastingdienst het zelf ontdekt.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Btw-aangifte doen als zzp'er: zo doe je het",
+  "description": "Hoe doe je btw-aangifte als zzp'er? Lees wanneer je aangifte moet doen, hoe je het invult en welke fouten je moet vermijden.",
+  "url": "https://rekengemak.nl/kennisbank/btw-aangifte-zzp/",
+  "datePublished": "2026-03-12",
+  "dateModified": "2026-03-12",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoe lang moet ik mijn btw-administratie bewaren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "De wettelijke bewaartermijn is 7 jaar. Bewaar facturen, bonnen en bankafschriften digitaal of fysiek. De Belastingdienst kan altijd over de afgelopen 7 jaar een controle uitvoeren."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Mag ik btw aftrekken op een zakelijk etentje?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nee. Kosten voor eten en drinken zijn uitgesloten van btw-aftrek, ook als het een zakelijk diner is. De inkomstenbelasting kent wel een aftrek voor relatiegeschenken en representatiekosten, maar dat is een ander systeem."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is de Kleineondernemersregeling (KOR)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Met de KOR ben je vrijgesteld van btw als je jaaromzet onder \u20ac 20.000 blijft. Je rekent geen btw aan klanten en doet geen btw-aangifte, maar je mag ook geen btw terugvragen op inkopen. Aanmelden kan via de Belastingdienst, minimaal 4 weken voor aanvang van een kwartaal."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ik heb een factuur vergeten te boeken. Wat nu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Je kunt een eerder ingediende aangifte corrigeren via een suppletie. Dat doe je ook via Mijn Belastingdienst Zakelijk. Doe dit zo snel mogelijk. Vrijwillig corrigeren leidt doorgaans tot geen of een lagere boete dan wanneer de Belastingdienst het zelf ontdekt."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+
+</body>
+</html>
