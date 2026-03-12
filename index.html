@@ -257,6 +257,48 @@ header {
   background: var(--accent); color: #fff;
 }
 
+/* Kennisbank preview */
+.kennisbank-preview {
+  max-width: 1100px;
+  margin: var(--space-xl) auto;
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+.kennisbank-preview h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+.kennisbank-preview > p {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+.kennisbank-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 700px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .kennisbank-links { grid-template-columns: 1fr; }
+}
+.kennisbank-links a {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: border-color var(--transition);
+}
+.kennisbank-links a:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
 /* Ad slots */
 .ad-slot:empty { display: none; }
 .ad-slot { margin: var(--space-md) auto; text-align: center; max-width: 900px; }
@@ -355,6 +397,7 @@ footer {
       <a href="/procenten-berekenen/">Procenten</a>
       <a href="/uurloon-berekenen/">Uurloon</a>
       <a href="/woorden-tellen/">Tekst</a>
+      <a href="/kennisbank/">Kennisbank</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px;">
       <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
@@ -389,6 +432,12 @@ footer {
         <span class="nav-group-title">Dagelijks</span>
         <a href="/willekeurig-getal/">Willekeurig Getal</a>
         <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Kennisbank</span>
+        <a href="/kennisbank/">Alle artikelen</a>
+        <a href="/kennisbank/wat-is-btw/">Wat is btw?</a>
+        <a href="/kennisbank/bruto-netto-verschil/">Bruto vs netto</a>
       </div>
     </div>
   </nav>
@@ -614,6 +663,18 @@ footer {
   </div>
 </section>
 
+<section class="kennisbank-preview">
+  <h2>Kennisbank</h2>
+  <p>Lees informatieve artikelen over belasting, salaris, vakantiegeld en meer.</p>
+  <div class="kennisbank-links">
+    <a href="/kennisbank/wat-is-btw/">Wat is btw en hoe werkt het?</a>
+    <a href="/kennisbank/bruto-netto-verschil/">Bruto en netto salaris: het verschil</a>
+    <a href="/kennisbank/wanneer-vakantiegeld/">Wanneer krijg je vakantiegeld?</a>
+    <a href="/kennisbank/minimumloon-2026/">Minimumloon 2026: bedragen en regels</a>
+  </div>
+  <a href="/kennisbank/" class="btn-primary" style="margin-top:16px;display:inline-block;">Bekijk alle artikelen</a>
+</section>
+
 <div id="ad-bottom" class="ad-slot"></div>
 
 <footer>
@@ -656,6 +717,7 @@ footer {
       <a href="/contact/">Contact</a>
       <a href="/privacy/">Privacybeleid</a>
       <a href="/terms/">Gebruiksvoorwaarden</a>
+      <a href="/kennisbank/">Kennisbank</a>
     </div>
   </div>
   <div class="footer-bottom">
