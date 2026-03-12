@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willekeurig Getal Genereren Online Gratis | RekenGemak</title>
+  <meta name="description" content="Genereer willekeurige getallen online. Kies je bereik en aantal, en krijg direct een willekeurig getal of een lijst. Gratis, snel en zonder registratie.">
+  <link rel="canonical" href="https://rekengemak.nl/willekeurig-getal/">
+  <meta property="og:title"       content="Willekeurig Getal Genereren Online Gratis | RekenGemak">
+  <meta property="og:description" content="Genereer willekeurige getallen online. Kies je bereik en aantal, en krijg direct een willekeurig getal of een lijst. Gratis, snel en zonder registratie.">
+  <meta property="og:url"         content="https://rekengemak.nl/willekeurig-getal/">
+  <meta property="og:type"        content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.logo { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.theme-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: var(--bg-input); }
+[data-theme="dark"]  .icon-light { display: none; }
+[data-theme="light"] .icon-dark  { display: none; }
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: 900px; margin: 0 auto var(--space-xl);
+}
+.footer-grid strong {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.footer-grid ul  { margin-top: var(--space-sm); }
+.footer-grid li + li { margin-top: 6px; }
+.footer-grid a   { font-size: 0.9rem; color: var(--text-secondary); display: block; }
+.footer-grid a:hover { color: var(--text-primary); text-decoration: none; }
+.footer-bottom   { text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+}
+
+/* ═══ 3. LAYOUT & HERO ═══════════════════════════════════════════════════ */
+main  { max-width: 900px; margin: 0 auto; padding: var(--space-lg); }
+.hero { max-width: 860px; margin: var(--space-xl) auto var(--space-lg); }
+
+nav[aria-label="Breadcrumb"] {
+  font-size: 0.85rem; color: var(--text-secondary); margin-bottom: var(--space-sm);
+}
+nav[aria-label="Breadcrumb"] a { color: var(--text-secondary); }
+nav[aria-label="Breadcrumb"] a:hover { color: var(--accent); }
+
+h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(--space-sm); }
+
+.badge-updated {
+  display: inline-block; margin-top: 6px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 500;
+  background: rgba(31, 92, 153, 0.15);
+  color: var(--accent);
+}
+
+/* ═══ 4. TOOL CARD ═══════════════════════════════════════════════════════ */
+.tool-card {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+@media (max-width: 640px) { .tool-card { padding: var(--space-md); } }
+
+/* Input group */
+.input-group { margin-bottom: var(--space-md); }
+.input-group label {
+  display: block; margin-bottom: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+}
+.input-wrap {
+  display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: border-color var(--transition);
+}
+.input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(31, 92, 153, 0.2);
+}
+.input-wrap input,
+.input-wrap select {
+  flex: 1; height: 48px; padding: 0 14px;
+  background: transparent; border: none; outline: none;
+  font-size: 1.1rem; color: var(--text-primary);
+}
+select option {
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+}
+
+/* ═══ 5. RESULT BOX ═══════════════════════════════════════════════════════ */
+.result-box {
+  background: var(--result-bg);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md) var(--space-lg);
+  margin-top: var(--space-md);
+}
+.result-label {
+  font-size: 0.8rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+}
+
+/* Copy button */
+.btn-copy {
+  font-size: 0.8rem; padding: 3px 10px;
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+/* ═══ BUTTONS ═════════════════════════════════════════════════════════════ */
+.btn-primary {
+  width: 100%; height: 48px; margin-top: var(--space-md);
+  background: var(--accent); color: white;
+  font-size: 1rem; font-weight: 600; border-radius: var(--radius);
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary {
+  padding: 8px 16px; min-height: 48px; margin-top: var(--space-sm);
+  border: 1px solid var(--border); color: var(--text-secondary);
+  border-radius: var(--radius); font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+/* ═══ 6. ARTICLE & FAQ ═══════════════════════════════════════════════════ */
+.content {
+  max-width: 680px; margin: 0 auto;
+  padding-top: var(--space-xl);
+}
+.content h2 {
+  font-size: 1.3rem; font-weight: 600; color: var(--accent);
+  margin-bottom: var(--space-sm); margin-top: var(--space-xl);
+}
+.content h2:first-child { margin-top: 0; }
+.content p  { color: var(--text-secondary); margin-bottom: var(--space-md); }
+.content ul { margin: var(--space-sm) 0 var(--space-md) var(--space-lg); }
+.content ul li { list-style: disc; color: var(--text-secondary); margin-bottom: 6px; }
+
+/* FAQ */
+.faq { margin-top: var(--space-md); }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-md) 0;
+}
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 {
+  font-size: 1rem; font-weight: 600; color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+.faq-item p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ═══ 7. RELATED TOOLS ═══════════════════════════════════════════════════ */
+.related-tools {
+  display: flex; flex-wrap: wrap; gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.related-tools a {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.875rem; color: var(--text-secondary);
+  transition: all var(--transition);
+  text-decoration: none;
+}
+.related-tools a:hover {
+  border-color: var(--accent); color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══ 8. RESPONSIVE ═══════════════════════════════════════════════════════ */
+#ad-top:empty, #ad-middle:empty, #ad-bottom:empty { display: none; }
+#ad-top      { text-align: center; margin-bottom: var(--space-lg); }
+#ad-middle   { text-align: center; margin: var(--space-xl) 0; }
+#ad-bottom   { text-align: center; margin-top: var(--space-xl); }
+
+/* ═══ GENEREER KNOP ══════════════════════════════════════════════════════ */
+.btn-genereer {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition), transform 0.1s ease;
+  margin-top: var(--space-md);
+  letter-spacing: 0.02em;
+}
+
+.btn-genereer:hover {
+  background: var(--accent-hover);
+}
+
+.btn-genereer:active {
+  transform: scale(0.98);
+}
+
+.btn-genereer:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ═══ RESULTAAT -- 1 GETAL ═══════════════════════════════════════════════ */
+.result-single {
+  display: none;
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  background: var(--result-bg);
+  border-radius: var(--radius);
+  margin-top: var(--space-md);
+}
+
+.result-single.visible {
+  display: block;
+}
+
+.result-single .result-num {
+  font-size: 5rem;
+  font-weight: 700;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .result-single .result-num { font-size: 3.5rem; }
+}
+
+/* Animatie bij genereren */
+@keyframes popIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.result-num.pop {
+  animation: popIn 0.3s ease forwards;
+}
+
+/* ═══ RESULTAAT -- MEERDERE GETALLEN ═════════════════════════════════════ */
+.result-multi {
+  display: none;
+  margin-top: var(--space-md);
+}
+
+.result-multi.visible {
+  display: block;
+}
+
+.result-multi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.result-multi-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.numbers-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: var(--result-bg);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+
+.number-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+  animation: popIn 0.3s ease forwards;
+}
+
+/* ═══ GESCHIEDENIS ═══════════════════════════════════════════════════════ */
+.history-section {
+  margin-top: var(--space-lg);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-md);
+}
+
+.history-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: var(--space-sm);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.history-item .history-val {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-item .history-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* ═══ INPUT GRID 3-COL ═══════════════════════════════════════════════════ */
+.input-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-md);
+}
+
+@media (max-width: 480px) {
+  .input-grid-3 { grid-template-columns: 1fr 1fr 1fr; gap: var(--space-sm); }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">RekenGemak</a>
+  <button onclick="toggleTheme()" aria-label="Thema wisselen" class="theme-btn">
+    <span class="icon-dark">&#127769;</span>
+    <span class="icon-light">&#9728;&#65039;</span>
+  </button>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+
+<div class="hero">
+  <nav aria-label="Breadcrumb">
+    <a href="/">Thuis</a> &rsaquo; <span>Willekeurig Getal</span>
+  </nav>
+  <h1>Willekeurig Getal Genereren</h1>
+  <span class="badge-updated">Bijgewerkt: maart 2026</span>
+  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+    Genereer een of meerdere willekeurige getallen binnen je eigen bereik. Cryptografisch veilig, gratis en zonder registratie.
+  </p>
+</div>
+
+<section class="tool-card" aria-label="Willekeurig Getal Genereren">
+
+  <!-- Input rij: Van / Tot / Aantal -->
+  <div class="input-grid-3">
+
+    <div class="input-group" style="margin-bottom:0;">
+      <label for="inp-van">Van</label>
+      <div class="input-wrap">
+        <input id="inp-van" type="text" inputmode="numeric"
+               autocomplete="off" value="1"
+               oninput="validateInputs()">
+      </div>
+    </div>
+
+    <div class="input-group" style="margin-bottom:0;">
+      <label for="inp-tot">Tot</label>
+      <div class="input-wrap">
+        <input id="inp-tot" type="text" inputmode="numeric"
+               autocomplete="off" value="100"
+               oninput="validateInputs()">
+      </div>
+    </div>
+
+    <div class="input-group" style="margin-bottom:0;">
+      <label for="inp-aantal">Aantal
+        <span style="font-weight:400;font-size:0.8rem;">(max 100)</span>
+      </label>
+      <div class="input-wrap">
+        <input id="inp-aantal" type="text" inputmode="numeric"
+               autocomplete="off" value="1"
+               oninput="validateInputs()">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Foutmelding -->
+  <div id="error-msg" style="display:none;margin-top:10px;
+       padding:10px 14px;background:rgba(224,82,82,0.12);
+       border-left:3px solid #E05252;border-radius:6px;
+       font-size:0.875rem;color:#E05252;"></div>
+
+  <!-- Genereer knop -->
+  <button class="btn-genereer" id="btn-genereer" onclick="genereer()">
+    Genereer
+  </button>
+
+  <!-- Resultaat: 1 getal -->
+  <div class="result-single" id="result-single">
+    <span class="result-num" id="res-num">--</span>
+    <div style="margin-top:var(--space-md);">
+      <button class="btn-copy" onclick="copyEnkele()" id="btn-copy-single">
+        Kopieer getal
+      </button>
+    </div>
+  </div>
+
+  <!-- Resultaat: meerdere getallen -->
+  <div class="result-multi" id="result-multi">
+    <div class="result-multi-header">
+      <span class="result-multi-title" id="multi-title">Resultaten</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-copy" onclick="copyLijst()" id="btn-copy-multi">
+          Kopieer lijst
+        </button>
+        <button class="btn-secondary" onclick="exportCSV()" id="btn-csv"
+                style="padding:6px 14px;font-size:0.85rem;">
+          Download CSV
+        </button>
+      </div>
+    </div>
+    <div class="numbers-grid" id="numbers-grid"></div>
+  </div>
+
+  <!-- Geschiedenis -->
+  <div class="history-section" id="history-section" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;
+                margin-bottom:var(--space-sm);">
+      <span class="history-title">Recente generaties</span>
+      <button class="btn-secondary" onclick="clearHistory()"
+              style="padding:4px 10px;font-size:0.8rem;min-height:auto;margin-top:0;">Wis geschiedenis</button>
+    </div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+</section>
+
+<div id="ad-middle"></div>
+
+<div class="content">
+
+  <h2>Hoe werkt de willekeurig getal generator?</h2>
+  <p>Vul bij 'Van' en 'Tot' het gewenste bereik in. Standaard staat dit op 1 tot 100. Geef bij 'Aantal' aan hoeveel getallen je nodig hebt, van 1 tot maximaal 100. Klik daarna op 'Genereer' of druk op Enter.</p>
+  <p>Bij een enkel getal verschijnt het resultaat groot in beeld met een kleine animatie. Vraag je meerdere getallen op, dan zie je de volledige lijst en kun je die kopiëren of downloaden als CSV-bestand om in Excel of Google Sheets te openen.</p>
+  <p>Onderaan de tool staat een overzicht van de 10 meest recente generaties, zodat je eerdere resultaten nog kunt terugkijken.</p>
+
+  <h2>Voor wie is deze rekenhulp?</h2>
+  <ul>
+    <li>Organisatoren van verlotingen en loterijen die een eerlijke winnaar willen trekken</li>
+    <li>Docenten en trainers die willekeurige groepen of volgorden willen bepalen</li>
+    <li>Sporters en gamers die een neutrale beginvolgorde of dobbelsteen willen simuleren</li>
+    <li>Onderzoekers die een willekeurige steekproef uit een lijst willen trekken</li>
+    <li>Iedereen die snel een willekeurig getal nodig heeft zonder spreadsheet of app</li>
+  </ul>
+
+  <h2>Veelgestelde vragen</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <h3>Hoe genereer je een willekeurig getal?</h3>
+      <p>Vul het minimum en maximum in bij de velden 'Van' en 'Tot', kies het gewenste aantal en klik op 'Genereer'. De generator maakt direct een of meerdere willekeurige getallen aan binnen het opgegeven bereik. Standaard genereert de tool een getal tussen 1 en 100.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Waarvoor gebruik je een willekeurig getal generator?</h3>
+      <p>Een willekeurig getal generator gebruik je voor het trekken van loten of het bepalen van een winnaar, het toewijzen van willekeurige nummers aan deelnemers, het bepalen van de volgorde van een presentatie of sportwedstrijd, simulaties en kansberekeningen, en spellen waarbij een dobbelsteenworp of vergelijkbare willekeur nodig is.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Kan ik meerdere willekeurige getallen tegelijk genereren?</h3>
+      <p>Ja, met de veld 'Aantal' kun je tot 100 willekeurige getallen tegelijk genereren. De getallen worden als lijst weergegeven en zijn te kopiëren naar je klembord of te downloaden als CSV-bestand. Handig voor lotingen, steekproeven of statistische toepassingen.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Zijn de gegenereerde getallen echt willekeurig?</h3>
+      <p>De generator gebruikt de Web Cryptography API van je browser, specifiek crypto.getRandomValues(). Dit is een cryptografisch veilige bron van willekeurigheid en aanzienlijk betrouwbaarder dan de standaard Math.random()-functie. De getallen zijn niet voorspelbaar en geschikt voor toepassingen die echte willekeurigheid vereisen.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Wat is een willekeurig getal tussen 1 en 6 (dobbelsteen)?</h3>
+      <p>Stel 'Van' in op 1 en 'Tot' op 6 en klik op 'Genereer'. De tool gooit als het ware een virtuele dobbelsteen. Wil je met twee dobbelstenen gooien? Stel het aantal dan in op 2. Op die manier kun je ook andere dobbelstenen nabootsen, zoals een twintigvlak door het bereik 1 tot 20 te kiezen.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Kan ik de resultaten exporteren?</h3>
+      <p>Ja, als je meer dan 1 getal genereert, verschijnt er een knop 'Download CSV'. Het CSV-bestand bevat een kolom met een volgnummer en een kolom met het willekeurige getal. Je kunt het bestand direct openen in Excel of Google Sheets.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Wat is de geschiedenis functie?</h3>
+      <p>De generator houdt de 10 meest recente generaties bij in een geschiedenis onderaan de tool. Je ziet welke getallen zijn gegenereerd, het gebruikte bereik en het tijdstip. De geschiedenis wordt niet opgeslagen na het sluiten van de pagina.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Is de willekeurig getal generator gratis?</h3>
+      <p>Ja, de willekeurig getal generator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen limiet op het gebruik. De tool werkt direct in je browser, ook op je telefoon.</p>
+    </div>
+  </div>
+
+  <h2>Gerelateerde rekenhulpen</h2>
+  <div class="related-tools">
+    <a href="/procenten-berekenen/">Procenten berekenen</a>
+    <a href="/btw-berekenen/">BTW berekenen</a>
+    <a href="/korting-berekenen/">Korting berekenen</a>
+    <a href="/woorden-tellen/">Woorden tellen</a>
+    <a href="/minimumloon-berekenen/">Minimumloon berekenen</a>
+  </div>
+
+</div>
+
+<div id="ad-bottom"></div>
+
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <strong>Financieel</strong>
+      <ul>
+        <li><a href="/btw-berekenen/">BTW Berekenen</a></li>
+        <li><a href="/procenten-berekenen/">Procenten Berekenen</a></li>
+        <li><a href="/korting-berekenen/">Korting Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Werk &amp; Salaris</strong>
+      <ul>
+        <li><a href="/uurloon-berekenen/">Uurloon Berekenen</a></li>
+        <li><a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a></li>
+        <li><a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Tekst</strong>
+      <ul>
+        <li><a href="/woorden-tellen/">Woorden Tellen</a></li>
+        <li><a href="/tekens-tellen/">Tekens Tellen</a></li>
+        <li><a href="/tekst-vergelijken/">Tekst Vergelijken</a></li>
+      </ul>
+    </div>
+    <div>
+      <strong>Dagelijks</strong>
+      <ul>
+        <li><a href="/minimumloon-berekenen/">Minimumloon Berekenen</a></li>
+        <li><a href="/willekeurig-getal/">Willekeurig Getal</a></li>
+        <li><a href="/wachtwoord-generator/">Wachtwoord Generator</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-bottom">
+    <a href="/privacy/">Privacybeleid</a> &middot;
+    <a href="/contact/">Contact</a> &middot;
+    &copy; 2026 RekenGemak
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Willekeurig Getal Genereren \u2014 RekenGemak",
+  "url": "https://rekengemak.nl/willekeurig-getal/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "inLanguage": "nl",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoe genereer je een willekeurig getal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vul het minimum en maximum in bij de velden 'Van' en 'Tot', kies het gewenste aantal en klik op 'Genereer'. De generator maakt direct een of meerdere willekeurige getallen aan binnen het opgegeven bereik. Standaard genereert de tool een getal tussen 1 en 100."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Waarvoor gebruik je een willekeurig getal generator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Een willekeurig getal generator gebruik je voor het trekken van loten of het bepalen van een winnaar, het toewijzen van willekeurige nummers aan deelnemers, het bepalen van de volgorde van een presentatie of sportwedstrijd, simulaties en kansberekeningen, en spellen waarbij een dobbelsteenworp of vergelijkbare willekeur nodig is."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kan ik meerdere willekeurige getallen tegelijk genereren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, met de veld 'Aantal' kun je tot 100 willekeurige getallen tegelijk genereren. De getallen worden als lijst weergegeven en zijn te kopiëren naar je klembord of te downloaden als CSV-bestand. Handig voor lotingen, steekproeven of statistische toepassingen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Zijn de gegenereerde getallen echt willekeurig?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "De generator gebruikt de Web Cryptography API van je browser, specifiek crypto.getRandomValues(). Dit is een cryptografisch veilige bron van willekeurigheid en aanzienlijk betrouwbaarder dan de standaard Math.random()-functie. De getallen zijn niet voorspelbaar en geschikt voor toepassingen die echte willekeurigheid vereisen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is een willekeurig getal tussen 1 en 6 (dobbelsteen)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stel 'Van' in op 1 en 'Tot' op 6 en klik op 'Genereer'. De tool gooit als het ware een virtuele dobbelsteen. Wil je met twee dobbelstenen gooien? Stel het aantal dan in op 2. Op die manier kun je ook andere dobbelstenen nabootsen, zoals een twintigvlak door het bereik 1 tot 20 te kiezen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kan ik de resultaten exporteren?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, als je meer dan 1 getal genereert, verschijnt er een knop 'Download CSV'. Het CSV-bestand bevat een kolom met een volgnummer en een kolom met het willekeurige getal. Je kunt het bestand direct openen in Excel of Google Sheets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Wat is de geschiedenis functie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "De generator houdt de 10 meest recente generaties bij in een geschiedenis onderaan de tool. Je ziet welke getallen zijn gegenereerd, het gebruikte bereik en het tijdstip. De geschiedenis wordt niet opgeslagen na het sluiten van de pagina."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is de willekeurig getal generator gratis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, de willekeurig getal generator van RekenGemak is volledig gratis. Je hoeft geen account aan te maken en er is geen limiet op het gebruik. De tool werkt direct in je browser, ook op je telefoon."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Thuis",
+      "item": "https://rekengemak.nl/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Willekeurig Getal",
+      "item": "https://rekengemak.nl/willekeurig-getal/"
+    }
+  ]
+}
+</script>
+
+<script>
+/* ═══ CONSTANTEN ═════════════════════════════════════════════════════════ */
+var MAX_AANTAL  = 100;
+var MAX_HISTORY = 10;
+var hist        = [];
+
+/* ═══ CRYPTO RANDOM -- VERPLICHT ═════════════════════════════════════════
+   NOOIT Math.random() gebruiken. Altijd crypto.getRandomValues().
+══════════════════════════════════════════════════════════════════════════ */
+function randomInt(min, max) {
+  var range = max - min + 1;
+  var arr   = new Uint32Array(1);
+  crypto.getRandomValues(arr);
+  return min + (arr[0] % range);
+}
+
+function randomInts(min, max, count) {
+  var range = max - min + 1;
+  var arr   = new Uint32Array(count);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(function(n) { return min + (n % range); });
+}
+
+/* ═══ VALIDATE INPUTS ════════════════════════════════════════════════════ */
+function parseIntField(id) {
+  var val = document.getElementById(id).value.trim();
+  return val === '' ? NaN : parseInt(val, 10);
+}
+
+function validateInputs() {
+  var van   = parseIntField('inp-van');
+  var tot   = parseIntField('inp-tot');
+  var antal = parseIntField('inp-aantal');
+  var btn   = document.getElementById('btn-genereer');
+
+  if (isNaN(van) || isNaN(tot) || isNaN(antal)) {
+    showError('Vul geldige gehele getallen in.'); btn.disabled = true; return false;
+  }
+  if (van >= tot) {
+    showError('"Van" moet kleiner zijn dan "Tot".'); btn.disabled = true; return false;
+  }
+  if (antal < 1 || antal > MAX_AANTAL) {
+    showError('Aantal moet tussen 1 en ' + MAX_AANTAL + ' liggen.'); btn.disabled = true; return false;
+  }
+  hideError(); btn.disabled = false; return true;
+}
+
+function showError(msg) {
+  var el = document.getElementById('error-msg');
+  el.textContent  = msg;
+  el.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('error-msg').style.display = 'none';
+}
+
+/* ═══ GENEREER ═══════════════════════════════════════════════════════════ */
+function genereer() {
+  if (!validateInputs()) return;
+
+  var van   = parseIntField('inp-van');
+  var tot   = parseIntField('inp-tot');
+  var antal = parseIntField('inp-aantal');
+
+  if (antal === 1) {
+    var getal = randomInt(van, tot);
+    toonEnkel(getal);
+    addHistory(van, tot, [getal]);
+  } else {
+    var getallen = randomInts(van, tot, antal);
+    toonMulti(getallen, van, tot);
+    addHistory(van, tot, getallen);
+  }
+}
+
+/* ═══ TOON ENKEL RESULTAAT ═══════════════════════════════════════════════ */
+function toonEnkel(getal) {
+  var single = document.getElementById('result-single');
+  var multi  = document.getElementById('result-multi');
+  var numEl  = document.getElementById('res-num');
+
+  multi.classList.remove('visible');
+  single.classList.add('visible');
+
+  numEl.classList.remove('pop');
+  numEl.textContent = getal.toLocaleString('nl-NL');
+  void numEl.offsetWidth;
+  numEl.classList.add('pop');
+}
+
+/* ═══ TOON MEERDERE RESULTATEN ═══════════════════════════════════════════ */
+function toonMulti(getallen, van, tot) {
+  var single = document.getElementById('result-single');
+  var multi  = document.getElementById('result-multi');
+  var grid   = document.getElementById('numbers-grid');
+  var title  = document.getElementById('multi-title');
+
+  single.classList.remove('visible');
+  multi.classList.add('visible');
+
+  title.textContent = getallen.length + ' willekeurige getallen (' + van + ' t/m ' + tot + ')';
+
+  grid.innerHTML = '';
+  getallen.forEach(function(n, i) {
+    var chip = document.createElement('span');
+    chip.className = 'number-chip';
+    chip.textContent = n.toLocaleString('nl-NL');
+    chip.style.animationDelay = Math.min(i * 20, 400) + 'ms';
+    grid.appendChild(chip);
+  });
+}
+
+/* ═══ COPY ═══════════════════════════════════════════════════════════════ */
+function copyEnkele() {
+  var txt = document.getElementById('res-num').textContent;
+  if (!txt || txt === '--') return;
+  navigator.clipboard.writeText(txt).then(function() {
+    feedbackBtn('btn-copy-single', 'Kopieer getal');
+  });
+}
+
+function copyLijst() {
+  var chips = document.querySelectorAll('#numbers-grid .number-chip');
+  var txt   = Array.from(chips).map(function(c) { return c.textContent; }).join(', ');
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).then(function() {
+    feedbackBtn('btn-copy-multi', 'Kopieer lijst');
+  });
+}
+
+function feedbackBtn(id, orig) {
+  var btn = document.getElementById(id);
+  if (!btn) return;
+  btn.textContent = 'Gekopieerd!';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.textContent = orig;
+    btn.classList.remove('copied');
+  }, 1500);
+}
+
+/* ═══ CSV EXPORT ═════════════════════════════════════════════════════════ */
+function exportCSV() {
+  var chips  = document.querySelectorAll('#numbers-grid .number-chip');
+  if (!chips.length) return;
+  var van    = parseIntField('inp-van');
+  var tot    = parseIntField('inp-tot');
+  var lines  = ['index,getal'];
+  Array.from(chips).forEach(function(c, i) {
+    lines.push((i + 1) + ',' + c.textContent.replace(/\./g, ''));
+  });
+  var csv    = lines.join('\n');
+  var blob   = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url    = URL.createObjectURL(blob);
+  var a      = document.createElement('a');
+  a.href     = url;
+  a.download = 'willekeurige-getallen-' + van + '-' + tot + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ═══ GESCHIEDENIS ═══════════════════════════════════════════════════════ */
+function addHistory(van, tot, getallen) {
+  var nu    = new Date();
+  var tijd  = nu.getHours().toString().padStart(2,'0') + ':' +
+              nu.getMinutes().toString().padStart(2,'0');
+  hist.unshift({ van: van, tot: tot, getallen: getallen, tijd: tijd });
+  if (hist.length > MAX_HISTORY) hist.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  var section = document.getElementById('history-section');
+  var list    = document.getElementById('history-list');
+
+  if (!hist.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+
+  list.innerHTML = '';
+  hist.forEach(function(h) {
+    var li    = document.createElement('div');
+    li.className = 'history-item';
+    var preview = h.getallen.length === 1
+      ? h.getallen[0].toLocaleString('nl-NL')
+      : h.getallen.slice(0, 5).map(function(n) {
+          return n.toLocaleString('nl-NL');
+        }).join(', ') + (h.getallen.length > 5 ? ' ...' : '');
+    li.innerHTML =
+      '<span class="history-val">' + preview + '</span>' +
+      '<span class="history-meta">' +
+        h.getallen.length + 'x &nbsp;|&nbsp; ' + h.van + '&ndash;' + h.tot +
+        ' &nbsp;|&nbsp; ' + h.tijd +
+      '</span>';
+    list.appendChild(li);
+  });
+}
+
+function clearHistory() {
+  hist = [];
+  document.getElementById('history-section').style.display = 'none';
+}
+
+/* ═══ DARK MODE TOGGLE ═══════════════════════════════════════════════════ */
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+
+/* ═══ ENTER KEY ══════════════════════════════════════════════════════════ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') genereer();
+});
+</script>
+
+</body>
+</html>
