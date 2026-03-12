@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+    (function() {
+      var t = localStorage.getItem('rekengemak-theme');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
+    })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Over RekenGemak -- Gratis Online Rekenhulpen | RekenGemak</title>
+  <meta name="description" content="Leer meer over RekenGemak: gratis online rekenhulpen voor Nederland en Belgie. Wie we zijn, onze missie en hoe we tools actueel houden.">
+  <link rel="canonical" href="https://rekengemak.nl/about/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ═══ 3. CONTENT ═════════════════════════════════════════════════════════ */
+.page-content {
+  max-width: 720px; margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+}
+.page-content h1 {
+  font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700;
+  margin-bottom: var(--space-lg);
+}
+.page-content h2 {
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--text-primary);
+  margin: var(--space-lg) 0 var(--space-sm);
+}
+.page-content p {
+  font-size: 0.95rem; color: var(--text-secondary);
+  line-height: 1.7; margin-bottom: var(--space-md);
+}
+
+/* ═══ 4. FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/btw-berekenen/">BTW</a>
+      <a href="/procenten-berekenen/">Procenten</a>
+      <a href="/uurloon-berekenen/">Uurloon</a>
+      <a href="/woorden-tellen/">Tekst</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<article class="page-content">
+  <h1>Over RekenGemak</h1>
+
+  <h2>Wat is RekenGemak?</h2>
+  <p>
+    RekenGemak is een gratis online platform met rekenhulpen voor het dagelijks leven
+    in Nederland en Belgie. Van <a href="/btw-berekenen/">btw berekenen</a> en
+    <a href="/procenten-berekenen/">procenten berekenen</a> tot
+    <a href="/vakantiegeld-berekenen/">vakantiegeld berekenen</a> en
+    <a href="/woorden-tellen/">woorden tellen</a>: alle tools werken direct in je
+    browser, zonder registratie en zonder dat je gegevens worden opgeslagen.
+  </p>
+
+  <h2>Onze missie</h2>
+  <p>
+    Wij geloven dat iedereen toegang moet hebben tot betrouwbare rekenhulpen, zonder
+    verborgen kosten, zonder accounts en zonder advertenties die in de weg zitten. Daarom
+    zijn alle 12 tools op RekenGemak volledig gratis en zonder beperkingen te gebruiken.
+  </p>
+
+  <h2>Altijd actueel</h2>
+  <p>
+    De Nederlandse en Belgische regelgeving verandert regelmatig. Denk aan het
+    minimumloon, btw-tarieven en vakantiegeldpercentages. Wij controleren alle
+    wettelijke bedragen twee keer per jaar en passen de tools direct aan wanneer
+    de overheid nieuwe tarieven publiceert.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Heb je een vraag, opmerking of suggestie? Neem gerust contact met ons op via
+    de <a href="/contact/">contactpagina</a>. We proberen alle berichten binnen
+    enkele werkdagen te beantwoorden.
+  </p>
+</article>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script>
+function toggleTheme() {
+  var cur = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+
+</body>
+</html>
