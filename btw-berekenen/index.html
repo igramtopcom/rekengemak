@@ -520,6 +520,108 @@ select option {
   color: var(--text-primary);
 }
 .tarief-tabel tr:last-child td { border-bottom: none; }
+
+/* ═══ VERGELIJK TABEL ═════════════════════════════════════════════════ */
+.vergelijk-blok {
+  margin-top: var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.vergelijk-blok[hidden] { display: none; }
+.vergelijk-titel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-input);
+  margin: 0;
+}
+.vergelijk-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.vergelijk-tabel th {
+  text-align: right;
+  padding: 8px var(--space-md);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  background: var(--bg-input);
+  border-bottom: 1px solid var(--border);
+}
+.vergelijk-tabel th:first-child { text-align: left; }
+.vergelijk-tabel td {
+  text-align: right;
+  padding: 10px var(--space-md);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+}
+.vergelijk-tabel td:first-child { text-align: left; font-weight: 700; }
+.vergelijk-tabel tr:last-child td { border-bottom: none; }
+.vergelijk-tabel tr.actief-rij td {
+  color: var(--accent-hover);
+  font-weight: 700;
+  background: var(--result-bg);
+}
+
+/* ═══ PRINT / KOPIEER KNOPPEN ═══════════════════════════════════════ */
+.btn-print, .btn-kopieer-alles {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px var(--space-md);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-print:hover, .btn-kopieer-alles:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+.btn-print[hidden], .btn-kopieer-alles[hidden] { display: none; }
+.result-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+@media print {
+  header, footer, nav, #ad-top, #ad-middle, #ad-bottom,
+  .tool-card form, .btn-primary, .btn-print, .btn-kopieer-alles,
+  .formula-blok, .geschiedenis-blok, .geschiedenis-wrap,
+  article, .artikel-faq, .btn-secondary, .btn-copy,
+  .toggle-row, .input-group, .tab-row, #panel-be,
+  .vergelijk-blok, .result-actions, .related-tools,
+  .seizoens-banner {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .result-box {
+    display: block !important;
+    border: 1px solid #cccccc;
+    padding: 16px;
+    border-radius: 4px;
+  }
+  .result-box::before {
+    content: "rekengemak.nl \2014  " attr(data-tool-naam);
+    display: block;
+    font-size: 0.75rem;
+    color: #666666;
+    margin-bottom: 12px;
+  }
+}
   </style>
 </head>
 <body>
@@ -645,7 +747,7 @@ select option {
     </div>
 
     <!-- Result box NL -->
-    <div class="result-box" id="result-nl">
+    <div class="result-box" id="result-nl" data-tool-naam="BTW Berekenen">
       <div class="result-label">Totaal inclusief btw</div>
       <div class="result-main empty" id="res-incl-nl">--</div>
 
@@ -656,6 +758,32 @@ select option {
       <div class="result-sub" style="margin-top:4px;">
         <span id="res-excl-nl" style="color:var(--text-secondary);">Excl. btw: --</span>
       </div>
+      <div class="result-actions" id="result-actions-nl">
+        <button class="btn-print" id="btn-print-nl" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" id="btn-kopieer-alles-nl" hidden onclick="kopieerAlles('nl')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span id="btn-kopieer-alles-tekst-nl">Kopieer alles</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Vergelijkingstabel -->
+    <div class="vergelijk-blok" id="vergelijk-blok" hidden>
+      <p class="vergelijk-titel">Vergelijking alle tarieven</p>
+      <table class="vergelijk-tabel">
+        <thead>
+          <tr>
+            <th>Tarief</th>
+            <th>Excl. btw</th>
+            <th>BTW</th>
+            <th>Incl. btw</th>
+          </tr>
+        </thead>
+        <tbody id="vergelijk-tbody"></tbody>
+      </table>
     </div>
 
     <!-- Reset -->
@@ -700,7 +828,7 @@ select option {
     </div>
 
     <!-- Result box BE -->
-    <div class="result-box" id="result-be">
+    <div class="result-box" id="result-be" data-tool-naam="BTW Berekenen">
       <div class="result-label">Totaal inclusief btw</div>
       <div class="result-main empty" id="res-incl-be">--</div>
       <div class="result-sub">
@@ -709,6 +837,16 @@ select option {
       </div>
       <div class="result-sub" style="margin-top:4px;">
         <span id="res-excl-be" style="color:var(--text-secondary);">Excl. btw: --</span>
+      </div>
+      <div class="result-actions" id="result-actions-be">
+        <button class="btn-print" id="btn-print-be" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" id="btn-kopieer-alles-be" hidden onclick="kopieerAlles('be')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span id="btn-kopieer-alles-tekst-be">Kopieer alles</span>
+        </button>
       </div>
     </div>
 
@@ -1031,12 +1169,20 @@ function recalc(land) {
 
   if (!raw || isNaN(amt) || amt <= 0) {
     setResults(land, null);
+    showActionButtons(land, false);
+    if (land === 'nl') document.getElementById('vergelijk-blok').hidden = true;
     document.getElementById('formula-blok').style.display = 'none';
     return;
   }
 
   var r = incl ? calcExcl(amt, pct) : calcIncl(amt, pct);
   setResults(land, r);
+  showActionButtons(land, true);
+
+  /* Feature A: Vergelijkingstabel (alleen NL) */
+  if (land === 'nl') {
+    vulVergelijkTabel(r.excl, pct);
+  }
 
   var tariefPct = Math.round(pct * 100);
 
@@ -1090,6 +1236,10 @@ function resetPanel(land) {
   var lbl = document.getElementById('amount-label-' + land);
   if (lbl) lbl.textContent = 'Bedrag exclusief btw';
   setResults(land, null);
+  showActionButtons(land, false);
+  if (land === 'nl') {
+    document.getElementById('vergelijk-blok').hidden = true;
+  }
 }
 
 /* ═══ TAB SWITCH ═══════════════════════════════════════════════════════ */
@@ -1239,6 +1389,67 @@ function updateUrl(land, bedrag, pct, incl) {
   params.set('modus', incl ? 'incl' : 'excl');
   if (land === 'be') params.set('land', 'be');
   history.replaceState(null, '', '?' + params.toString());
+}
+
+/* ═══ VERGELIJK TABEL ══════════════════════════════════════════════════ */
+function vulVergelijkTabel(bedragExcl, huidigTarief) {
+  var tarieven = [
+    { label: '21%', pct: 0.21 },
+    { label: '9%',  pct: 0.09 },
+    { label: '0%',  pct: 0.00 }
+  ];
+  var tbody = document.getElementById('vergelijk-tbody');
+  tbody.innerHTML = '';
+  tarieven.forEach(function(t) {
+    var btw  = bedragExcl * t.pct;
+    var incl = bedragExcl + btw;
+    var isActief = Math.abs(t.pct - huidigTarief) < 0.001;
+    var tr = document.createElement('tr');
+    if (isActief) tr.classList.add('actief-rij');
+    tr.innerHTML =
+      '<td>' + t.label + '</td>' +
+      '<td>' + fmtEUR.format(bedragExcl) + '</td>' +
+      '<td>' + fmtEUR.format(btw) + '</td>' +
+      '<td>' + fmtEUR.format(incl) + '</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('vergelijk-blok').hidden = false;
+}
+
+/* ═══ SHOW/HIDE ACTION BUTTONS ════════════════════════════════════════ */
+function showActionButtons(land, show) {
+  var print = document.getElementById('btn-print-' + land);
+  var copy  = document.getElementById('btn-kopieer-alles-' + land);
+  if (print) print.hidden = !show;
+  if (copy)  copy.hidden  = !show;
+}
+
+/* ═══ PRINT ═══════════════════════════════════════════════════════════ */
+function printResultaat() {
+  window.print();
+}
+
+/* ═══ KOPIEER ALLES ═══════════════════════════════════════════════════ */
+function kopieerAlles(land) {
+  var excl   = document.getElementById('res-excl-' + land).textContent.trim();
+  var btw    = document.getElementById('res-btw-'  + land).textContent.trim();
+  var incl   = document.getElementById('res-incl-' + land).textContent.trim();
+  var rateEl = document.getElementById('rate-' + land);
+  var tarief = Math.round(parseFloat(rateEl.value) * 100) + '%';
+
+  var tekst =
+    'BTW Berekening \u2014 rekengemak.nl\n' +
+    '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
+    'Tarief:     ' + tarief + '\n' +
+    excl + '\n' +
+    btw + '\n' +
+    'Incl. btw:  ' + incl;
+
+  navigator.clipboard.writeText(tekst).then(function() {
+    var span = document.getElementById('btn-kopieer-alles-tekst-' + land);
+    span.textContent = 'Gekopieerd!';
+    setTimeout(function() { span.textContent = 'Kopieer alles'; }, 2000);
+  });
 }
 
 /* ═══ INIT ═════════════════════════════════════════════════════════════ */

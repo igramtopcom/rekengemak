@@ -382,6 +382,60 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
 .geschiedenis-item .gh-invoer { color: var(--text-secondary); font-size: 0.8rem; }
 .geschiedenis-item .gh-uitkomst { color: var(--success); font-weight: 600; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 .geschiedenis-item .gh-tijd { font-size: 0.75rem; color: var(--text-secondary); }
+
+/* ═══ PRINT / KOPIEER KNOPPEN ═══════════════════════════════════════ */
+.btn-print, .btn-kopieer-alles {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px var(--space-md);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-print:hover, .btn-kopieer-alles:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+.btn-print[hidden], .btn-kopieer-alles[hidden] { display: none; }
+.result-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+@media print {
+  header, footer, nav, #ad-top, #ad-middle, #ad-bottom,
+  .tool-card form, .btn-primary, .btn-print, .btn-kopieer-alles,
+  .formula-blok, .geschiedenis-blok, .geschiedenis-wrap,
+  article, .artikel-faq, .btn-secondary, .btn-copy,
+  .toggle-row, .input-group, .tab-row,
+  .result-actions, .related-tools {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .result-box {
+    display: block !important;
+    border: 1px solid #cccccc;
+    padding: 16px;
+    border-radius: 4px;
+  }
+  .result-box::before {
+    content: "rekengemak.nl \2014  " attr(data-tool-naam);
+    display: block;
+    font-size: 0.75rem;
+    color: #666666;
+    margin-bottom: 12px;
+  }
+}
   </style>
 </head>
 <body>
@@ -495,11 +549,21 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
                placeholder="bijv. 200" oninput="calc(1)">
       </div>
     </div>
-    <div class="result-box">
+    <div class="result-box" data-tool-naam="Procenten Berekenen">
       <div class="result-label">Resultaat</div>
       <div class="result-main" id="res-1">--</div>
       <div style="margin-top:8px;">
         <button class="btn-copy" onclick="copyVal('res-1')">Kopieer</button>
+      </div>
+      <div class="result-actions">
+        <button class="btn-print" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+        </button>
       </div>
     </div>
     <button class="btn-secondary" onclick="resetPanel(1)" style="margin-top:12px;">Wis alles</button>
@@ -524,11 +588,21 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
                placeholder="bijv. 80" oninput="calc(2)">
       </div>
     </div>
-    <div class="result-box">
+    <div class="result-box" data-tool-naam="Procenten Berekenen">
       <div class="result-label">Percentage</div>
       <div class="result-main" id="res-2">--</div>
       <div style="margin-top:8px;">
         <button class="btn-copy" onclick="copyVal('res-2')">Kopieer</button>
+      </div>
+      <div class="result-actions">
+        <button class="btn-print" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+        </button>
       </div>
     </div>
     <button class="btn-secondary" onclick="resetPanel(2)" style="margin-top:12px;">Wis alles</button>
@@ -553,7 +627,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
                placeholder="bijv. 100" oninput="calc(3)">
       </div>
     </div>
-    <div class="result-box">
+    <div class="result-box" data-tool-naam="Procenten Berekenen">
       <div class="result-label">Procentuele verandering</div>
       <div class="result-main" id="res-3">--</div>
       <div class="result-sub" style="margin-top:6px;">
@@ -561,6 +635,16 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
       </div>
       <div style="margin-top:8px;">
         <button class="btn-copy" onclick="copyVal('res-3')">Kopieer</button>
+      </div>
+      <div class="result-actions">
+        <button class="btn-print" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+        </button>
       </div>
     </div>
     <button class="btn-secondary" onclick="resetPanel(3)" style="margin-top:12px;">Wis alles</button>
@@ -586,7 +670,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
         <span class="input-suffix">%</span>
       </div>
     </div>
-    <div class="result-box">
+    <div class="result-box" data-tool-naam="Procenten Berekenen">
       <div class="result-label">Nieuw bedrag</div>
       <div class="result-main" id="res-4">--</div>
       <div class="result-sub" style="margin-top:6px;">
@@ -594,6 +678,16 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
       </div>
       <div style="margin-top:8px;">
         <button class="btn-copy" onclick="copyVal('res-4')">Kopieer</button>
+      </div>
+      <div class="result-actions">
+        <button class="btn-print" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+        </button>
       </div>
     </div>
     <button class="btn-secondary" onclick="resetPanel(4)" style="margin-top:12px;">Wis alles</button>
@@ -619,7 +713,7 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
         <span class="input-suffix">%</span>
       </div>
     </div>
-    <div class="result-box">
+    <div class="result-box" data-tool-naam="Procenten Berekenen">
       <div class="result-label">Nieuw bedrag</div>
       <div class="result-main" id="res-5">--</div>
       <div class="result-sub" style="margin-top:6px;">
@@ -627,6 +721,16 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
       </div>
       <div style="margin-top:8px;">
         <button class="btn-copy" onclick="copyVal('res-5')">Kopieer</button>
+      </div>
+      <div class="result-actions">
+        <button class="btn-print" hidden onclick="printResultaat()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Afdrukken
+        </button>
+        <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+        </button>
       </div>
     </div>
     <button class="btn-secondary" onclick="resetPanel(5)" style="margin-top:12px;">Wis alles</button>
@@ -939,7 +1043,7 @@ function calc(tab) {
     case 1: {
       var pct   = parseNL(document.getElementById('p1-pct').value);
       var getal = parseNL(document.getElementById('p1-getal').value);
-      if (isNaN(pct) || isNaN(getal)) { setResult(1, null); document.getElementById('formula-blok').style.display = 'none'; return; }
+      if (isNaN(pct) || isNaN(getal)) { setResult(1, null); showActionButtons(false); document.getElementById('formula-blok').style.display = 'none'; return; }
       r = (pct / 100) * getal;
       setResult(1, fmtResult(r, false));
       updateUrl();
@@ -957,7 +1061,7 @@ function calc(tab) {
     case 2: {
       var deel   = parseNL(document.getElementById('p2-deel').value);
       var geheel = parseNL(document.getElementById('p2-geheel').value);
-      if (isNaN(deel) || isNaN(geheel) || geheel === 0) { setResult(2, null); document.getElementById('formula-blok').style.display = 'none'; return; }
+      if (isNaN(deel) || isNaN(geheel) || geheel === 0) { setResult(2, null); showActionButtons(false); document.getElementById('formula-blok').style.display = 'none'; return; }
       r = (deel / geheel) * 100;
       setResult(2, fmtResult(r, true));
       updateUrl();
@@ -975,7 +1079,7 @@ function calc(tab) {
     case 3: {
       var oud   = parseNL(document.getElementById('p3-oud').value);
       var nieuw = parseNL(document.getElementById('p3-nieuw').value);
-      if (isNaN(oud) || isNaN(nieuw) || oud === 0) { setResult(3, null); document.getElementById('formula-blok').style.display = 'none'; return; }
+      if (isNaN(oud) || isNaN(nieuw) || oud === 0) { setResult(3, null); showActionButtons(false); document.getElementById('formula-blok').style.display = 'none'; return; }
       var pctVer = ((nieuw - oud) / Math.abs(oud)) * 100;
       var absVer = nieuw - oud;
       var prefix = pctVer >= 0 ? '+' : '';
@@ -996,13 +1100,14 @@ function calc(tab) {
         prefix + fmtPct.format(pctVer) + '%',
         { tab: 3, v1: document.getElementById('p3-oud').value, v2: document.getElementById('p3-nieuw').value }
       );
+      showActionButtons(true);
       return;
     }
 
     case 4: {
       var getal4 = parseNL(document.getElementById('p4-getal').value);
       var pct4   = parseNL(document.getElementById('p4-pct').value);
-      if (isNaN(getal4) || isNaN(pct4)) { setResult(4, null); document.getElementById('formula-blok').style.display = 'none'; return; }
+      if (isNaN(getal4) || isNaN(pct4)) { setResult(4, null); showActionButtons(false); document.getElementById('formula-blok').style.display = 'none'; return; }
       var nieuw4  = getal4 * (1 + pct4 / 100);
       var toename = nieuw4 - getal4;
       document.getElementById('res-4-toe').textContent =
@@ -1023,7 +1128,7 @@ function calc(tab) {
     case 5: {
       var getal5 = parseNL(document.getElementById('p5-getal').value);
       var pct5   = parseNL(document.getElementById('p5-pct').value);
-      if (isNaN(getal5) || isNaN(pct5)) { setResult(5, null); document.getElementById('formula-blok').style.display = 'none'; return; }
+      if (isNaN(getal5) || isNaN(pct5)) { setResult(5, null); showActionButtons(false); document.getElementById('formula-blok').style.display = 'none'; return; }
       var nieuw5 = getal5 * (1 - pct5 / 100);
       var afname = getal5 - nieuw5;
       document.getElementById('res-5-af').textContent =
@@ -1041,6 +1146,7 @@ function calc(tab) {
       break;
     }
   }
+  showActionButtons(true);
 }
 
 /* ═══ SET RESULT ════════════════════════════════════════════════════════ */
@@ -1072,6 +1178,7 @@ function resetPanel(tab) {
   var panel = document.getElementById('panel-' + tab);
   panel.querySelectorAll('input').forEach(function(i) { i.value = ''; });
   setResult(tab, null);
+  showActionButtons(false);
 }
 
 /* ═══ TAB SWITCH ════════════════════════════════════════════════════════ */
@@ -1267,6 +1374,66 @@ function updateUrl() {
       break;
   }
   history.replaceState(null, '', '?' + params.toString());
+}
+
+/* ═══ PRINT ═══════════════════════════════════════════════════════════ */
+function printResultaat() {
+  window.print();
+}
+
+/* ═══ KOPIEER ALLES ═══════════════════════════════════════════════════ */
+function kopieerAlles() {
+  var resEl = document.getElementById('res-' + activeTab);
+  var resultaat = resEl ? resEl.textContent.trim() : '--';
+  if (!resultaat || resultaat === '--') return;
+  var tekst = 'Procenten Berekenen \u2014 rekengemak.nl\n';
+  tekst += '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n';
+  switch (activeTab) {
+    case 1:
+      tekst += 'Percentage:   ' + document.getElementById('p1-pct').value + '%\n';
+      tekst += 'Van getal:    ' + document.getElementById('p1-getal').value + '\n';
+      tekst += 'Resultaat:    ' + resultaat + '\n';
+      break;
+    case 2:
+      tekst += 'Getal (deel): ' + document.getElementById('p2-deel').value + '\n';
+      tekst += 'Geheel:       ' + document.getElementById('p2-geheel').value + '\n';
+      tekst += 'Percentage:   ' + resultaat + '\n';
+      break;
+    case 3:
+      tekst += 'Beginwaarde:  ' + document.getElementById('p3-oud').value + '\n';
+      tekst += 'Eindwaarde:   ' + document.getElementById('p3-nieuw').value + '\n';
+      tekst += 'Verandering:  ' + resultaat + '\n';
+      var abs3 = document.getElementById('res-3-abs');
+      if (abs3) tekst += 'Absoluut:     ' + abs3.textContent.replace('Absoluut verschil: ', '') + '\n';
+      break;
+    case 4:
+      tekst += 'Beginbedrag:  ' + document.getElementById('p4-getal').value + '\n';
+      tekst += 'Verhoging:    ' + document.getElementById('p4-pct').value + '%\n';
+      tekst += 'Nieuw bedrag: ' + resultaat + '\n';
+      var toe4 = document.getElementById('res-4-toe');
+      if (toe4) tekst += 'Toename:      ' + toe4.textContent.replace('Toename: ', '') + '\n';
+      break;
+    case 5:
+      tekst += 'Beginbedrag:  ' + document.getElementById('p5-getal').value + '\n';
+      tekst += 'Verlaging:    ' + document.getElementById('p5-pct').value + '%\n';
+      tekst += 'Nieuw bedrag: ' + resultaat + '\n';
+      var af5 = document.getElementById('res-5-af');
+      if (af5) tekst += 'Afname:       ' + af5.textContent.replace('Afname: ', '') + '\n';
+      break;
+  }
+  navigator.clipboard.writeText(tekst).then(function() {
+    var span = document.querySelector('#panel-' + activeTab + ' .btn-kopieer-alles-tekst');
+    if (span) {
+      span.textContent = 'Gekopieerd!';
+      setTimeout(function() { span.textContent = 'Kopieer alles'; }, 2000);
+    }
+  });
+}
+
+/* ═══ SHOW/HIDE ACTION BUTTONS ════════════════════════════════════════ */
+function showActionButtons(show) {
+  var btns = document.querySelectorAll('.btn-print, .btn-kopieer-alles');
+  btns.forEach(function(b) { b.hidden = !show; });
 }
 
 /* ═══ INIT ═════════════════════════════════════════════════════════════ */

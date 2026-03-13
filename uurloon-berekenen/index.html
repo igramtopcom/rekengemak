@@ -545,6 +545,60 @@ input[type="range"] {
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
+
+/* ═══ PRINT / KOPIEER KNOPPEN ═══════════════════════════════════════ */
+.btn-print, .btn-kopieer-alles {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px var(--space-md);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-print:hover, .btn-kopieer-alles:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+.btn-print[hidden], .btn-kopieer-alles[hidden] { display: none; }
+.result-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+@media print {
+  header, footer, nav, #ad-top, #ad-middle, #ad-bottom,
+  .tool-card form, .btn-primary, .btn-print, .btn-kopieer-alles,
+  .formula-blok, .geschiedenis-blok, .geschiedenis-wrap,
+  article, .artikel-faq, .btn-secondary, .btn-copy,
+  .toggle-row, .input-group, .tab-row,
+  .result-actions, .related-tools {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .result-box {
+    display: block !important;
+    border: 1px solid #cccccc;
+    padding: 16px;
+    border-radius: 4px;
+  }
+  .result-box::before {
+    content: "rekengemak.nl \2014  " attr(data-tool-naam);
+    display: block;
+    font-size: 0.75rem;
+    color: #666666;
+    margin-bottom: 12px;
+  }
+}
   </style>
 </head>
 <body>
@@ -667,7 +721,7 @@ input[type="range"] {
           </label>
         </div>
 
-        <div class="result-box">
+        <div class="result-box" data-tool-naam="Uurloon Berekenen">
           <div class="result-label">Bruto uurloon</div>
           <div class="result-main" id="res-1" style="color:var(--text-secondary);font-size:1.2rem;font-weight:400;">--</div>
 
@@ -684,6 +738,16 @@ input[type="range"] {
 
           <div style="margin-top:12px;">
             <button class="btn-copy" onclick="copyVal('res-1')">Kopieer uurloon</button>
+          </div>
+          <div class="result-actions">
+            <button class="btn-print" hidden onclick="printResultaat()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Afdrukken
+            </button>
+            <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+            </button>
           </div>
         </div>
 
@@ -733,7 +797,7 @@ input[type="range"] {
           </label>
         </div>
 
-        <div class="result-box">
+        <div class="result-box" data-tool-naam="Uurloon Berekenen">
           <div class="result-label">Bruto maandsalaris</div>
           <div class="result-main" id="res-2" style="color:var(--text-secondary);font-size:1.2rem;font-weight:400;">--</div>
 
@@ -750,6 +814,16 @@ input[type="range"] {
 
           <div style="margin-top:12px;">
             <button class="btn-copy" onclick="copyVal('res-2')">Kopieer maandsalaris</button>
+          </div>
+          <div class="result-actions">
+            <button class="btn-print" hidden onclick="printResultaat()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Afdrukken
+            </button>
+            <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+            </button>
           </div>
         </div>
 
@@ -1058,7 +1132,10 @@ function setSlider(sliderId, valueId, val) {
    excl. VG: maand = (uurloon x uren x 52) / 12
    incl. VG: maand = (uurloon x uren x 52) / (12 x 1.08)
 ════════════════════════════════════════════════════════════════════════ */
+var activeTab = 1;
+
 function calc(tab) {
+  activeTab = tab;
   if (tab === 1) {
     var salaris = parseNL(document.getElementById('p1-salaris').value);
     var uren    = parseInt(document.getElementById('p1-uren').value);
@@ -1066,6 +1143,7 @@ function calc(tab) {
 
     if (isNaN(salaris) || salaris <= 0) {
       setResult(1, null);
+      showActionButtons(false);
       document.getElementById('formula-blok').style.display = 'none';
       return;
     }
@@ -1095,6 +1173,7 @@ function calc(tab) {
       fmtEUR.format(uurloon) + '/uur',
       { salaris: document.getElementById('p1-salaris').value, uren: uren, richting: 'naar-uur', vg: vg }
     );
+    showActionButtons(true);
   }
 
   if (tab === 2) {
@@ -1104,6 +1183,7 @@ function calc(tab) {
 
     if (isNaN(uurloon2) || uurloon2 <= 0) {
       setResult(2, null);
+      showActionButtons(false);
       document.getElementById('formula-blok').style.display = 'none';
       return;
     }
@@ -1133,6 +1213,7 @@ function calc(tab) {
       fmtEUR.format(maand2) + '/mnd',
       { uurloon: document.getElementById('p2-uurloon').value, uren: uren2, richting: 'naar-maand', vg: vg2 }
     );
+    showActionButtons(true);
   }
 }
 
@@ -1166,6 +1247,7 @@ function resetPanel(tab) {
   setSlider('p' + tab + '-uren', 'p' + tab + '-uren-value', 40);
   document.getElementById('p' + tab + '-vg').checked = false;
   setResult(tab, null);
+  showActionButtons(false);
 }
 
 /* ═══ TAB SWITCH ════════════════════════════════════════════════════════ */
@@ -1322,6 +1404,52 @@ function updateUrl(bedrag, uren, richting) {
   params.set('uren', uren);
   params.set('richting', richting);
   history.replaceState(null, '', '?' + params.toString());
+}
+
+/* ═══ PRINT ═══════════════════════════════════════════════════════════ */
+function printResultaat() {
+  window.print();
+}
+
+/* ═══ KOPIEER ALLES ═══════════════════════════════════════════════════ */
+function kopieerAlles() {
+  var resEl = document.getElementById('res-' + activeTab);
+  var resultaat = resEl ? resEl.textContent.trim() : '--';
+  if (!resultaat || resultaat === '--') return;
+  var tekst = 'Uurloon Berekenen \u2014 rekengemak.nl\n';
+  tekst += '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n';
+  if (activeTab === 1) {
+    tekst += 'Maandsalaris:    ' + document.getElementById('p1-salaris').value + '\n';
+    tekst += 'Uren per week:   ' + document.getElementById('p1-uren').value + '\n';
+    tekst += 'Vakantiegeld:    ' + (document.getElementById('p1-vg').checked ? 'Ja' : 'Nee') + '\n';
+    tekst += 'Bruto uurloon:   ' + resultaat + '\n';
+    var jaar1 = document.getElementById('res-1-jaar');
+    if (jaar1) tekst += 'Bruto jaarsalaris: ' + jaar1.textContent + '\n';
+    var uren1 = document.getElementById('res-1-uren');
+    if (uren1) tekst += 'Uren per jaar:   ' + uren1.textContent + '\n';
+  } else {
+    tekst += 'Bruto uurloon:   ' + document.getElementById('p2-uurloon').value + '\n';
+    tekst += 'Uren per week:   ' + document.getElementById('p2-uren').value + '\n';
+    tekst += 'Vakantiegeld:    ' + (document.getElementById('p2-vg').checked ? 'Ja' : 'Nee') + '\n';
+    tekst += 'Maandsalaris:    ' + resultaat + '\n';
+    var jaar2 = document.getElementById('res-2-jaar');
+    if (jaar2) tekst += 'Bruto jaarsalaris: ' + jaar2.textContent + '\n';
+    var uren2 = document.getElementById('res-2-uren');
+    if (uren2) tekst += 'Uren per jaar:   ' + uren2.textContent + '\n';
+  }
+  navigator.clipboard.writeText(tekst).then(function() {
+    var span = document.querySelector('#panel-' + activeTab + ' .btn-kopieer-alles-tekst');
+    if (span) {
+      span.textContent = 'Gekopieerd!';
+      setTimeout(function() { span.textContent = 'Kopieer alles'; }, 2000);
+    }
+  });
+}
+
+/* ═══ SHOW/HIDE ACTION BUTTONS ════════════════════════════════════════ */
+function showActionButtons(show) {
+  var btns = document.querySelectorAll('.btn-print, .btn-kopieer-alles');
+  btns.forEach(function(b) { b.hidden = !show; });
 }
 
 /* ═══ INIT ═════════════════════════════════════════════════════════════ */
