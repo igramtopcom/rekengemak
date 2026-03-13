@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <script>
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
+  </script>
+  <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QH1TEMRFMD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QH1TEMRFMD');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTW op eten en drinken in 2026: 9% of 21%?</title>
+  <meta name="description" content="Hoeveel btw zit er op eten en drinken? Lees welk tarief geldt in de supermarkt, het restaurant en bij bezorging, en wat de uitzonderingen zijn.">
+  <link rel="canonical" href="https://rekengemak.nl/kennisbank/btw-op-eten-en-drinken/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
+  <meta property="og:title" content="BTW op eten en drinken in 2026: 9% of 21%?">
+  <meta property="og:description" content="Hoeveel btw zit er op eten en drinken? Lees welk tarief geldt in de supermarkt, het restaurant en bij bezorging, en wat de uitzonderingen zijn.">
+  <meta property="og:url" content="https://rekengemak.nl/kennisbank/btw-op-eten-en-drinken/">
+  <meta property="og:type" content="website">
+  <style>
+/* ═══ 1. CSS VARIABLES ═══════════════════════════════════════════════ */
+:root, [data-theme="dark"] {
+  --bg-primary:    #0D1117;
+  --bg-card:       #161B22;
+  --bg-input:      #21262D;
+  --border:        #30363D;
+  --result-bg:     #1C3A5A;
+  --accent:        #1F5C99;
+  --accent-hover:  #2272C3;
+  --success:       #2EA043;
+  --text-primary:  #E6EDF3;
+  --text-secondary:#8B949E;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --radius:    10px;
+  --transition:0.15s ease;
+}
+
+[data-theme="light"] {
+  --bg-primary:    #F6F8FA;
+  --bg-card:       #FFFFFF;
+  --bg-input:      #F0F3F6;
+  --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
+  --text-primary:  #1F2328;
+  --text-secondary:#636C76;
+}
+
+/* ═══ RESET ═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.header-inner {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-lg);
+  max-width: 1100px; margin: 0 auto;
+}
+.logo { text-decoration: none; font-size: 1.3rem; font-weight: 700; }
+.logo-reken { color: var(--text-primary); }
+.logo-gemak { color: var(--accent); }
+
+.theme-toggle {
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); cursor: pointer;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; transition: border-color var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text-primary); border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile {
+  display: none;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  padding: var(--space-md) var(--space-lg);
+}
+.nav-mobile.open { display: block; }
+
+.nav-mobile-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  max-width: 1100px; margin: 0 auto;
+}
+@media (max-width: 400px) {
+  .nav-mobile-grid { grid-template-columns: 1fr; }
+}
+.nav-group { display: flex; flex-direction: column; gap: 6px; }
+.nav-group-title {
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--accent); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 2px;
+}
+.nav-group a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; padding: 3px 0;
+  transition: color var(--transition);
+}
+.nav-group a:hover { color: var(--text-primary); }
+
+.nav-desktop { display: flex; gap: var(--space-md); }
+.nav-desktop a {
+  font-size: 0.9rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.nav-desktop a:hover { color: var(--text-primary); }
+
+@media (max-width: 768px) {
+  .nav-desktop { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ═══ FOOTER ══════════════════════════════════════════════════════════ */
+footer {
+  margin-top: var(--space-xl);
+  padding: 40px var(--space-lg);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(5, 1fr);
+  gap: var(--space-lg);
+  max-width: 1100px; margin: 0 auto var(--space-xl);
+}
+.footer-col { display: flex; flex-direction: column; gap: 6px; }
+.footer-brand { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.footer-desc {
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.footer-title {
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
+}
+.footer-col a {
+  font-size: 0.85rem; color: var(--text-secondary);
+  text-decoration: none; transition: color var(--transition);
+}
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom {
+  text-align: center; font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; justify-content: center; gap: var(--space-md);
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 400px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ KENNISBANK ARTIKEL ═════════════════════════════════════════════ */
+.kennisbank-artikel {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.artikel-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.artikel-intro {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+  border-left: 3px solid var(--accent);
+  padding-left: var(--space-md);
+}
+.kennisbank-artikel h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.kennisbank-artikel ul,
+.kennisbank-artikel ol {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.kennisbank-artikel li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.scenario-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+.scenario-box .scenario-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--success);
+  margin-bottom: 6px;
+}
+.scenario-box p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+.cta-tool-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-xl) 0;
+  text-align: center;
+}
+.cta-tool-box p {
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition);
+}
+.btn-primary:hover { background: var(--accent-hover); text-decoration: none; }
+.artikel-faq {
+  margin-top: var(--space-xl);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-xl);
+}
+.artikel-faq .faq-item {
+  margin-bottom: var(--space-lg);
+}
+.artikel-faq h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+}
+
+.tarief-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.tarief-badge.hoog {
+  background: rgba(31, 92, 153, 0.2);
+  color: #2272C3;
+  border: 1px solid #1F5C99;
+}
+
+.tarief-badge.laag {
+  background: rgba(46, 160, 67, 0.15);
+  color: #2EA043;
+  border: 1px solid #2EA043;
+}
+
+.tarief-badge.nul {
+  background: rgba(139, 148, 158, 0.15);
+  color: #8B949E;
+  border: 1px solid #30363D;
+}
+
+.antwoord-box {
+  background: var(--result-bg);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-md) 0 var(--space-xl);
+  text-align: center;
+}
+
+.antwoord-box .antwoord-getal {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--accent-hover);
+  display: block;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.antwoord-box .antwoord-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.tarief-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-md) 0;
+  font-size: 0.9rem;
+}
+
+.tarief-tabel th {
+  text-align: left;
+  padding: 10px var(--space-md);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border);
+}
+
+.tarief-tabel td {
+  padding: 10px var(--space-md);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.tarief-tabel tr:last-child td {
+  border-bottom: none;
+}
+
+.tarief-tabel .badge-cel {
+  white-space: nowrap;
+}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo" aria-label="RekenGemak homepage">
+      <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Hoofdnavigatie">
+      <a href="/#financieel">Financieel</a>
+      <a href="/#werk-salaris">Werk &amp; Salaris</a>
+      <a href="/#tekst">Tekst</a>
+      <a href="/#dagelijks">Dagelijks</a>
+      <a href="/kennisbank/">Kennisbank</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Thema wisselen">&#9681;</button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()"
+              aria-label="Menu openen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-grid">
+      <div class="nav-group">
+        <span class="nav-group-title">Financieel</span>
+        <a href="/btw-berekenen/">BTW Berekenen</a>
+        <a href="/procenten-berekenen/">Procenten Berekenen</a>
+        <a href="/korting-berekenen/">Korting Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Werk &amp; Salaris</span>
+        <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+        <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+        <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+        <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Tekst</span>
+        <a href="/woorden-tellen/">Woorden Tellen</a>
+        <a href="/tekens-tellen/">Tekens Tellen</a>
+        <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Dagelijks</span>
+        <a href="/willekeurig-getal/">Willekeurig Getal</a>
+        <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-title">Kennisbank</span>
+        <a href="/kennisbank/">Alle artikelen</a>
+        <a href="/kennisbank/wat-is-btw/">Wat is btw?</a>
+        <a href="/kennisbank/bruto-netto-verschil/">Bruto vs netto</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div id="ad-top"></div>
+
+<main>
+  <article class="kennisbank-artikel">
+    <div class="artikel-meta">Bijgewerkt: maart 2026 · 5 min lezen</div>
+    <h1>BTW op eten en drinken: welk tarief geldt wanneer?</h1>
+
+    <p class="artikel-intro">
+      Voedsel en drinken vallen grotendeels onder het lage btw-tarief
+      van 9%. Maar er zijn uitzonderingen die regelmatig voor verwarring
+      zorgen: alcohol, snoep, energiedrankjes en restaurantbezoek hebben
+      soms een ander tarief. Hier lees je precies wat waar geldt.
+    </p>
+
+    <div class="antwoord-box">
+      <span class="antwoord-getal">9%</span>
+      <span class="antwoord-label">btw op de meeste voeding in Nederland</span>
+    </div>
+
+    <h2>Wat valt onder 9% btw?</h2>
+    <p>
+      Het lage tarief van 9% geldt voor de meeste voedingsmiddelen in
+      de supermarkt: groente, fruit, vlees, vis, zuivel, brood, pasta,
+      rijst, olie en sauzen. Ook niet-alcoholische dranken zoals water,
+      sap, frisdrank en koffie vallen onder 9%. Maaltijden die je
+      meeneemt bij een afhaalrestaurant of bezorgdienst vallen
+      ook onder 9%.
+    </p>
+
+    <table class="tarief-tabel">
+      <thead>
+        <tr><th>Product/dienst</th><th>Tarief NL</th><th>Tarief BE</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Supermarktproducten (voeding)</td>
+            <td><span class="tarief-badge laag">9%</span></td>
+            <td><span class="tarief-badge laag">6%</span></td></tr>
+        <tr><td>Alcoholische dranken</td>
+            <td><span class="tarief-badge laag">9%</span></td>
+            <td><span class="tarief-badge hoog">21%</span></td></tr>
+        <tr><td>Eten in restaurant (ter plaatse)</td>
+            <td><span class="tarief-badge laag">9%</span></td>
+            <td><span class="tarief-badge laag">6%</span></td></tr>
+        <tr><td>Afhaalmaaltijd / bezorging</td>
+            <td><span class="tarief-badge laag">9%</span></td>
+            <td><span class="tarief-badge laag">6%</span></td></tr>
+        <tr><td>Energiedrankjes (Red Bull e.d.)</td>
+            <td><span class="tarief-badge hoog">21%</span></td>
+            <td><span class="tarief-badge hoog">21%</span></td></tr>
+        <tr><td>Snoep en chocolade</td>
+            <td><span class="tarief-badge laag">9%</span></td>
+            <td><span class="tarief-badge laag">6%</span></td></tr>
+        <tr><td>Kauwgom</td>
+            <td><span class="tarief-badge hoog">21%</span></td>
+            <td><span class="tarief-badge laag">6%</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Bijzondere gevallen</h2>
+    <p>
+      Alcohol valt in Nederland onder 9% btw, ook al is er accijns over
+      bier, wijn en sterke drank. Let op: accijns en btw zijn twee
+      verschillende belastingen. De accijns wordt eerst berekend en
+      daarna wordt ook over de accijns nog 9% btw geheven.
+    </p>
+    <p>
+      Energiedrankjes zoals Red Bull vallen in Nederland onder 21%
+      vanwege een aparte categorie voor producten met een hoog
+      caffe&iuml;negehalte. Kauwgom valt ook onder 21% omdat het niet
+      als voedingsmiddel wordt beschouwd.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Horecaondernemer: gemengde tarieven op een rekening</div>
+      <p>
+        Ahmed heeft een restaurant. Een tafel bestelt pasta (9%), een
+        fles wijn (9% btw maar ook accijns) en twee blikjes Red Bull
+        (21%). Ahmed moet drie btw-tarieven op zijn kassasysteem
+        bijhouden en apart aangeven in zijn btw-aangifte. Maakt hij
+        een gemiddeld tarief van 9% over alles? Dan betaalt hij te
+        weinig btw over de Red Bull en riskeert hij een naheffing.
+      </p>
+    </div>
+
+    <h2>Maaltijdbezorging: wanneer 9%, wanneer meer?</h2>
+    <p>
+      Bezorgdiensten zoals Thuisbezorgd en Uber Eats rekenen 9% btw
+      over de maaltijd. Over de bezorgkosten rekenen ze ook 9% als
+      de bezorging onlosmakelijk verbonden is met de maaltijd.
+      Rekenen ze de bezorging apart als logistieke dienst? Dan kan
+      het 21%-tarief van toepassing zijn.
+    </p>
+
+    <div class="scenario-box">
+      <div class="scenario-label">Supermarkt versus bezorging: verschil in btw?</div>
+      <p>
+        Karin koopt een pak pasta in de supermarkt voor &euro; 2,00.
+        Btw: 9% = &euro; 0,17. Ze bestelt dezelfde pasta via een
+        boodschappenbezorgdienst voor &euro; 2,50 inclusief bezorgkosten.
+        De bezorgdienst splitst: &euro; 2,00 product (9% btw) + &euro; 0,50
+        bezorging (21% btw). De totale btw is iets hoger dan bij de
+        supermarkt. Dat is waarom bezorgdiensten soms iets duurder
+        uitvallen dan de prijs doet vermoeden.
+      </p>
+    </div>
+
+    <div class="cta-tool-box">
+      <p>Bereken snel het btw-bedrag over een prijs voor eten of drinken.</p>
+      <a href="/btw-berekenen/" class="btn-primary">Naar de BTW calculator</a>
+    </div>
+
+    <p>Meer lezen: <a href="/kennisbank/wat-is-btw/">Wat is btw en hoe werkt het?</a> en
+    <a href="/kennisbank/btw-op-benzine/">BTW op benzine en diesel</a>.</p>
+
+    <div class="artikel-faq">
+      <h2>Veelgestelde vragen over btw op eten en drinken</h2>
+
+      <div class="faq-item">
+        <h3>Hoeveel btw zit er op een restaurantrekening?</h3>
+        <p>In Nederland rekent een restaurant 9% btw over eten en drinken, ook over alcoholische dranken. Over een rekening van &euro; 50 zit dus &euro; 50 / 1,09 x 0,09 = &euro; 4,13 btw. In Belgi&euml; is het restauranttarief ook 6% voor eten en drinken dat ter plaatse wordt geconsumeerd.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Betaal ik btw over mijn koffie bij de koffiezaak?</h3>
+        <p>Ja, 9% btw. Zowel de koffie zelf als het serveren ter plaatse valt onder het lage tarief in Nederland. Een blikje energiedrank bij de kassa valt wel onder 21%.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Hoe zit het met btw op vitamines en voedingssupplementen?</h3>
+        <p>Voedingssupplementen die als voedingsmiddel worden aangemerkt vallen onder 9%. Supplementen die als geneesmiddel worden geclassificeerd (met vergunning van het CBG) vallen ook onder 9%. Producten die als cosmetisch middel worden verkocht vallen onder 21%. De verpakking en claims op het product bepalen de classificatie.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<div id="ad-bottom"></div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-brand">
+        <span class="logo-reken">Reken</span><span class="logo-gemak">Gemak</span>
+      </div>
+      <p class="footer-desc">
+        Gratis online rekenhulpen voor Nederland en Belgie. Altijd actueel, altijd gratis.
+      </p>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Financieel</span>
+      <a href="/btw-berekenen/">BTW Berekenen</a>
+      <a href="/procenten-berekenen/">Procenten Berekenen</a>
+      <a href="/korting-berekenen/">Korting Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Werk &amp; Salaris</span>
+      <a href="/uurloon-berekenen/">Uurloon Berekenen</a>
+      <a href="/vakantiegeld-berekenen/">Vakantiegeld Berekenen</a>
+      <a href="/vakantiedagen-berekenen/">Vakantiedagen Berekenen</a>
+      <a href="/minimumloon-berekenen/">Minimumloon Berekenen</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Tekst</span>
+      <a href="/woorden-tellen/">Woorden Tellen</a>
+      <a href="/tekens-tellen/">Tekens Tellen</a>
+      <a href="/tekst-vergelijken/">Tekst Vergelijken</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Dagelijks</span>
+      <a href="/willekeurig-getal/">Willekeurig Getal</a>
+      <a href="/wachtwoord-generator/">Wachtwoord Generator</a>
+    </div>
+    <div class="footer-col">
+      <span class="footer-title">Over ons</span>
+      <a href="/about/">Over RekenGemak</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacybeleid</a>
+      <a href="/terms/">Gebruiksvoorwaarden</a>
+      <a href="/kennisbank/">Kennisbank</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 RekenGemak</span>
+    <span>Gratis rekenhulpen voor Nederland en Belgie</span>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "BTW op eten en drinken in 2026: 9% of 21%?",
+  "description": "Hoeveel btw zit er op eten en drinken? Lees welk tarief geldt in de supermarkt, het restaurant en bij bezorging, en wat de uitzonderingen zijn.",
+  "url": "https://rekengemak.nl/kennisbank/btw-op-eten-en-drinken/",
+  "datePublished": "2026-03-13",
+  "dateModified": "2026-03-13",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hoeveel btw zit er op een restaurantrekening?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Nederland rekent een restaurant 9% btw over eten en drinken, ook over alcoholische dranken. Over een rekening van \u20ac 50 zit dus \u20ac 50 / 1,09 x 0,09 = \u20ac 4,13 btw. In Belgi\u00eb is het restauranttarief ook 6% voor eten en drinken dat ter plaatse wordt geconsumeerd."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Betaal ik btw over mijn koffie bij de koffiezaak?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ja, 9% btw. Zowel de koffie zelf als het serveren ter plaatse valt onder het lage tarief in Nederland. Een blikje energiedrank bij de kassa valt wel onder 21%."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hoe zit het met btw op vitamines en voedingssupplementen?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Voedingssupplementen die als voedingsmiddel worden aangemerkt vallen onder 9%. Supplementen die als geneesmiddel worden geclassificeerd (met vergunning van het CBG) vallen ook onder 9%. Producten die als cosmetisch middel worden verkocht vallen onder 21%. De verpakking en claims op het product bepalen de classificatie."
+      }
+    }
+  ]
+}
+</script>
+
+<script>
+function toggleTheme() {
+  var cur  = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('rekengemak-theme', next);
+}
+function toggleMenu() {
+  var btn = document.getElementById('hamburger');
+  var nav = document.getElementById('nav-mobile');
+  var open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  nav.setAttribute('aria-hidden', !open);
+}
+</script>
+
+</body>
+</html>
