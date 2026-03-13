@@ -474,6 +474,60 @@ input[type="range"] {
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
+
+/* ═══ PRINT / KOPIEER KNOPPEN ═══════════════════════════════════════ */
+.btn-print, .btn-kopieer-alles {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px var(--space-md);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-print:hover, .btn-kopieer-alles:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+.btn-print[hidden], .btn-kopieer-alles[hidden] { display: none; }
+.result-actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+@media print {
+  header, footer, nav, #ad-top, #ad-middle, #ad-bottom,
+  .tool-card form, .btn-primary, .btn-print, .btn-kopieer-alles,
+  .formula-blok, .geschiedenis-blok, .geschiedenis-wrap,
+  article, .artikel-faq, .btn-secondary, .btn-copy,
+  .toggle-row, .input-group, .tab-row,
+  .result-actions, .related-tools {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .result-box {
+    display: block !important;
+    border: 1px solid #cccccc;
+    padding: 16px;
+    border-radius: 4px;
+  }
+  .result-box::before {
+    content: "rekengemak.nl \2014  " attr(data-tool-naam);
+    display: block;
+    font-size: 0.75rem;
+    color: #666666;
+    margin-bottom: 12px;
+  }
+}
   </style>
 </head>
 <body>
@@ -573,7 +627,7 @@ input[type="range"] {
   </div>
 
   <!-- Result box: 4 rijen -->
-  <div class="result-box">
+  <div class="result-box" data-tool-naam="Vakantiegeld Berekenen">
     <div class="result-label">Vakantiegeld te ontvangen</div>
     <div class="result-main empty" id="res-vakantiegeld">--</div>
 
@@ -592,6 +646,16 @@ input[type="range"] {
 
     <button class="btn-copy" onclick="copyVal('res-vakantiegeld')"
             aria-label="Kopieer vakantiegeld" style="margin-top:12px;">Kopieer</button>
+    <div class="result-actions">
+      <button class="btn-print" hidden onclick="printResultaat()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Afdrukken
+      </button>
+      <button class="btn-kopieer-alles" hidden onclick="kopieerAlles()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <span class="btn-kopieer-alles-tekst">Kopieer alles</span>
+      </button>
+    </div>
   </div>
 
   <!-- Reset -->
@@ -925,6 +989,7 @@ function recalc() {
 
   if (!raw || isNaN(amt) || amt <= 0) {
     setResults(null);
+    showActionButtons(false);
     document.getElementById('formula-blok').style.display = 'none';
     return;
   }
@@ -947,6 +1012,7 @@ function recalc() {
     fmtEUR.format(r.vakantiegeld),
     { salaris: raw, maanden: maanden }
   );
+  showActionButtons(true);
 }
 
 function setResults(r) {
@@ -977,6 +1043,7 @@ function resetTool() {
   document.getElementById('maanden').value = 12;
   updateSlider();
   setResults(null);
+  showActionButtons(false);
 }
 
 /* ═══ COPY ══════════════════════════════════════════════════════════════ */
@@ -1102,6 +1169,36 @@ function updateUrl(salaris, maanden) {
   params.set('salaris', salaris);
   params.set('maanden', maanden);
   history.replaceState(null, '', '?' + params.toString());
+}
+
+/* ═══ PRINT ═══════════════════════════════════════════════════════════ */
+function printResultaat() {
+  window.print();
+}
+
+/* ═══ KOPIEER ALLES ═══════════════════════════════════════════════════ */
+function kopieerAlles() {
+  var vg = document.getElementById('res-vakantiegeld').textContent.trim();
+  if (!vg || vg === '--') return;
+  var tekst = 'Vakantiegeld Berekenen \u2014 rekengemak.nl\n';
+  tekst += '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n';
+  tekst += 'Bruto maandsalaris: ' + document.getElementById('salaris').value + '\n';
+  tekst += 'Maanden gewerkt:    ' + document.getElementById('maanden').value + '\n';
+  tekst += 'Bruto jaarsalaris:  ' + document.getElementById('res-jaarsalaris').textContent + '\n';
+  tekst += 'Volledig (8%):      ' + document.getElementById('res-volledig').textContent + '\n';
+  tekst += 'Gewerkte periode:   ' + document.getElementById('res-periode').textContent + '\n';
+  tekst += 'Vakantiegeld:       ' + vg + '\n';
+  navigator.clipboard.writeText(tekst).then(function() {
+    var span = document.querySelector('.btn-kopieer-alles-tekst');
+    span.textContent = 'Gekopieerd!';
+    setTimeout(function() { span.textContent = 'Kopieer alles'; }, 2000);
+  });
+}
+
+/* ═══ SHOW/HIDE ACTION BUTTONS ════════════════════════════════════════ */
+function showActionButtons(show) {
+  var btns = document.querySelectorAll('.btn-print, .btn-kopieer-alles');
+  btns.forEach(function(b) { b.hidden = !show; });
 }
 
 /* ═══ INIT ═════════════════════════════════════════════════════════════ */
