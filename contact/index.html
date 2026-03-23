@@ -2,10 +2,10 @@
 <html lang="nl">
 <head>
   <script>
-    (function() {
-      var t = localStorage.getItem('rekengemak-theme');
-      document.documentElement.setAttribute('data-theme', t || 'dark');
-    })();
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
   </script>
   <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
   <!-- Google tag (gtag.js) -->
@@ -18,8 +18,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact | RekenGemak</title>
-  <meta name="description" content="Neem contact op met RekenGemak. Vragen, suggesties of feedback? Stuur ons een bericht.">
+  <title>Contact RekenGemak | Stuur ons een bericht</title>
+  <meta name="description" content="Heb je een vraag of suggestie voor RekenGemak? Stuur een e-mail naar hello@rekengemak.nl. We reageren binnen 2 werkdagen.">
   <link rel="canonical" href="https://rekengemak.nl/contact/">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
   <style>
@@ -29,6 +29,7 @@
   --bg-card:       #161B22;
   --bg-input:      #21262D;
   --border:        #30363D;
+  --result-bg:     #1C3A5A;
   --accent:        #1F5C99;
   --accent-hover:  #2272C3;
   --success:       #2EA043;
@@ -41,11 +42,13 @@
   --radius:    10px;
   --transition:0.15s ease;
 }
+
 [data-theme="light"] {
   --bg-primary:    #F6F8FA;
   --bg-card:       #FFFFFF;
   --bg-input:      #F0F3F6;
   --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
   --text-primary:  #1F2328;
   --text-secondary:#636C76;
 }
@@ -62,7 +65,7 @@ body {
 }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
-ul { list-style: none; }
+ul { list-style: disc; }
 button { cursor: pointer; border: none; background: none; font-family: inherit; }
 
 /* ═══ 2. HEADER ═══════════════════════════════════════════════════════ */
@@ -186,10 +189,70 @@ footer {
   .footer-grid { grid-template-columns: 1fr; }
 }
 
-/* ═══ PAGE CONTENT ════════════════════════════════════════════════════ */
-main { max-width: 680px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
-h1 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; margin-bottom: var(--space-md); }
-p { color: var(--text-secondary); margin-bottom: var(--space-md); }
+/* ═══ STATIC PAGINA ══════════════════════════════════════════════════ */
+.static-pagina {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.static-pagina h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.static-pagina h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-sm);
+  color: var(--text-primary);
+}
+.static-pagina p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.static-pagina ul {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.static-pagina li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.static-pagina a {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+.pagina-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+/* ═══ CONTACT KAART ══════════════════════════════════════════════════ */
+.contact-kaart {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+}
+.contact-kaart p {
+  margin-bottom: var(--space-sm);
+}
+.contact-kaart a {
+  color: var(--accent-hover);
+  font-weight: 600;
+  text-decoration: none;
+}
+.contact-kaart a:hover {
+  text-decoration: underline;
+}
+
+/* ═══ AD SLOTS ═══════════════════════════════════════════════════════ */
+#ad-top, #ad-bottom { display: none; }
   </style>
 </head>
 <body>
@@ -250,12 +313,79 @@ p { color: var(--text-secondary); margin-bottom: var(--space-md); }
   </nav>
 </header>
 
-<main>
+<div id="ad-top"></div>
+
+<div class="static-pagina">
+  <p class="pagina-meta">Laatste reactietijd: binnen 2 werkdagen</p>
+
   <h1>Contact</h1>
-  <p>Heb je een vraag, suggestie of heb je een fout gevonden? Neem gerust contact met ons op via e-mail:</p>
-  <p><a href="mailto:info@rekengemak.nl">info@rekengemak.nl</a></p>
-  <p>We proberen binnen 2 werkdagen te reageren.</p>
-</main>
+
+  <p>
+    Heb je een vraag over een van onze rekenmachines, een fout
+    gevonden of een idee voor een nieuwe tool? We horen het graag.
+  </p>
+
+  <div class="contact-kaart">
+    <p><strong>E-mail</strong></p>
+    <p><a href="mailto:hello@rekengemak.nl">hello@rekengemak.nl</a></p>
+    <p style="margin-top: var(--space-md); font-size: 0.85rem;
+               color: var(--text-secondary);">
+      We reageren doorgaans binnen 2 werkdagen.
+    </p>
+  </div>
+
+  <h2>Waarvoor kun je ons bereiken?</h2>
+  <ul>
+    <li>Een fout in een berekening melden</li>
+    <li>Een vraag over hoe een tool werkt</li>
+    <li>Een suggestie voor een nieuwe rekenmachine</li>
+    <li>Een onjuistheid in een kennisbankartikel melden</li>
+    <li>Vragen over samenwerking of adverteren</li>
+  </ul>
+
+  <h2>Veelgestelde vragen</h2>
+  <p>
+    Voordat je contact opneemt, kun je ook onze
+    <a href="/kennisbank/">Kennisbank</a> raadplegen. Daar vind je
+    uitgebreide uitleg over btw, uurloon, vakantiegeld en andere
+    onderwerpen die onze tools behandelen.
+  </p>
+
+  <h2>Meld een fout</h2>
+  <p>
+    Klopt een berekening niet? Vermeld in je e-mail welke tool
+    het betreft, welke waarden je hebt ingevoerd en wat je
+    verwachtte als uitkomst. We controleren dit zo snel mogelijk
+    en passen de tool aan als dat nodig is.
+  </p>
+
+  <h2>Privacybeleid</h2>
+  <p>
+    We verwerken je e-mailadres en de inhoud van je bericht
+    uitsluitend om je vraag te beantwoorden. We delen je gegevens
+    niet met derden. Lees onze volledige
+    <a href="/privacy/">Privacyverklaring</a>.
+  </p>
+</div>
+
+<div id="ad-bottom"></div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact RekenGemak",
+  "description": "Neem contact op met RekenGemak via hello@rekengemak.nl.",
+  "url": "https://rekengemak.nl/contact/",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/",
+    "email": "hello@rekengemak.nl"
+  }
+}
+</script>
 
 <footer>
   <div class="footer-grid">
@@ -313,7 +443,6 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('rekengemak-theme', next);
 }
-
 function toggleMenu() {
   var btn = document.getElementById('hamburger');
   var nav = document.getElementById('nav-mobile');
@@ -323,5 +452,6 @@ function toggleMenu() {
   nav.setAttribute('aria-hidden', !open);
 }
 </script>
+
 </body>
 </html>
