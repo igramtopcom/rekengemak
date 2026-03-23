@@ -2,10 +2,10 @@
 <html lang="nl">
 <head>
   <script>
-    (function() {
-      var t = localStorage.getItem('rekengemak-theme');
-      document.documentElement.setAttribute('data-theme', t || 'dark');
-    })();
+  (function() {
+    var t = localStorage.getItem('rekengemak-theme');
+    document.documentElement.setAttribute('data-theme', t || 'dark');
+  })();
   </script>
   <meta name="google-site-verification" content="p04O3rfiWJMwK6QjhIhpvHyvEkbRa_CPS2rXKIEEkqI" />
   <!-- Google tag (gtag.js) -->
@@ -18,8 +18,8 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Privacybeleid | RekenGemak</title>
-  <meta name="description" content="Privacy beleid van RekenGemak. Lees hoe wij omgaan met je gegevens.">
+  <title>Privacyverklaring RekenGemak | Geen cookies 2026</title>
+  <meta name="description" content="RekenGemak slaat geen persoonlijke gegevens op. Lees onze privacyverklaring: wat we wel en niet verzamelen en hoe we omgaan met jouw gegevens.">
   <link rel="canonical" href="https://rekengemak.nl/privacy/">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%231F5C99'/><text x='50%25' y='54%25' font-family='system-ui' font-size='18' font-weight='700' fill='white' text-anchor='middle' dominant-baseline='middle'>R</text></svg>">
   <style>
@@ -29,6 +29,7 @@
   --bg-card:       #161B22;
   --bg-input:      #21262D;
   --border:        #30363D;
+  --result-bg:     #1C3A5A;
   --accent:        #1F5C99;
   --accent-hover:  #2272C3;
   --success:       #2EA043;
@@ -41,11 +42,13 @@
   --radius:    10px;
   --transition:0.15s ease;
 }
+
 [data-theme="light"] {
   --bg-primary:    #F6F8FA;
   --bg-card:       #FFFFFF;
   --bg-input:      #F0F3F6;
   --border:        #D0D7DE;
+  --result-bg:     #DDE8F5;
   --text-primary:  #1F2328;
   --text-secondary:#636C76;
 }
@@ -186,12 +189,50 @@ footer {
   .footer-grid { grid-template-columns: 1fr; }
 }
 
-/* ═══ PAGE CONTENT ════════════════════════════════════════════════════ */
-main { max-width: 680px; margin: 0 auto; padding: var(--space-xl) var(--space-md); }
-h1 { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; margin-bottom: var(--space-lg); }
-h2 { font-size: 1.1rem; font-weight: 600; color: var(--accent); margin: var(--space-lg) 0 var(--space-sm); }
-p, li { color: var(--text-secondary); margin-bottom: var(--space-sm); }
-ul { padding-left: var(--space-lg); margin-bottom: var(--space-md); }
+/* ═══ STATIC PAGINA ══════════════════════════════════════════════════ */
+.static-pagina {
+  max-width: 740px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-md);
+}
+.static-pagina h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.static-pagina h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: var(--space-xl) 0 var(--space-sm);
+  color: var(--text-primary);
+}
+.static-pagina p {
+  line-height: 1.75;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+}
+.static-pagina ul {
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+.static-pagina li {
+  line-height: 1.75;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+.static-pagina a {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+.pagina-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+/* ═══ AD SLOTS ═══════════════════════════════════════════════════════ */
+#ad-top, #ad-bottom { display: none; }
   </style>
 </head>
 <body>
@@ -252,29 +293,131 @@ ul { padding-left: var(--space-lg); margin-bottom: var(--space-md); }
   </nav>
 </header>
 
-<main>
-  <h1>Privacy beleid</h1>
+<div id="ad-top"></div>
 
-  <h2>Gegevensverwerking</h2>
-  <p>RekenGemak verwerkt geen persoonlijke gegevens. Alle berekeningen worden lokaal in je browser uitgevoerd. Er worden geen gegevens naar een server verstuurd.</p>
+<div class="static-pagina">
+  <p class="pagina-meta">Laatst bijgewerkt: maart 2026</p>
 
-  <h2>Cookies</h2>
-  <p>RekenGemak gebruikt alleen functionele cookies:</p>
-  <ul>
-    <li><strong>rekengemak-theme</strong> - Slaat je voorkeur voor licht of donker thema op (localStorage).</li>
-  </ul>
+  <h1>Privacyverklaring</h1>
 
-  <h2>Advertenties</h2>
-  <p>RekenGemak toont advertenties via Google AdSense. Google kan cookies plaatsen om advertenties te personaliseren. Lees het <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacybeleid van Google</a> voor meer informatie.</p>
+  <p>
+    RekenGemak hecht veel waarde aan de bescherming van jouw privacy.
+    In deze privacyverklaring leggen we uit welke gegevens we
+    verzamelen, waarom we dat doen en hoe we daarmee omgaan.
+    We volgen de Algemene Verordening Gegevensbescherming (AVG).
+  </p>
 
-  <h2>Analytics</h2>
-  <p>We gebruiken Cloudflare Web Analytics, een privacyvriendelijke analysetool die geen cookies plaatst en geen persoonlijke gegevens verzamelt.</p>
+  <h2>1. Geen opslag van berekeningsgegevens</h2>
+  <p>
+    De gegevens die je invoert in onze rekenmachines worden niet
+    opgeslagen en niet naar onze servers verzonden. Alle berekeningen
+    vinden lokaal plaats in jouw eigen browser. Zodra je het
+    tabblad sluit, zijn de gegevens verdwenen. We hebben geen
+    toegang tot wat je berekent.
+  </p>
+
+  <h2>2. Google Analytics</h2>
+  <p>
+    We gebruiken Google Analytics 4 (GA4) om anoniem bezoekersgedrag
+    bij te houden. We zien hoeveel bezoekers de website heeft,
+    welke pagina's worden bekeken en via welk apparaat. We zien
+    geen persoonlijke gegevens zoals namen, e-mailadressen of
+    ingevoerde bedragen.
+  </p>
+  <p>
+    Google Analytics plaatst een cookie op jouw apparaat. IP-adressen
+    worden geanonimiseerd. De gegevens worden opgeslagen op servers
+    van Google. Meer informatie vind je in het
+    <a href="https://policies.google.com/privacy" target="_blank"
+       rel="noopener noreferrer">privacybeleid van Google</a>.
+  </p>
+
+  <h2>3. Google AdSense</h2>
+  <p>
+    RekenGemak maakt gebruik van Google AdSense voor het tonen van
+    advertenties. Google kan cookies plaatsen om advertenties te
+    personaliseren op basis van jouw eerder bezoekgedrag op andere
+    websites. Je kunt je afmelden voor gepersonaliseerde advertenties
+    via <a href="https://adssettings.google.com" target="_blank"
+    rel="noopener noreferrer">adssettings.google.com</a>.
+  </p>
+
+  <h2>4. Google Search Console</h2>
+  <p>
+    We gebruiken Google Search Console om de zichtbaarheid van
+    de website in Google-zoekresultaten te monitoren. Dit is een
+    beheerdersinstrument dat geen gegevens van bezoekers verwerkt.
+  </p>
+
+  <h2>5. Lokale opslag (localStorage)</h2>
+  <p>
+    Sommige tools slaan voorkeuren op in de lokale opslag van
+    jouw browser (localStorage), zoals de instelling voor dark
+    of light mode en een recente berekeningsgeschiedenis. Deze
+    gegevens blijven op jouw eigen apparaat en worden niet
+    naar ons verzonden. Je kunt deze gegevens wissen via de
+    browserinstellingen.
+  </p>
+
+  <h2>6. Contactformulier en e-mail</h2>
+  <p>
+    Als je contact met ons opneemt via
+    <a href="mailto:hello@rekengemak.nl">hello@rekengemak.nl</a>,
+    bewaren we jouw e-mailadres en de inhoud van het bericht
+    om je vraag te beantwoorden. We delen deze gegevens niet
+    met derden en bewaren ze niet langer dan noodzakelijk.
+  </p>
+
+  <h2>7. Cookies</h2>
+  <p>
+    RekenGemak gebruikt geen tracking cookies van derden, behalve
+    de cookies die worden geplaatst door Google Analytics en
+    Google AdSense, zoals beschreven in de punten 2 en 3.
+    De website zelf plaatst geen cookies voor marketingdoeleinden.
+  </p>
+
+  <h2>8. Jouw rechten</h2>
+  <p>
+    Op grond van de AVG heb je recht op inzage in, correctie van
+    en verwijdering van jouw persoonsgegevens. Omdat we vrijwel
+    geen persoonsgegevens verwerken, is er in de meeste gevallen
+    niets op te vragen of te verwijderen. Heb je toch een verzoek?
+    Stuur een e-mail naar
+    <a href="mailto:hello@rekengemak.nl">hello@rekengemak.nl</a>.
+  </p>
+
+  <h2>9. Wijzigingen</h2>
+  <p>
+    We kunnen deze privacyverklaring aanpassen als de wet dat
+    vereist of als we onze werkwijze wijzigen. De datum bovenaan
+    deze pagina geeft aan wanneer de verklaring voor het laatst
+    is bijgewerkt.
+  </p>
 
   <h2>Contact</h2>
-  <p>Vragen over dit privacybeleid? Neem contact op via <a href="mailto:info@rekengemak.nl">info@rekengemak.nl</a>.</p>
+  <p>
+    Vragen over onze privacyverklaring? Stuur een e-mail naar
+    <a href="mailto:hello@rekengemak.nl">hello@rekengemak.nl</a>.
+  </p>
+</div>
 
-  <p style="margin-top: var(--space-lg); font-size: 0.85rem;">Laatst bijgewerkt: maart 2026</p>
-</main>
+<div id="ad-bottom"></div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Privacyverklaring RekenGemak",
+  "description": "RekenGemak slaat geen persoonlijke gegevens op. Lees onze privacyverklaring.",
+  "url": "https://rekengemak.nl/privacy/",
+  "inLanguage": "nl",
+  "publisher": {
+    "@type": "Organization",
+    "name": "RekenGemak",
+    "url": "https://rekengemak.nl/"
+  }
+}
+</script>
 
 <footer>
   <div class="footer-grid">
@@ -332,7 +475,6 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('rekengemak-theme', next);
 }
-
 function toggleMenu() {
   var btn = document.getElementById('hamburger');
   var nav = document.getElementById('nav-mobile');
@@ -342,5 +484,6 @@ function toggleMenu() {
   nav.setAttribute('aria-hidden', !open);
 }
 </script>
+
 </body>
 </html>
