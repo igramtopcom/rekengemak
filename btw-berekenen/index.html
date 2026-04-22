@@ -1502,7 +1502,10 @@ function handleLegacyDirectionChange(land) {
 function handleQuickIntent(intent) {
   if (intent === 'add-vat') setMode('excl-incl');
   if (intent === 'remove-vat') setMode('incl-excl');
-  if (intent === 'invoice-check') setMode('incl-excl');
+  if (intent === 'invoice-check') {
+    setMode('incl-excl');
+    renderInvoiceHelper('incl-excl');
+  }
   if (intent === 'compare-rates') {
     setMode('compare-rates');
   }
@@ -1560,7 +1563,7 @@ function renderContextLinks(mode, land, pct) {
   var config = CONTEXT_LINK_CONFIG[mode] || CONTEXT_LINK_CONFIG['excl-incl'];
   var links = config.links.slice();
 
-  if ((land === 'be' && Math.abs(pct - 0.06) < 0.001) || (land === 'nl' && Math.abs(pct - 0.09) < 0.001)) {
+  if (land === 'be' && Math.abs(pct - 0.06) < 0.001) {
     links = [
       { href: '/kennisbank/wat-is-btw/', label: 'Wat is btw en hoe werkt het?' },
       { href: '/kennisbank/btw-op-eten-en-drinken/', label: 'BTW op eten en drinken: welk tarief geldt wanneer?' }
