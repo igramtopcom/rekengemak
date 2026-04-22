@@ -800,7 +800,7 @@ select option {
     <div class="toggle-row">
       <span id="lbl-excl-nl">Exclusief naar inclusief</span>
       <label class="toggle-switch" aria-label="Richting omzetten">
-        <input type="checkbox" id="dir-nl" onchange="recalc('nl')">
+        <input type="checkbox" id="dir-nl" onchange="handleLegacyDirectionChange('nl')">
         <span class="toggle-track"></span>
         <span class="toggle-thumb"></span>
       </label>
@@ -882,7 +882,7 @@ select option {
     <div class="toggle-row">
       <span>Exclusief naar inclusief</span>
       <label class="toggle-switch" aria-label="Richting omzetten">
-        <input type="checkbox" id="dir-be" onchange="recalc('be')">
+        <input type="checkbox" id="dir-be" onchange="handleLegacyDirectionChange('be')">
         <span class="toggle-track"></span>
         <span class="toggle-thumb"></span>
       </label>
@@ -1295,6 +1295,12 @@ function setMode(mode) {
   var resolvedMode = mode === 'incl-excl' || mode === 'excl-incl' ? mode : getLegacyMode(actieveLand);
   syncShellModeToLegacyControls(actieveLand, resolvedMode);
   recalc(actieveLand);
+}
+
+function handleLegacyDirectionChange(land) {
+  actieveLand = land;
+  applyModeUi(getLegacyMode(land));
+  recalc(land);
 }
 
 function handleQuickIntent(intent) {

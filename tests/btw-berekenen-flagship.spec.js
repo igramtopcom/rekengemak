@@ -15,11 +15,14 @@ expectMatch(/id="intent-add-vat"/, 'Missing hero quick intent button: intent-add
 expectMatch(/function getModeFromUi\(\)/, 'Missing getModeFromUi helper');
 expectMatch(/function bepaalModeVanParams\(params\)/, 'Missing bepaalModeVanParams helper');
 expectMatch(/function syncLandState\(vanLand, naarLand\)/, 'Missing syncLandState helper');
+expectMatch(/function handleLegacyDirectionChange\(land\)/, 'Missing legacy direction bridge helper');
 expectMatch(/params\.get\('mode'\)/, 'Missing modern mode deeplink read');
 expectMatch(/params\.get\('modus'\)/, 'Missing legacy modus deeplink read');
 expectMatch(/params\.set\('mode', mode\)/, 'Missing modern mode deeplink write');
 expectMatch(/params\.set\('modus',/, 'Missing legacy modus deeplink write');
 expectMatch(/velden\.mode \|\|/, 'Missing mode-first restore path');
 expectMatch(/function leesUrlParams\(\)[\s\S]*if \(params\.get\('bedrag'\)\) recalc\(land\);[\s\S]*else recalc\(land\);/, 'Missing mode-only deeplink sync path');
+expectMatch(/id="dir-nl" onchange="handleLegacyDirectionChange\('nl'\)"/, 'Missing NL legacy direction bridge wiring');
+expectMatch(/id="dir-be" onchange="handleLegacyDirectionChange\('be'\)"/, 'Missing BE legacy direction bridge wiring');
 
 console.log('task 2 smoke checks passed');
