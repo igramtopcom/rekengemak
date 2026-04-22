@@ -1247,6 +1247,26 @@ function getLegacyMode(land) {
   return dir && dir.checked ? 'incl-excl' : 'excl-incl';
 }
 
+function getModeFromUi() {
+  var actieveKnop = document.querySelector('.mode-btn.active');
+  return actieveKnop ? actieveKnop.getAttribute('data-mode') : 'excl-incl';
+}
+
+function modeNaarRichting(mode) {
+  return mode === 'incl-excl';
+}
+
+function bepaalModeVanParams(params) {
+  var mode = params.get('mode');
+  if (mode === 'incl-excl' || mode === 'excl-incl') return mode;
+
+  var legacyModus = params.get('modus');
+  if (legacyModus === 'incl') return 'incl-excl';
+  if (legacyModus === 'excl') return 'excl-incl';
+
+  return 'excl-incl';
+}
+
 function applyModeUi(mode) {
   var zichtbareMode = mode === 'incl-excl' ? 'incl-excl' : 'excl-incl';
   actieveMode = zichtbareMode;
@@ -1286,24 +1306,42 @@ function handleQuickIntent(intent) {
   }
 }
 
+function syncLandState(vanLand, naarLand) {
+  var bronAmount = document.getElementById('amount-' + vanLand).value;
+  var bronRate = document.getElementById('rate-' + vanLand).value;
+  var doelRate = document.getElementById('rate-' + naarLand);
+
+  document.getElementById('amount-' + naarLand).value = bronAmount;
+
+  var rateBestaat = Array.prototype.some.call(doelRate.options, function(option) {
+    return option.value === bronRate;
+  });
+
+  if (rateBestaat) {
+    doelRate.value = bronRate;
+  }
+}
+
 /* ═══ RECALC ═══════════════════════════════════════════════════════════ */
 function recalc(land) {
+  actieveLand = land;
+
   var amountEl = document.getElementById('amount-' + land);
   var rateEl   = document.getElementById('rate-'   + land);
 
   var raw  = amountEl ? amountEl.value.trim() : '';
   var amt  = parseNL(raw);
   var pct  = parseFloat(rateEl.value);
-  var legacyMode = getLegacyMode(land);
-  var incl = legacyMode === 'incl-excl';
-  syncShellModeToLegacyControls(land, legacyMode);
+  var mode = getModeFromUi();
+  var incl = modeNaarRichting(mode);
+  syncShellModeToLegacyControls(land, mode);
 
   /* Label aanpassen */
   var lbl = document.getElementById('amount-label-' + land);
   if (lbl) lbl.textContent = incl ? 'Bedrag inclusief btw' : 'Bedrag exclusief btw';
 
   if (!raw || isNaN(amt) || amt <= 0) {
-    setResults(land, null);
+    setResults(land, null, mode);
     showActionButtons(land, false);
     if (land === 'nl') document.getElementById('vergelijk-blok').hidden = true;
     document.getElementById('formula-blok').style.display = 'none';
@@ -1311,7 +1349,7 @@ function recalc(land) {
   }
 
   var r = incl ? calcExcl(amt, pct) : calcIncl(amt, pct);
-  setResults(land, r);
+  setResults(land, r, mode);
   showActionButtons(land, true);
 
   /* Feature A: Vergelijkingstabel (alleen NL) */
@@ -1322,7 +1360,7 @@ function recalc(land) {
   var tariefPct = Math.round(pct * 100);
 
   /* Feature C: URL deeplink */
-  updateUrl(land, raw, pct, incl);
+  updateUrl(land, raw, pct, mode);
 
   /* Feature A: Formula blok */
   if (!incl) {
@@ -1339,9 +1377,9 @@ function recalc(land) {
 
   /* Feature B: Geschiedenis */
   slaGeschiedenisOp(
-    fmtEUR.format(amt) + ' (' + tariefPct + '%, ' + (incl ? 'incl' : 'excl') + ')',
+    raw + ' (' + tariefPct + '%, ' + mode + ')',
     incl ? 'excl: ' + fmtEUR.format(r.excl) : 'incl: ' + fmtEUR.format(r.incl),
-    { bedrag: raw, tarief: rateEl.value, modus: incl ? 'incl' : 'excl', land: land }
+    { bedrag: raw, tarief: rateEl.value, mode: mode, modus: incl ? 'incl' : 'excl', land: land }
   );
 }
 
@@ -1380,13 +1418,19 @@ function resetPanel(land) {
 
 /* ═══ TAB SWITCH ═══════════════════════════════════════════════════════ */
 function switchTab(land) {
+  var vorigLand = actieveLand;
+  if (vorigLand && vorigLand !== land) {
+    syncLandState(vorigLand, land);
+  }
+
   actieveLand = land;
   ['nl','be'].forEach(function(l) {
     document.getElementById('tab-'   + l).classList.toggle('active', l === land);
     document.getElementById('tab-'   + l).setAttribute('aria-selected', l === land);
     document.getElementById('panel-' + l).classList.toggle('active', l === land);
   });
-  syncShellModeToLegacyControls(land, getLegacyMode(land));
+  applyModeUi(actieveMode);
+  recalc(land);
 }
 
 function deelLink(land) {
@@ -1501,12 +1545,11 @@ function herstelBerekening(veldwaardenEncoded) {
 }
 
 function herstelFormulier(velden) {
-  if (velden.land) switchTab(velden.land);
   var land = velden.land || 'nl';
-  document.getElementById('amount-' + land).value = velden.bedrag;
-  document.getElementById('rate-' + land).value = velden.tarief;
-  document.getElementById('dir-' + land).checked = velden.modus === 'incl';
-  syncShellModeToLegacyControls(land, getLegacyMode(land));
+  if (actieveLand !== land) switchTab(land);
+  document.getElementById('amount-' + land).value = velden.bedrag || '';
+  document.getElementById('rate-' + land).value = velden.tarief || '0.21';
+  applyModeUi(velden.mode || (velden.modus === 'incl' ? 'incl-excl' : 'excl-incl'));
   recalc(land);
 }
 
@@ -1514,8 +1557,13 @@ function herstelFormulier(velden) {
 function leesUrlParams() {
   var params = new URLSearchParams(window.location.search);
   var land = params.get('land') || 'nl';
+  var mode = bepaalModeVanParams(params);
+
+  applyModeUi(mode);
+
+  if (land === 'be') switchTab('be');
+
   if (params.get('bedrag')) {
-    if (land === 'be') switchTab('be');
     document.getElementById('amount-' + land).value = params.get('bedrag');
   }
   if (params.get('tarief')) {
@@ -1527,18 +1575,15 @@ function leesUrlParams() {
       }
     }
   }
-  if (params.get('modus') === 'incl') {
-    document.getElementById('dir-' + land).checked = true;
-  }
-  syncShellModeToLegacyControls(land, getLegacyMode(land));
   if (params.get('bedrag')) recalc(land);
 }
 
-function updateUrl(land, bedrag, pct, incl) {
+function updateUrl(land, bedrag, pct, mode) {
   var params = new URLSearchParams();
   params.set('bedrag', bedrag);
   params.set('tarief', Math.round(pct * 100));
-  params.set('modus', incl ? 'incl' : 'excl');
+  params.set('mode', mode);
+  params.set('modus', mode === 'incl-excl' ? 'incl' : 'excl');
   if (land === 'be') params.set('land', 'be');
   history.replaceState(null, '', '?' + params.toString());
 }
