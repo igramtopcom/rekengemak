@@ -218,6 +218,50 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
   color: var(--accent);
 }
 
+.hero-summary {
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.hero-intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: var(--space-md);
+}
+
+.hero-intent,
+.mode-btn,
+.btn-share {
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 0.9rem;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.hero-intent:hover,
+.mode-btn:hover,
+.btn-share:hover,
+.mode-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--space-md);
+}
+
+.mode-btn.active {
+  background: rgba(31, 92, 153, 0.15);
+}
+
 /* ═══ 4. TOOL CARD ════════════════════════════════════════════════════ */
 .tool-card {
   max-width: 700px; margin: 0 auto;
@@ -692,9 +736,15 @@ select option {
   </nav>
   <h1>BTW Berekenen voor Nederland en Belgie</h1>
   <span class="badge-updated">Bijgewerkt: januari 2026</span>
-  <p style="color:var(--text-secondary);margin-top:8px;font-size:1rem;">
+  <p class="hero-summary">
     Gratis btw-calculator voor zowel het Nederlandse als het Belgische btw-tarief. Geen registratie nodig.
   </p>
+  <div class="hero-intents" aria-label="Snelle acties">
+    <button class="hero-intent" id="intent-add-vat" type="button" onclick="handleQuickIntent('add-vat')">BTW erbij rekenen</button>
+    <button class="hero-intent" id="intent-remove-vat" type="button" onclick="handleQuickIntent('remove-vat')">BTW eruit rekenen</button>
+    <button class="hero-intent" id="intent-invoice-check" type="button" onclick="handleQuickIntent('invoice-check')">Factuur checken</button>
+    <button class="hero-intent" id="intent-compare-rates" type="button" onclick="handleQuickIntent('compare-rates')">NL of BE vergelijken</button>
+  </div>
 </div>
 
 <section class="tool-card" aria-label="BTW Berekenen">
@@ -707,6 +757,13 @@ select option {
     <button class="tab-btn" role="tab" id="tab-be"
             aria-selected="false" aria-controls="panel-be"
             onclick="switchTab('be')">&#127463;&#127466; Belgie</button>
+  </div>
+
+  <div class="mode-bar" role="tablist" aria-label="BTW modus">
+    <button class="mode-btn active" id="mode-excl-incl" type="button" data-mode="excl-incl" onclick="setMode('excl-incl')">Excl -> Incl</button>
+    <button class="mode-btn" id="mode-incl-excl" type="button" data-mode="incl-excl" onclick="setMode('incl-excl')">Incl -> Excl</button>
+    <button class="mode-btn" id="mode-vat-only" type="button" data-mode="vat-only" onclick="setMode('vat-only')">Alleen btw-bedrag</button>
+    <button class="mode-btn" id="mode-compare-rates" type="button" data-mode="compare-rates" onclick="setMode('compare-rates')">Tarieven vergelijken</button>
   </div>
 
   <!-- Panel NL -->
@@ -759,6 +816,7 @@ select option {
         <span id="res-excl-nl" style="color:var(--text-secondary);">Excl. btw: --</span>
       </div>
       <div class="result-actions" id="result-actions-nl">
+        <button class="btn-share" id="btn-share-link-nl" hidden type="button" onclick="deelLink('nl')">Deel link</button>
         <button class="btn-print" id="btn-print-nl" hidden onclick="printResultaat()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Afdrukken
@@ -839,6 +897,7 @@ select option {
         <span id="res-excl-be" style="color:var(--text-secondary);">Excl. btw: --</span>
       </div>
       <div class="result-actions" id="result-actions-be">
+        <button class="btn-share" id="btn-share-link-be" hidden type="button" onclick="deelLink('be')">Deel link</button>
         <button class="btn-print" id="btn-print-be" hidden onclick="printResultaat()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Afdrukken
@@ -1165,6 +1224,36 @@ function calcExcl(incl, pct) {
   return { excl: excl, btw: btw, incl: incl };
 }
 
+var actieveLand = 'nl';
+var actieveMode = 'excl-incl';
+
+function applyModeUi(mode) {
+  actieveMode = mode;
+  var knoppen = document.querySelectorAll('.mode-btn');
+  knoppen.forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+  });
+}
+
+function syncShellModeToLegacyControls(land, mode) {
+  var dir = document.getElementById('dir-' + land);
+  if (!dir) return;
+  dir.checked = mode === 'incl-excl';
+}
+
+function setMode(mode) {
+  applyModeUi(mode);
+  syncShellModeToLegacyControls(actieveLand, mode);
+  recalc(actieveLand);
+}
+
+function handleQuickIntent(intent) {
+  if (intent === 'add-vat') setMode('excl-incl');
+  if (intent === 'remove-vat') setMode('incl-excl');
+  if (intent === 'invoice-check') setMode('incl-excl');
+  if (intent === 'compare-rates') setMode('compare-rates');
+}
+
 /* ═══ RECALC ═══════════════════════════════════════════════════════════ */
 function recalc(land) {
   var amountEl = document.getElementById('amount-' + land);
@@ -1257,10 +1346,25 @@ function resetPanel(land) {
 
 /* ═══ TAB SWITCH ═══════════════════════════════════════════════════════ */
 function switchTab(land) {
+  actieveLand = land;
   ['nl','be'].forEach(function(l) {
     document.getElementById('tab-'   + l).classList.toggle('active', l === land);
     document.getElementById('tab-'   + l).setAttribute('aria-selected', l === land);
     document.getElementById('panel-' + l).classList.toggle('active', l === land);
+  });
+  syncShellModeToLegacyControls(land, actieveMode);
+  applyModeUi(actieveMode);
+}
+
+function deelLink(land) {
+  var knop = document.getElementById('btn-share-link-' + land);
+  if (!knop || !navigator.clipboard || !window.location) return;
+  navigator.clipboard.writeText(window.location.href).then(function() {
+    var vorigeTekst = knop.textContent;
+    knop.textContent = 'Link gekopieerd';
+    setTimeout(function() {
+      knop.textContent = vorigeTekst;
+    }, 1500);
   });
 }
 
