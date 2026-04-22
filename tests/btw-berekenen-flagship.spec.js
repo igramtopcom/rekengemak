@@ -20,5 +20,6 @@ expectMatch(/params\.get\('modus'\)/, 'Missing legacy modus deeplink read');
 expectMatch(/params\.set\('mode', mode\)/, 'Missing modern mode deeplink write');
 expectMatch(/params\.set\('modus',/, 'Missing legacy modus deeplink write');
 expectMatch(/velden\.mode \|\|/, 'Missing mode-first restore path');
+expectMatch(/function leesUrlParams\(\)[\s\S]*if \(params\.get\('bedrag'\)\) recalc\(land\);[\s\S]*else recalc\(land\);/, 'Missing mode-only deeplink sync path');
 
 console.log('task 2 smoke checks passed');
