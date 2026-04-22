@@ -368,6 +368,44 @@ select option {
 .result-empty { color: var(--text-secondary); font-style: italic; }
 .result-main.empty { color: var(--text-secondary); font-size: 1.1rem; font-weight: 400; }
 
+.result-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: var(--space-md);
+}
+
+.result-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.result-card-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.result-card-value {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: var(--space-md);
+}
+
 /* Nút sao chép */
 .btn-copy {
   font-size: 0.8rem; padding: 3px 10px;
@@ -468,6 +506,7 @@ select option {
 }
 @media (max-width: 480px) {
   .toggle-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .result-cards { grid-template-columns: 1fr; }
 }
 
 /* ═══ FORMULA BLOK ═════════════════════════════════════════════════════ */
@@ -820,22 +859,25 @@ select option {
 
     <!-- Result box NL -->
     <div class="result-box" id="result-nl" data-tool-naam="BTW Berekenen">
-      <div class="result-label">Totaal inclusief btw</div>
-      <div class="result-main empty" id="res-incl-nl">--</div>
-
-      <div class="result-sub">
-        <span id="res-btw-nl" style="color:var(--text-secondary);">BTW: --</span>
-        <button class="btn-copy" onclick="copyVal('res-incl-nl')" aria-label="Kopieer totaalbedrag">Kopieer</button>
-      </div>
-      <div class="result-sub" style="margin-top:4px;">
-        <span id="res-excl-nl" style="color:var(--text-secondary);">Excl. btw: --</span>
+      <div class="result-label" id="result-label-nl">Totaal inclusief btw</div>
+      <div class="result-main empty" id="result-primary-nl">--</div>
+      <div class="result-cards" aria-label="Resultaat uitsplitsing">
+        <div class="result-card">
+          <span class="result-card-label">Excl. btw</span>
+          <div class="result-card-value" id="card-excl-nl">--</div>
+        </div>
+        <div class="result-card">
+          <span class="result-card-label">BTW</span>
+          <div class="result-card-value" id="card-btw-nl">--</div>
+        </div>
+        <div class="result-card">
+          <span class="result-card-label">Incl. btw</span>
+          <div class="result-card-value" id="card-incl-nl">--</div>
+        </div>
       </div>
       <div class="result-actions" id="result-actions-nl">
+        <button class="btn-copy" id="btn-copy-primary-nl" hidden type="button" onclick="copyVal('result-primary-nl', this)">Kopieer resultaat</button>
         <button class="btn-share" id="btn-share-link-nl" hidden type="button" onclick="deelLink('nl')">Deel link</button>
-        <button class="btn-print" id="btn-print-nl" hidden onclick="printResultaat()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Afdrukken
-        </button>
         <button class="btn-kopieer-alles" id="btn-kopieer-alles-nl" hidden onclick="kopieerAlles('nl')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           <span id="btn-kopieer-alles-tekst-nl">Kopieer alles</span>
@@ -902,21 +944,25 @@ select option {
 
     <!-- Result box BE -->
     <div class="result-box" id="result-be" data-tool-naam="BTW Berekenen">
-      <div class="result-label">Totaal inclusief btw</div>
-      <div class="result-main empty" id="res-incl-be">--</div>
-      <div class="result-sub">
-        <span id="res-btw-be" style="color:var(--text-secondary);">BTW: --</span>
-        <button class="btn-copy" onclick="copyVal('res-incl-be')" aria-label="Kopieer totaalbedrag">Kopieer</button>
-      </div>
-      <div class="result-sub" style="margin-top:4px;">
-        <span id="res-excl-be" style="color:var(--text-secondary);">Excl. btw: --</span>
+      <div class="result-label" id="result-label-be">Totaal inclusief btw</div>
+      <div class="result-main empty" id="result-primary-be">--</div>
+      <div class="result-cards" aria-label="Resultaat uitsplitsing">
+        <div class="result-card">
+          <span class="result-card-label">Excl. btw</span>
+          <div class="result-card-value" id="card-excl-be">--</div>
+        </div>
+        <div class="result-card">
+          <span class="result-card-label">BTW</span>
+          <div class="result-card-value" id="card-btw-be">--</div>
+        </div>
+        <div class="result-card">
+          <span class="result-card-label">Incl. btw</span>
+          <div class="result-card-value" id="card-incl-be">--</div>
+        </div>
       </div>
       <div class="result-actions" id="result-actions-be">
+        <button class="btn-copy" id="btn-copy-primary-be" hidden type="button" onclick="copyVal('result-primary-be', this)">Kopieer resultaat</button>
         <button class="btn-share" id="btn-share-link-be" hidden type="button" onclick="deelLink('be')">Deel link</button>
-        <button class="btn-print" id="btn-print-be" hidden onclick="printResultaat()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Afdrukken
-        </button>
         <button class="btn-kopieer-alles" id="btn-kopieer-alles-be" hidden onclick="kopieerAlles('be')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           <span id="btn-kopieer-alles-tekst-be">Kopieer alles</span>
@@ -1416,22 +1462,42 @@ function recalc(land, options) {
   }
 }
 
-function setResults(land, r) {
-  var inclEl = document.getElementById('res-incl-' + land);
-  var btwEl  = document.getElementById('res-btw-'  + land);
-  var exclEl = document.getElementById('res-excl-' + land);
+function getPrimaryValueForMode(mode, result) {
+  if (mode === 'incl-excl') return result.excl;
+  if (mode === 'vat-only') return result.btw;
+  return result.incl;
+}
 
-  if (!r) {
+function getPrimaryLabelForMode(mode) {
+  if (mode === 'incl-excl') return 'Totaal exclusief btw';
+  if (mode === 'vat-only') return 'BTW-bedrag';
+  return 'Totaal inclusief btw';
+}
+
+function setResults(land, result, mode) {
+  var labelEl = document.getElementById('result-label-' + land);
+  var primaryEl = document.getElementById('result-primary-' + land);
+  var exclEl = document.getElementById('card-excl-' + land);
+  var btwEl = document.getElementById('card-btw-' + land);
+  var inclEl = document.getElementById('card-incl-' + land);
+  var resolvedMode = mode || getModeFromUi();
+
+  if (!result) {
+    labelEl.textContent = getPrimaryLabelForMode(resolvedMode);
+    primaryEl.textContent = '--';
+    primaryEl.classList.add('empty');
+    exclEl.textContent = '--';
+    btwEl.textContent = '--';
     inclEl.textContent = '--';
-    inclEl.classList.add('empty');
-    btwEl.textContent  = 'BTW: --';
-    exclEl.textContent = 'Excl. btw: --';
     return;
   }
-  inclEl.classList.remove('empty');
-  inclEl.textContent = fmtEUR.format(r.incl);
-  btwEl.textContent  = 'BTW: ' + fmtEUR.format(r.btw);
-  exclEl.textContent = 'Excl. btw: ' + fmtEUR.format(r.excl);
+
+  labelEl.textContent = getPrimaryLabelForMode(resolvedMode);
+  primaryEl.classList.remove('empty');
+  primaryEl.textContent = fmtEUR.format(getPrimaryValueForMode(resolvedMode, result));
+  exclEl.textContent = fmtEUR.format(result.excl);
+  btwEl.textContent = fmtEUR.format(result.btw);
+  inclEl.textContent = fmtEUR.format(result.incl);
 }
 
 /* ═══ RESET ════════════════════════════════════════════════════════════ */
@@ -1479,13 +1545,15 @@ function deelLink(land) {
 }
 
 /* ═══ COPY ═════════════════════════════════════════════════════════════ */
-function copyVal(id) {
+function copyVal(id, trigger) {
   var el  = document.getElementById(id);
   var txt = el ? el.textContent.trim() : '';
   if (!txt || txt === '--') return;
   navigator.clipboard.writeText(txt).then(function() {
-    /* Vind de dichtstbijzijnde btn-copy */
-    var btn = el.parentElement.querySelector('.btn-copy');
+    var btn = trigger || null;
+    if (!btn && el.parentElement) {
+      btn = el.parentElement.querySelector('.btn-copy');
+    }
     if (!btn) return;
     var orig = btn.textContent;
     btn.textContent = 'Gekopieerd!';
@@ -1653,10 +1721,10 @@ function vulVergelijkTabel(bedragExcl, huidigTarief) {
 
 /* ═══ SHOW/HIDE ACTION BUTTONS ════════════════════════════════════════ */
 function showActionButtons(land, show) {
-  var print = document.getElementById('btn-print-' + land);
+  var primaryCopy = document.getElementById('btn-copy-primary-' + land);
   var copy  = document.getElementById('btn-kopieer-alles-' + land);
   var share = document.getElementById('btn-share-link-' + land);
-  if (print) print.hidden = !show;
+  if (primaryCopy) primaryCopy.hidden = !show;
   if (copy)  copy.hidden  = !show;
   if (share) share.hidden = !show;
 }
@@ -1668,9 +1736,11 @@ function printResultaat() {
 
 /* ═══ KOPIEER ALLES ═══════════════════════════════════════════════════ */
 function kopieerAlles(land) {
-  var excl   = document.getElementById('res-excl-' + land).textContent.trim();
-  var btw    = document.getElementById('res-btw-'  + land).textContent.trim();
-  var incl   = document.getElementById('res-incl-' + land).textContent.trim();
+  var excl   = document.getElementById('card-excl-' + land).textContent.trim();
+  var btw    = document.getElementById('card-btw-'  + land).textContent.trim();
+  var incl   = document.getElementById('card-incl-' + land).textContent.trim();
+  var label  = document.getElementById('result-label-' + land).textContent.trim();
+  var primary = document.getElementById('result-primary-' + land).textContent.trim();
   var rateEl = document.getElementById('rate-' + land);
   var tarief = Math.round(parseFloat(rateEl.value) * 100) + '%';
 
@@ -1678,8 +1748,9 @@ function kopieerAlles(land) {
     'BTW Berekening \u2014 rekengemak.nl\n' +
     '\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n' +
     'Tarief:     ' + tarief + '\n' +
-    excl + '\n' +
-    btw + '\n' +
+    label + ': ' + primary + '\n' +
+    'Excl. btw:  ' + excl + '\n' +
+    'BTW:        ' + btw + '\n' +
     'Incl. btw:  ' + incl;
 
   navigator.clipboard.writeText(tekst).then(function() {

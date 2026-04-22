@@ -59,5 +59,13 @@ expectMatch(/mode === 'compare-rates' \|\| mode === 'vat-only'/, 'Missing explic
 expectMatch(/params\.set\('modus', mode\)/, 'Missing explicit placeholder mode URL preservation');
 expectMatch(/mode:\s*[A-Za-z]+Mode,\s*modus:\s*/, 'Missing mode persistence in history payload');
 expectMatch(/setMode\('compare-rates'\)/, 'Missing compare-rates normalization path');
+expectMatch(/id="result-primary-nl"/, 'Missing NL primary result node');
+expectMatch(/id="result-primary-be"/, 'Missing BE primary result node');
+expectMatch(/id="card-excl-nl"/, 'Missing NL excl result card');
+expectMatch(/id="card-btw-nl"/, 'Missing NL btw result card');
+expectMatch(/id="card-incl-nl"/, 'Missing NL incl result card');
+expectMatch(/id="btn-share-link-nl"/, 'Missing NL share-link button');
+expectMatch(/function deelLink\(land\)/, 'Missing deelLink helper');
+expectMatch(/function getPrimaryValueForMode\(mode, result\)/, 'Missing mode-aware primary value helper');
 
-console.log('task 2 smoke checks passed');
+console.log('task 3 smoke checks passed');
