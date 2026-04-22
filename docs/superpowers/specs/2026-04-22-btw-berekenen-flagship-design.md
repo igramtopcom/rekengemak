@@ -179,6 +179,12 @@ The hero remains short and search-friendly, but directly exposes quick intents b
 - `NL of BE vergelijken`
 
 These intents are shortcuts that set the tool mode and move focus into the calculator. They are not a separate navigation system.
+The shortcut mapping must be explicit:
+
+- `BTW erbij rekenen` -> `Excl -> Incl`
+- `BTW eruit rekenen` -> `Incl -> Excl`
+- `Factuur checken` -> `Incl -> Excl` with invoice-check wording and helper text
+- `NL of BE vergelijken` -> `Tarieven vergelijken`
 
 ### 2. Mode-based tool card
 The calculator card becomes centered around explicit modes instead of a single direction toggle.
@@ -190,6 +196,7 @@ Primary modes:
 - `Tarieven vergelijken`
 
 Country remains available, but becomes a secondary switch because `land` is not the main intent for most users. The user first chooses the kind of task, then the country/rate details.
+Switching between NL and BE should preserve the active amount and mode so users can compare scenarios quickly without re-entering values.
 
 ### 3. Two-layer result area
 The result area is split into:
@@ -207,9 +214,9 @@ Below the result area, the page exposes immediate actions:
 
 - `Kopieer resultaat`
 - `Deel link`
-- `Berekening opslaan`
 
 `Deel link` uses the existing deeplink state so users can send the exact calculation to a customer, colleague, or their future self.
+Saved history remains automatic and should not be reframed as a separate manual feature in phase 1.
 
 ### 5. Support blocks
 The page keeps the formula and history blocks, then adds a stronger support area:
@@ -249,10 +256,10 @@ The page already has the data. This change is primarily a rendering and hierarch
 ### Feature 4: quick examples
 Add fast-fill examples such as:
 
-- `EUR100 @ 21%`
-- `EUR250 @ 9%`
-- `EUR100 incl. 21%`
-- `EUR100 BE @ 6%`
+- `100 euro @ 21%`
+- `250 euro @ 9%`
+- `100 euro incl. 21%`
+- `100 euro BE @ 6%`
 
 The quick examples reduce empty-state hesitation and help first-time users start interacting immediately.
 
@@ -260,6 +267,7 @@ The quick examples reduce empty-state hesitation and help first-time users start
 Add a small helper framing below the main calculator to support invoice checking.
 
 This is not a second calculator. It is a wording and output-context enhancement that makes an existing use case more explicit.
+The `Factuur checken` shortcut should land in this framing instead of introducing a fifth calculator mode.
 
 ### Feature 6: contextual internal links
 After a calculation, show relevant links into the knowledge base based on the chosen mode and rate.
@@ -322,6 +330,7 @@ The page state should be normalized around:
 - `amount`
 
 `direction` should stop being an independent user concept and instead become a consequence of `mode`.
+Country switching should preserve `mode`, `rate` where possible, and `amount` so that NL/BE comparison remains fast.
 
 This reduces branching complexity and makes deeplink state easier to understand and restore.
 
@@ -361,6 +370,7 @@ The current page already supports URL state. The upgraded page should continue t
 - calculation direction or equivalent mode
 
 Where possible, existing URL parameters should continue to work so old shared links do not silently break.
+At minimum, older links using `modus=incl` or `modus=excl` should restore into the equivalent upgraded mode.
 
 ## Content Strategy For The Flagship Page
 The page should remain primarily a tool page, not become a long article with a calculator buried inside it.
@@ -392,11 +402,13 @@ Phase 1 implementation must verify at least:
 - BE `Excl -> Incl`
 - `Alleen btw-bedrag`
 - `Tarieven vergelijken`
+- hero shortcut mapping for all four quick intents
 - copy primary result
 - copy/share deeplink
 - quick example application
 - history save and restore
 - URL restore for saved state
+- NL/BE switching without losing the active amount
 - stable mobile layout behavior
 
 ## Success Metrics
