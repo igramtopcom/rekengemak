@@ -1471,6 +1471,7 @@ function getPrimaryValueForMode(mode, result) {
 function getPrimaryLabelForMode(mode) {
   if (mode === 'incl-excl') return 'Totaal exclusief btw';
   if (mode === 'vat-only') return 'BTW-bedrag';
+  if (mode === 'compare-rates') return 'Vergelijking binnenkort beschikbaar';
   return 'Totaal inclusief btw';
 }
 
@@ -1722,18 +1723,14 @@ function vulVergelijkTabel(bedragExcl, huidigTarief) {
 /* ═══ SHOW/HIDE ACTION BUTTONS ════════════════════════════════════════ */
 function showActionButtons(land, show) {
   var primaryCopy = document.getElementById('btn-copy-primary-' + land);
-  var copy  = document.getElementById('btn-kopieer-alles-' + land);
   var share = document.getElementById('btn-share-link-' + land);
+  var copy  = document.getElementById('btn-kopieer-alles-' + land);
   if (primaryCopy) primaryCopy.hidden = !show;
-  if (copy)  copy.hidden  = !show;
   if (share) share.hidden = !show;
+  if (copy)  copy.hidden  = !show;
 }
 
 /* ═══ PRINT ═══════════════════════════════════════════════════════════ */
-function printResultaat() {
-  window.print();
-}
-
 /* ═══ KOPIEER ALLES ═══════════════════════════════════════════════════ */
 function kopieerAlles(land) {
   var excl   = document.getElementById('card-excl-' + land).textContent.trim();

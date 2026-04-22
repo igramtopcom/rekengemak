@@ -64,8 +64,28 @@ expectMatch(/id="result-primary-be"/, 'Missing BE primary result node');
 expectMatch(/id="card-excl-nl"/, 'Missing NL excl result card');
 expectMatch(/id="card-btw-nl"/, 'Missing NL btw result card');
 expectMatch(/id="card-incl-nl"/, 'Missing NL incl result card');
+expectMatch(/id="card-excl-be"/, 'Missing BE excl result card');
+expectMatch(/id="card-btw-be"/, 'Missing BE btw result card');
+expectMatch(/id="card-incl-be"/, 'Missing BE incl result card');
+expectMatch(/id="btn-copy-primary-nl"/, 'Missing NL primary copy button');
+expectMatch(/id="btn-copy-primary-be"/, 'Missing BE primary copy button');
 expectMatch(/id="btn-share-link-nl"/, 'Missing NL share-link button');
 expectMatch(/function deelLink\(land\)/, 'Missing deelLink helper');
 expectMatch(/function getPrimaryValueForMode\(mode, result\)/, 'Missing mode-aware primary value helper');
+expectMatch(/function getPrimaryLabelForMode\(mode\)/, 'Missing mode-aware primary label helper');
+expectMatch(/mode === 'compare-rates'[\s\S]*Vergelijking binnenkort beschikbaar/, 'Missing compare-rates primary label handling');
+expectMatch(
+  /function setResults\(land, result, mode\)[\s\S]*result-label-[\s\S]*result-primary-[\s\S]*card-excl-[\s\S]*card-btw-[\s\S]*card-incl-[\s\S]*getPrimaryLabelForMode\(resolvedMode\)[\s\S]*getPrimaryValueForMode\(resolvedMode, result\)/,
+  'Missing rewritten setResults workspace rendering'
+);
+expectMatch(
+  /function showActionButtons\(land, show\)[\s\S]*btn-copy-primary-[\s\S]*btn-share-link-[\s\S]*btn-kopieer-alles-[\s\S]*if \(primaryCopy\) primaryCopy\.hidden = !show;[\s\S]*if \(share\) share\.hidden = !show;[\s\S]*if \(copy\)  copy\.hidden  = !show;/,
+  'Missing primary-copy visibility handling in showActionButtons'
+);
+expectMatch(
+  /function kopieerAlles\(land\)[\s\S]*card-excl-[\s\S]*card-btw-[\s\S]*card-incl-[\s\S]*result-primary-/,
+  'Missing result workspace copy-all sources'
+);
+assert.doesNotMatch(html, /function printResultaat\(\)/, 'Orphaned printResultaat helper should be removed');
 
 console.log('task 3 smoke checks passed');
