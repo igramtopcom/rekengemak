@@ -243,6 +243,12 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
   transition: border-color var(--transition), color var(--transition), background var(--transition);
 }
 
+.hero-intent[disabled],
+.mode-btn[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .hero-intent:hover,
 .mode-btn:hover,
 .btn-share:hover,
@@ -260,6 +266,15 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
 
 .mode-btn.active {
   background: rgba(31, 92, 153, 0.15);
+}
+
+.coming-soon {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 /* ═══ 4. TOOL CARD ════════════════════════════════════════════════════ */
@@ -743,7 +758,7 @@ select option {
     <button class="hero-intent" id="intent-add-vat" type="button" onclick="handleQuickIntent('add-vat')">BTW erbij rekenen</button>
     <button class="hero-intent" id="intent-remove-vat" type="button" onclick="handleQuickIntent('remove-vat')">BTW eruit rekenen</button>
     <button class="hero-intent" id="intent-invoice-check" type="button" onclick="handleQuickIntent('invoice-check')">Factuur checken</button>
-    <button class="hero-intent" id="intent-compare-rates" type="button" onclick="handleQuickIntent('compare-rates')">NL of BE vergelijken</button>
+    <button class="hero-intent" id="intent-compare-rates" type="button" disabled aria-disabled="true" title="Binnenkort beschikbaar" onclick="handleQuickIntent('compare-rates')">NL of BE vergelijken <span class="coming-soon">Binnenkort</span></button>
   </div>
 </div>
 
@@ -762,8 +777,8 @@ select option {
   <div class="mode-bar" aria-label="BTW modus">
     <button class="mode-btn active" id="mode-excl-incl" type="button" data-mode="excl-incl" onclick="setMode('excl-incl')">Excl -> Incl</button>
     <button class="mode-btn" id="mode-incl-excl" type="button" data-mode="incl-excl" onclick="setMode('incl-excl')">Incl -> Excl</button>
-    <button class="mode-btn" id="mode-vat-only" type="button" data-mode="vat-only" onclick="setMode('vat-only')">Alleen btw-bedrag</button>
-    <button class="mode-btn" id="mode-compare-rates" type="button" data-mode="compare-rates" onclick="setMode('compare-rates')">Tarieven vergelijken</button>
+    <button class="mode-btn" id="mode-vat-only" type="button" data-mode="vat-only" disabled aria-disabled="true" title="Binnenkort beschikbaar" onclick="setMode('vat-only')">Alleen btw-bedrag <span class="coming-soon">Binnenkort</span></button>
+    <button class="mode-btn" id="mode-compare-rates" type="button" data-mode="compare-rates" disabled aria-disabled="true" title="Binnenkort beschikbaar" onclick="setMode('compare-rates')">Tarieven vergelijken <span class="coming-soon">Binnenkort</span></button>
   </div>
 
   <!-- Panel NL -->
@@ -1237,7 +1252,12 @@ function applyModeUi(mode) {
   actieveMode = zichtbareMode;
   var knoppen = document.querySelectorAll('.mode-btn');
   knoppen.forEach(function(btn) {
-    btn.classList.toggle('active', btn.getAttribute('data-mode') === zichtbareMode);
+    var actief = btn.getAttribute('data-mode') === zichtbareMode;
+    btn.classList.toggle('active', actief);
+    btn.setAttribute('aria-pressed', actief ? 'true' : 'false');
+    if (btn.hasAttribute('disabled')) {
+      btn.setAttribute('aria-disabled', 'true');
+    }
   });
 }
 

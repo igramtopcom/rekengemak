@@ -23,12 +23,16 @@ expectMatch(/id="mode-compare-rates"/, 'Missing mode button: mode-compare-rates'
 
 expectMatch(/id="btn-share-link-nl"/, 'Missing NL share-link button');
 expectMatch(/id="btn-share-link-be"/, 'Missing BE share-link button');
+expectMatch(/id="mode-vat-only"[^>]*disabled[^>]*aria-disabled="true"[^>]*Binnenkort/, 'Missing coming-soon treatment for vat-only mode');
+expectMatch(/id="mode-compare-rates"[^>]*disabled[^>]*aria-disabled="true"[^>]*Binnenkort/, 'Missing coming-soon treatment for compare-rates mode');
+expectMatch(/id="intent-compare-rates"[^>]*disabled[^>]*aria-disabled="true"[^>]*Binnenkort/, 'Missing coming-soon treatment for compare intent');
 
 expectMatch(/var actieveMode = 'excl-incl';/, 'Missing legacy mode mirror');
 expectMatch(/function getLegacyMode\(land\)/, 'Missing legacy mode reader');
 expectMatch(/function syncShellModeToLegacyControls\(land, mode\)/, 'Missing shell sync helper');
 expectMatch(/function setMode\(mode\)/, 'Missing mode switch helper');
 expectMatch(/function handleQuickIntent\(intent\)/, 'Missing hero intent handler');
+expectMatch(/setAttribute\('aria-pressed',/, 'Missing aria-pressed sync for mode buttons');
 
 expectMatch(
   /function recalc\(land\)[\s\S]*syncShellModeToLegacyControls\(land, getLegacyMode\(land\)\);/,
