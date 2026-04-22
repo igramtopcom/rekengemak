@@ -1386,6 +1386,7 @@ function calcExcl(incl, pct) {
 
 var actieveLand = 'nl';
 var actieveMode = 'excl-incl';
+var actieveHelperIntent = '';
 
 function getLegacyMode(land) {
   var dir = document.getElementById('dir-' + land);
@@ -1478,15 +1479,25 @@ function applyModeUi(mode) {
 function syncShellModeToLegacyControls(land, mode) {
   var resolvedMode = isBekendeMode(mode) ? mode : getLegacyMode(land);
   var dir = document.getElementById('dir-' + land);
-  if (dir && isBerekenMode(resolvedMode)) {
-    dir.checked = resolvedMode === 'incl-excl';
+  if (dir && isComparisonMode(resolvedMode)) {
+    dir.checked = false;
+    dir.disabled = true;
+    dir.setAttribute('aria-disabled', 'true');
+  } else if (dir) {
+    dir.disabled = false;
+    dir.setAttribute('aria-disabled', 'false');
+    if (isBerekenMode(resolvedMode)) {
+      dir.checked = resolvedMode === 'incl-excl';
+    }
   }
   applyModeUi(resolvedMode);
   return resolvedMode;
 }
 
-function setMode(mode) {
+function setMode(mode, options) {
+  options = options || {};
   var resolvedMode = isBekendeMode(mode) ? mode : getLegacyMode(actieveLand);
+  actieveHelperIntent = options.invoiceHelperIntent ? 'invoice-check' : '';
   syncShellModeToLegacyControls(actieveLand, resolvedMode);
   recalc(actieveLand);
   var amountEl = document.getElementById('amount-' + actieveLand);
@@ -1495,6 +1506,7 @@ function setMode(mode) {
 
 function handleLegacyDirectionChange(land) {
   actieveLand = land;
+  actieveHelperIntent = '';
   applyModeUi(getLegacyMode(land));
   recalc(land);
 }
@@ -1502,10 +1514,7 @@ function handleLegacyDirectionChange(land) {
 function handleQuickIntent(intent) {
   if (intent === 'add-vat') setMode('excl-incl');
   if (intent === 'remove-vat') setMode('incl-excl');
-  if (intent === 'invoice-check') {
-    setMode('incl-excl');
-    renderInvoiceHelper('incl-excl');
-  }
+  if (intent === 'invoice-check') setMode('incl-excl', { invoiceHelperIntent: true });
   if (intent === 'compare-rates') {
     setMode('compare-rates');
   }
@@ -1528,6 +1537,7 @@ function syncLandState(vanLand, naarLand) {
 }
 
 function applyQuickExample(example) {
+  actieveHelperIntent = '';
   actieveMode = example.mode;
   if (actieveLand !== example.land) {
     switchTab(example.land);
@@ -1597,6 +1607,7 @@ function recalc(land, options) {
   var resolvedMode = syncShellModeToLegacyControls(land, mode);
   var incl = modeNaarRichting(resolvedMode);
   var compareMode = isComparisonMode(resolvedMode);
+  var keepInvoiceHelperVisible = resolvedMode === 'incl-excl' && actieveHelperIntent === 'invoice-check';
   var ondersteundeMode = isOndersteundeMode(resolvedMode);
 
   /* Label aanpassen */
@@ -1619,7 +1630,11 @@ function recalc(land, options) {
     showActionButtons(land, false);
     document.getElementById('vergelijk-blok').hidden = true;
     document.getElementById('formula-blok').style.display = 'none';
-    document.getElementById('invoice-check-helper').hidden = true;
+    if (keepInvoiceHelperVisible) {
+      renderInvoiceHelper(resolvedMode);
+    } else {
+      document.getElementById('invoice-check-helper').hidden = true;
+    }
     document.getElementById('context-links').hidden = true;
     return;
   }
@@ -1709,6 +1724,7 @@ function setResults(land, result, mode) {
 
 /* ═══ RESET ════════════════════════════════════════════════════════════ */
 function resetPanel(land) {
+  actieveHelperIntent = '';
   document.getElementById('amount-' + land).value = '';
   document.getElementById('rate-'   + land).selectedIndex = 0;
   document.getElementById('dir-'    + land).checked = false;

@@ -32,10 +32,19 @@ expectMatch(/function modeNaarRichting\(mode\)/, 'Missing modeNaarRichting helpe
 expectMatch(/function bepaalModeVanParams\(params\)/, 'Missing bepaalModeVanParams helper');
 expectMatch(/function syncLandState\(vanLand, naarLand\)/, 'Missing syncLandState helper');
 expectMatch(/function syncShellModeToLegacyControls\(land, mode\)/, 'Missing shell sync helper');
-expectMatch(/function setMode\(mode\)/, 'Missing mode switch helper');
+expectMatch(/function setMode\(mode, options\)/, 'Missing mode switch helper with options');
 expectMatch(/function handleLegacyDirectionChange\(land\)/, 'Missing legacy direction bridge helper');
 expectMatch(/function handleQuickIntent\(intent\)/, 'Missing hero intent handler');
 expectMatch(/setAttribute\('aria-pressed',/, 'Missing aria-pressed sync for mode buttons');
+expectMatch(/var actieveHelperIntent = '';/, 'Missing invoice helper intent state');
+expectMatch(
+  /function syncShellModeToLegacyControls\(land, mode\)[\s\S]*isComparisonMode\(resolvedMode\)[\s\S]*dir\.checked = false;[\s\S]*dir\.disabled = true;[\s\S]*dir\.setAttribute\('aria-disabled', 'true'\)[\s\S]*dir\.disabled = false;[\s\S]*dir\.setAttribute\('aria-disabled', 'false'\)/,
+  'Missing deterministic compare-mode legacy toggle handling'
+);
+expectMatch(
+  /function handleQuickIntent\(intent\)[\s\S]*intent === 'invoice-check'[\s\S]*setMode\('incl-excl', \{ invoiceHelperIntent: true \}\)/,
+  'Missing invoice-check intent-to-state handoff'
+);
 
 expectMatch(
   /function showActionButtons\(land, show\)[\s\S]*var share = document\.getElementById\('btn-share-link-' \+ land\);[\s\S]*if \(share\) share\.hidden = !show;/,
@@ -95,6 +104,10 @@ expectMatch(/function renderContextLinks\(mode, land, pct\)/, 'Missing contextua
 expectMatch(/\/kennisbank\/wat-is-btw\//, 'Missing contextual link target: wat-is-btw');
 expectMatch(/\/kennisbank\/factuur-zzp\//, 'Missing contextual link target: factuur-zzp');
 expectMatch(/\/kennisbank\/btw-aangifte-zzp\//, 'Missing contextual link target: btw-aangifte-zzp');
+expectMatch(
+  /function recalc\(land, options\)[\s\S]*var keepInvoiceHelperVisible = resolvedMode === 'incl-excl' && actieveHelperIntent === 'invoice-check';[\s\S]*if \(!raw \|\| isNaN\(amt\) \|\| amt <= 0\)[\s\S]*if \(keepInvoiceHelperVisible\) \{[\s\S]*renderInvoiceHelper\(resolvedMode\);[\s\S]*\} else \{[\s\S]*document\.getElementById\('invoice-check-helper'\)\.hidden = true;/,
+  'Missing recalc-owned invoice helper visibility logic'
+);
 assert.doesNotMatch(html, /function printResultaat\(\)/, 'Orphaned printResultaat helper should be removed');
 
 console.log('task 4 smoke checks passed');
