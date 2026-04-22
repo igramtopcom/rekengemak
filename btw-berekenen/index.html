@@ -1225,6 +1225,7 @@ function calcExcl(incl, pct) {
 }
 
 var actieveLand = 'nl';
+var actieveMode = 'excl-incl';
 
 function getLegacyMode(land) {
   var dir = document.getElementById('dir-' + land);
@@ -1233,26 +1234,26 @@ function getLegacyMode(land) {
 
 function applyModeUi(mode) {
   var zichtbareMode = mode === 'incl-excl' ? 'incl-excl' : 'excl-incl';
+  actieveMode = zichtbareMode;
   var knoppen = document.querySelectorAll('.mode-btn');
   knoppen.forEach(function(btn) {
     btn.classList.toggle('active', btn.getAttribute('data-mode') === zichtbareMode);
   });
 }
 
-function syncShellModeToLegacyControls(land) {
-  applyModeUi(getLegacyMode(land));
+function syncShellModeToLegacyControls(land, mode) {
+  var resolvedMode = mode === 'incl-excl' || mode === 'excl-incl' ? mode : getLegacyMode(land);
+  var dir = document.getElementById('dir-' + land);
+  if (dir) {
+    dir.checked = resolvedMode === 'incl-excl';
+  }
+  applyModeUi(resolvedMode);
+  return resolvedMode;
 }
 
 function setMode(mode) {
-  var dir = document.getElementById('dir-' + actieveLand);
-  if (dir) {
-    if (mode === 'incl-excl') {
-      dir.checked = true;
-    } else if (mode === 'excl-incl') {
-      dir.checked = false;
-    }
-  }
-  syncShellModeToLegacyControls(actieveLand);
+  var resolvedMode = mode === 'incl-excl' || mode === 'excl-incl' ? mode : getLegacyMode(actieveLand);
+  syncShellModeToLegacyControls(actieveLand, resolvedMode);
   recalc(actieveLand);
 }
 
@@ -1261,8 +1262,7 @@ function handleQuickIntent(intent) {
   if (intent === 'remove-vat') setMode('incl-excl');
   if (intent === 'invoice-check') setMode('incl-excl');
   if (intent === 'compare-rates') {
-    syncShellModeToLegacyControls(actieveLand);
-    recalc(actieveLand);
+    setMode('compare-rates');
   }
 }
 
@@ -1270,13 +1270,13 @@ function handleQuickIntent(intent) {
 function recalc(land) {
   var amountEl = document.getElementById('amount-' + land);
   var rateEl   = document.getElementById('rate-'   + land);
-  var dirEl    = document.getElementById('dir-'    + land);
 
   var raw  = amountEl ? amountEl.value.trim() : '';
   var amt  = parseNL(raw);
   var pct  = parseFloat(rateEl.value);
-  var incl = dirEl.checked; /* true = incl→excl */
-  syncShellModeToLegacyControls(land);
+  var legacyMode = getLegacyMode(land);
+  var incl = legacyMode === 'incl-excl';
+  syncShellModeToLegacyControls(land, legacyMode);
 
   /* Label aanpassen */
   var lbl = document.getElementById('amount-label-' + land);
@@ -1348,7 +1348,7 @@ function resetPanel(land) {
   document.getElementById('amount-' + land).value = '';
   document.getElementById('rate-'   + land).selectedIndex = 0;
   document.getElementById('dir-'    + land).checked = false;
-  syncShellModeToLegacyControls(land);
+  syncShellModeToLegacyControls(land, getLegacyMode(land));
   var lbl = document.getElementById('amount-label-' + land);
   if (lbl) lbl.textContent = 'Bedrag exclusief btw';
   setResults(land, null);
@@ -1366,7 +1366,7 @@ function switchTab(land) {
     document.getElementById('tab-'   + l).setAttribute('aria-selected', l === land);
     document.getElementById('panel-' + l).classList.toggle('active', l === land);
   });
-  syncShellModeToLegacyControls(land);
+  syncShellModeToLegacyControls(land, getLegacyMode(land));
 }
 
 function deelLink(land) {
@@ -1486,6 +1486,7 @@ function herstelFormulier(velden) {
   document.getElementById('amount-' + land).value = velden.bedrag;
   document.getElementById('rate-' + land).value = velden.tarief;
   document.getElementById('dir-' + land).checked = velden.modus === 'incl';
+  syncShellModeToLegacyControls(land, getLegacyMode(land));
   recalc(land);
 }
 
@@ -1509,6 +1510,7 @@ function leesUrlParams() {
   if (params.get('modus') === 'incl') {
     document.getElementById('dir-' + land).checked = true;
   }
+  syncShellModeToLegacyControls(land, getLegacyMode(land));
   if (params.get('bedrag')) recalc(land);
 }
 
