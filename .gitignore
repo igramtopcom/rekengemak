@@ -12,3 +12,6 @@ RekenGemak_Document/
 
 # Claude
 .claude/
+
+# Local worktrees
+.worktrees/
