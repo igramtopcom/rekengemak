@@ -24,8 +24,6 @@ expectMatch(/id="mode-compare-rates"/, 'Missing mode button: mode-compare-rates'
 expectMatch(/id="btn-share-link-nl"/, 'Missing NL share-link button');
 expectMatch(/id="btn-share-link-be"/, 'Missing BE share-link button');
 expectMatch(/id="mode-vat-only"[^>]*disabled[^>]*aria-disabled="true"[^>]*Binnenkort/, 'Missing coming-soon treatment for vat-only mode');
-expectMatch(/id="mode-compare-rates"[^>]*disabled[^>]*aria-disabled="true"[^>]*Binnenkort/, 'Missing coming-soon treatment for compare-rates mode');
-expectMatch(/id="intent-compare-rates"[^>]*disabled[^>]*aria-disabled="true"[^>]*Binnenkort/, 'Missing coming-soon treatment for compare intent');
 
 expectMatch(/var actieveMode = 'excl-incl';/, 'Missing legacy mode mirror');
 expectMatch(/function getLegacyMode\(land\)/, 'Missing legacy mode reader');
@@ -73,7 +71,6 @@ expectMatch(/id="btn-share-link-nl"/, 'Missing NL share-link button');
 expectMatch(/function deelLink\(land\)/, 'Missing deelLink helper');
 expectMatch(/function getPrimaryValueForMode\(mode, result\)/, 'Missing mode-aware primary value helper');
 expectMatch(/function getPrimaryLabelForMode\(mode\)/, 'Missing mode-aware primary label helper');
-expectMatch(/mode === 'compare-rates'[\s\S]*Vergelijking binnenkort beschikbaar/, 'Missing compare-rates primary label handling');
 expectMatch(
   /function setResults\(land, result, mode\)[\s\S]*result-label-[\s\S]*result-primary-[\s\S]*card-excl-[\s\S]*card-btw-[\s\S]*card-incl-[\s\S]*getPrimaryLabelForMode\(resolvedMode\)[\s\S]*getPrimaryValueForMode\(resolvedMode, result\)/,
   'Missing rewritten setResults workspace rendering'
@@ -86,6 +83,18 @@ expectMatch(
   /function kopieerAlles\(land\)[\s\S]*card-excl-[\s\S]*card-btw-[\s\S]*card-incl-[\s\S]*result-primary-/,
   'Missing result workspace copy-all sources'
 );
+expectMatch(/id="quick-example-100-21"/, 'Missing quick example: quick-example-100-21');
+expectMatch(/id="quick-example-250-9"/, 'Missing quick example: quick-example-250-9');
+expectMatch(/id="quick-example-100-incl-21"/, 'Missing quick example: quick-example-100-incl-21');
+expectMatch(/id="quick-example-100-be-6"/, 'Missing quick example: quick-example-100-be-6');
+expectMatch(/id="invoice-check-helper"/, 'Missing invoice check helper block');
+expectMatch(/id="context-links"/, 'Missing contextual knowledge links block');
+expectMatch(/function applyQuickExample\(example\)/, 'Missing quick example helper');
+expectMatch(/function renderInvoiceHelper\(mode\)/, 'Missing invoice helper renderer');
+expectMatch(/function renderContextLinks\(mode, land, pct\)/, 'Missing contextual links renderer');
+expectMatch(/\/kennisbank\/wat-is-btw\//, 'Missing contextual link target: wat-is-btw');
+expectMatch(/\/kennisbank\/factuur-zzp\//, 'Missing contextual link target: factuur-zzp');
+expectMatch(/\/kennisbank\/btw-aangifte-zzp\//, 'Missing contextual link target: btw-aangifte-zzp');
 assert.doesNotMatch(html, /function printResultaat\(\)/, 'Orphaned printResultaat helper should be removed');
 
-console.log('task 3 smoke checks passed');
+console.log('task 4 smoke checks passed');

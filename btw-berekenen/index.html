@@ -268,6 +268,41 @@ h1 { font-size: clamp(1.6rem, 4vw, 2rem); font-weight: 700; margin-bottom: var(-
   background: rgba(31, 92, 153, 0.15);
 }
 
+.quick-examples {
+  margin-bottom: var(--space-md);
+}
+
+.quick-examples-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.quick-examples-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quick-example {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.85rem;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.quick-example:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(31, 92, 153, 0.08);
+}
+
 .coming-soon {
   margin-left: 6px;
   font-size: 0.75rem;
@@ -601,6 +636,52 @@ select option {
   font-size: 0.75rem;
   color: var(--text-secondary);
 }
+.invoice-check-helper,
+.context-links {
+  margin: var(--space-md) auto 0;
+  max-width: 700px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+}
+.invoice-check-helper[hidden],
+.context-links[hidden] { display: none; }
+.invoice-check-title,
+.context-links-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+.invoice-check-helper p:last-child,
+.context-links-copy {
+  margin-top: 8px;
+  color: var(--text-primary);
+}
+.context-link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.context-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.context-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(31, 92, 153, 0.08);
+  text-decoration: none;
+}
 
 /* ═══ TARIEF TABEL ═════════════════════════════════════════════════════ */
 .tarief-tabel {
@@ -791,13 +872,14 @@ select option {
   <h1>BTW Berekenen voor Nederland en Belgie</h1>
   <span class="badge-updated">Bijgewerkt: januari 2026</span>
   <p class="hero-summary">
-    Gratis btw-calculator voor zowel het Nederlandse als het Belgische btw-tarief. Geen registratie nodig.
+    Kies hierboven direct wat je wilt doen: btw toevoegen, terugrekenen, een factuur checken of tarieven vergelijken.
+    Het hoofdresultaat staat bovenaan en je ziet daarnaast altijd de excl.-, btw- en incl.-bedragen in aparte kaarten.
   </p>
   <div class="hero-intents" aria-label="Snelle acties">
     <button class="hero-intent" id="intent-add-vat" type="button" onclick="handleQuickIntent('add-vat')">BTW erbij rekenen</button>
     <button class="hero-intent" id="intent-remove-vat" type="button" onclick="handleQuickIntent('remove-vat')">BTW eruit rekenen</button>
     <button class="hero-intent" id="intent-invoice-check" type="button" onclick="handleQuickIntent('invoice-check')">Factuur checken</button>
-    <button class="hero-intent" id="intent-compare-rates" type="button" disabled aria-disabled="true" title="Binnenkort beschikbaar" onclick="handleQuickIntent('compare-rates')">NL of BE vergelijken <span class="coming-soon">Binnenkort</span></button>
+    <button class="hero-intent" id="intent-compare-rates" type="button" onclick="handleQuickIntent('compare-rates')">NL of BE vergelijken</button>
   </div>
 </div>
 
@@ -817,7 +899,17 @@ select option {
     <button class="mode-btn active" id="mode-excl-incl" type="button" data-mode="excl-incl" onclick="setMode('excl-incl')">Excl -> Incl</button>
     <button class="mode-btn" id="mode-incl-excl" type="button" data-mode="incl-excl" onclick="setMode('incl-excl')">Incl -> Excl</button>
     <button class="mode-btn" id="mode-vat-only" type="button" data-mode="vat-only" disabled aria-disabled="true" title="Binnenkort beschikbaar" onclick="setMode('vat-only')">Alleen btw-bedrag <span class="coming-soon">Binnenkort</span></button>
-    <button class="mode-btn" id="mode-compare-rates" type="button" data-mode="compare-rates" disabled aria-disabled="true" title="Binnenkort beschikbaar" onclick="setMode('compare-rates')">Tarieven vergelijken <span class="coming-soon">Binnenkort</span></button>
+    <button class="mode-btn" id="mode-compare-rates" type="button" data-mode="compare-rates" onclick="setMode('compare-rates')">Tarieven vergelijken</button>
+  </div>
+
+  <div class="quick-examples" id="quick-examples" aria-label="Veelgebruikte voorbeelden">
+    <p class="quick-examples-title">Probeer een voorbeeld</p>
+    <div class="quick-examples-list">
+      <button class="quick-example" id="quick-example-100-21" type="button" onclick="applyQuickExample({ land: 'nl', mode: 'excl-incl', amount: '100', rate: '0.21' })">100 euro @ 21%</button>
+      <button class="quick-example" id="quick-example-250-9" type="button" onclick="applyQuickExample({ land: 'nl', mode: 'excl-incl', amount: '250', rate: '0.09' })">250 euro @ 9%</button>
+      <button class="quick-example" id="quick-example-100-incl-21" type="button" onclick="applyQuickExample({ land: 'nl', mode: 'incl-excl', amount: '100', rate: '0.21' })">100 euro incl. 21%</button>
+      <button class="quick-example" id="quick-example-100-be-6" type="button" onclick="applyQuickExample({ land: 'be', mode: 'excl-incl', amount: '100', rate: '0.06' })">100 euro BE @ 6%</button>
+    </div>
   </div>
 
   <!-- Panel NL -->
@@ -975,6 +1067,13 @@ select option {
   </div>
 
 </section>
+
+<div class="invoice-check-helper" id="invoice-check-helper" hidden>
+  <p class="invoice-check-title">Factuur checken</p>
+  <p id="invoice-check-copy">Vul een bedrag in om te controleren of de exclusieve prijs en het btw-bedrag logisch aansluiten op het factuurtotaal.</p>
+</div>
+
+<div class="context-links" id="context-links" hidden></div>
 
 <div class="formula-blok" id="formula-blok" style="display:none;">
   <div class="formula-title">Zo wordt dit berekend</div>
@@ -1297,8 +1396,16 @@ function isPlaceholderMode(mode) {
   return mode === 'compare-rates' || mode === 'vat-only';
 }
 
-function isOndersteundeMode(mode) {
+function isBerekenMode(mode) {
   return mode === 'incl-excl' || mode === 'excl-incl';
+}
+
+function isComparisonMode(mode) {
+  return mode === 'compare-rates';
+}
+
+function isOndersteundeMode(mode) {
+  return isBerekenMode(mode) || isComparisonMode(mode);
 }
 
 function isBekendeMode(mode) {
@@ -1313,6 +1420,34 @@ function getModeFromUi() {
 function modeNaarRichting(mode) {
   return mode === 'incl-excl';
 }
+
+var CONTEXT_LINK_CONFIG = {
+  'excl-incl': {
+    title: 'Meer weten over btw toevoegen?',
+    copy: 'Gebruik deze uitleg om snel te controleren welk tarief geldt en hoe je het bedrag verwerkt in je administratie.',
+    links: [
+      { href: '/kennisbank/wat-is-btw/', label: 'Wat is btw en hoe werkt het?' },
+      { href: '/kennisbank/btw-aangifte-zzp/', label: 'Btw-aangifte doen als zzp\'er' }
+    ]
+  },
+  'incl-excl': {
+    title: 'Meer weten over terugrekenen?',
+    copy: 'Handig als je een ontvangen factuur wilt nalopen of een prijs inclusief btw wilt uitsplitsen.',
+    links: [
+      { href: '/kennisbank/factuur-zzp/', label: 'Factuur maken als zzp\'er' },
+      { href: '/kennisbank/btw-aangifte-zzp/', label: 'Btw-aangifte doen als zzp\'er' },
+      { href: '/kennisbank/wat-is-btw/', label: 'Wat is btw en hoe werkt het?' }
+    ]
+  },
+  'compare-rates': {
+    title: 'Meer weten over tarieven vergelijken?',
+    copy: 'Vergelijk het effect van verschillende btw-tarieven op hetzelfde bedrag en check daarna welk tarief voor jouw situatie geldt.',
+    links: [
+      { href: '/kennisbank/wat-is-btw/', label: 'Wat is btw en hoe werkt het?' },
+      { href: '/kennisbank/btw-op-eten-en-drinken/', label: 'BTW op eten en drinken: welk tarief geldt wanneer?' }
+    ]
+  }
+};
 
 function bepaalModeVanParams(params) {
   var mode = params.get('mode');
@@ -1343,7 +1478,7 @@ function applyModeUi(mode) {
 function syncShellModeToLegacyControls(land, mode) {
   var resolvedMode = isBekendeMode(mode) ? mode : getLegacyMode(land);
   var dir = document.getElementById('dir-' + land);
-  if (dir && isOndersteundeMode(resolvedMode)) {
+  if (dir && isBerekenMode(resolvedMode)) {
     dir.checked = resolvedMode === 'incl-excl';
   }
   applyModeUi(resolvedMode);
@@ -1354,6 +1489,8 @@ function setMode(mode) {
   var resolvedMode = isBekendeMode(mode) ? mode : getLegacyMode(actieveLand);
   syncShellModeToLegacyControls(actieveLand, resolvedMode);
   recalc(actieveLand);
+  var amountEl = document.getElementById('amount-' + actieveLand);
+  if (amountEl) amountEl.focus();
 }
 
 function handleLegacyDirectionChange(land) {
@@ -1387,6 +1524,60 @@ function syncLandState(vanLand, naarLand) {
   }
 }
 
+function applyQuickExample(example) {
+  actieveMode = example.mode;
+  if (actieveLand !== example.land) {
+    switchTab(example.land);
+  } else {
+    actieveLand = example.land;
+  }
+
+  syncShellModeToLegacyControls(example.land, example.mode);
+
+  var amountEl = document.getElementById('amount-' + example.land);
+  var rateEl = document.getElementById('rate-' + example.land);
+  if (amountEl) amountEl.value = example.amount;
+  if (rateEl) rateEl.value = example.rate;
+
+  recalc(example.land);
+
+  if (amountEl) amountEl.focus();
+}
+
+function renderInvoiceHelper(mode) {
+  var wrap = document.getElementById('invoice-check-helper');
+  var copy = document.getElementById('invoice-check-copy');
+  var zichtbaar = mode === 'incl-excl';
+
+  wrap.hidden = !zichtbaar;
+  if (!zichtbaar) return;
+
+  copy.textContent = 'Vul het totaalbedrag inclusief btw in om te controleren of de exclusieve prijs en het btw-bedrag kloppen met de factuur.';
+}
+
+function renderContextLinks(mode, land, pct) {
+  var wrap = document.getElementById('context-links');
+  var config = CONTEXT_LINK_CONFIG[mode] || CONTEXT_LINK_CONFIG['excl-incl'];
+  var links = config.links.slice();
+
+  if ((land === 'be' && Math.abs(pct - 0.06) < 0.001) || (land === 'nl' && Math.abs(pct - 0.09) < 0.001)) {
+    links = [
+      { href: '/kennisbank/wat-is-btw/', label: 'Wat is btw en hoe werkt het?' },
+      { href: '/kennisbank/btw-op-eten-en-drinken/', label: 'BTW op eten en drinken: welk tarief geldt wanneer?' }
+    ];
+  }
+
+  wrap.innerHTML =
+    '<p class="context-links-title">' + config.title + '</p>' +
+    '<p class="context-links-copy">' + config.copy + '</p>' +
+    '<div class="context-link-list">' +
+      links.map(function(item) {
+        return '<a class="context-link" href="' + item.href + '">' + item.label + '</a>';
+      }).join('') +
+    '</div>';
+  wrap.hidden = false;
+}
+
 /* ═══ RECALC ═══════════════════════════════════════════════════════════ */
 function recalc(land, options) {
   options = options || {};
@@ -1402,6 +1593,7 @@ function recalc(land, options) {
   var mode = getModeFromUi();
   var resolvedMode = syncShellModeToLegacyControls(land, mode);
   var incl = modeNaarRichting(resolvedMode);
+  var compareMode = isComparisonMode(resolvedMode);
   var ondersteundeMode = isOndersteundeMode(resolvedMode);
 
   /* Label aanpassen */
@@ -1411,8 +1603,10 @@ function recalc(land, options) {
   if (!ondersteundeMode) {
     setResults(land, null, resolvedMode);
     showActionButtons(land, false);
-    if (land === 'nl') document.getElementById('vergelijk-blok').hidden = true;
+    document.getElementById('vergelijk-blok').hidden = true;
     document.getElementById('formula-blok').style.display = 'none';
+    document.getElementById('invoice-check-helper').hidden = true;
+    document.getElementById('context-links').hidden = true;
     updateUrl(land, raw, pct, resolvedMode);
     return;
   }
@@ -1420,8 +1614,10 @@ function recalc(land, options) {
   if (!raw || isNaN(amt) || amt <= 0) {
     setResults(land, null, resolvedMode);
     showActionButtons(land, false);
-    if (land === 'nl') document.getElementById('vergelijk-blok').hidden = true;
+    document.getElementById('vergelijk-blok').hidden = true;
     document.getElementById('formula-blok').style.display = 'none';
+    document.getElementById('invoice-check-helper').hidden = true;
+    document.getElementById('context-links').hidden = true;
     return;
   }
 
@@ -1429,9 +1625,11 @@ function recalc(land, options) {
   setResults(land, r, resolvedMode);
   showActionButtons(land, true);
 
-  /* Feature A: Vergelijkingstabel (alleen NL) */
-  if (land === 'nl') {
-    vulVergelijkTabel(r.excl, pct);
+  /* Feature A: Vergelijkingstabel */
+  if (compareMode || land === 'nl') {
+    vulVergelijkTabel(r.excl, pct, land);
+  } else {
+    document.getElementById('vergelijk-blok').hidden = true;
   }
 
   var tariefPct = Math.round(pct * 100);
@@ -1440,7 +1638,9 @@ function recalc(land, options) {
   updateUrl(land, raw, pct, resolvedMode);
 
   /* Feature A: Formula blok */
-  if (!incl) {
+  if (compareMode) {
+    document.getElementById('formula-blok').style.display = 'none';
+  } else if (!incl) {
     toonFormula([
       { label: 'BTW bedrag', calc: fmtEUR.format(amt) + ' x ' + tariefPct + '%', result: fmtEUR.format(r.btw) },
       { label: 'Incl. BTW',  calc: fmtEUR.format(amt) + ' + ' + fmtEUR.format(r.btw), result: fmtEUR.format(r.incl) }
@@ -1451,6 +1651,9 @@ function recalc(land, options) {
       { label: 'BTW bedrag', calc: fmtEUR.format(amt) + ' - ' + fmtEUR.format(r.excl), result: fmtEUR.format(r.btw) }
     ]);
   }
+
+  renderInvoiceHelper(resolvedMode);
+  renderContextLinks(resolvedMode, land, pct);
 
   /* Feature B: Geschiedenis */
   if (persistHistory) {
@@ -1471,7 +1674,7 @@ function getPrimaryValueForMode(mode, result) {
 function getPrimaryLabelForMode(mode) {
   if (mode === 'incl-excl') return 'Totaal exclusief btw';
   if (mode === 'vat-only') return 'BTW-bedrag';
-  if (mode === 'compare-rates') return 'Vergelijking binnenkort beschikbaar';
+  if (mode === 'compare-rates') return 'Totaal bij gekozen tarief';
   return 'Totaal inclusief btw';
 }
 
@@ -1511,9 +1714,10 @@ function resetPanel(land) {
   if (lbl) lbl.textContent = 'Bedrag exclusief btw';
   setResults(land, null);
   showActionButtons(land, false);
-  if (land === 'nl') {
-    document.getElementById('vergelijk-blok').hidden = true;
-  }
+  document.getElementById('vergelijk-blok').hidden = true;
+  document.getElementById('formula-blok').style.display = 'none';
+  document.getElementById('invoice-check-helper').hidden = true;
+  document.getElementById('context-links').hidden = true;
 }
 
 /* ═══ TAB SWITCH ═══════════════════════════════════════════════════════ */
@@ -1686,7 +1890,7 @@ function updateUrl(land, bedrag, pct, mode) {
   params.set('bedrag', bedrag);
   params.set('tarief', Math.round(pct * 100));
   params.set('mode', mode);
-  if (isOndersteundeMode(mode)) {
+  if (isBerekenMode(mode)) {
     params.set('modus', mode === 'incl-excl' ? 'incl' : 'excl');
   } else {
     params.set('modus', mode);
@@ -1696,13 +1900,20 @@ function updateUrl(land, bedrag, pct, mode) {
 }
 
 /* ═══ VERGELIJK TABEL ══════════════════════════════════════════════════ */
-function vulVergelijkTabel(bedragExcl, huidigTarief) {
-  var tarieven = [
-    { label: '21%', pct: 0.21 },
-    { label: '9%',  pct: 0.09 },
-    { label: '0%',  pct: 0.00 }
-  ];
+function vulVergelijkTabel(bedragExcl, huidigTarief, land) {
+  var tarieven = land === 'be'
+    ? [
+        { label: '21%', pct: 0.21 },
+        { label: '6%',  pct: 0.06 },
+        { label: '0%',  pct: 0.00 }
+      ]
+    : [
+        { label: '21%', pct: 0.21 },
+        { label: '9%',  pct: 0.09 },
+        { label: '0%',  pct: 0.00 }
+      ];
   var tbody = document.getElementById('vergelijk-tbody');
+  var titel = document.querySelector('#vergelijk-blok .vergelijk-titel');
   tbody.innerHTML = '';
   tarieven.forEach(function(t) {
     var btw  = bedragExcl * t.pct;
@@ -1717,6 +1928,9 @@ function vulVergelijkTabel(bedragExcl, huidigTarief) {
       '<td>' + fmtEUR.format(incl) + '</td>';
     tbody.appendChild(tr);
   });
+  if (titel) {
+    titel.textContent = land === 'be' ? 'Vergelijking Belgische tarieven' : 'Vergelijking Nederlandse tarieven';
+  }
   document.getElementById('vergelijk-blok').hidden = false;
 }
 
