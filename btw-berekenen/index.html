@@ -1238,7 +1238,11 @@ function applyModeUi(mode) {
 function syncShellModeToLegacyControls(land, mode) {
   var dir = document.getElementById('dir-' + land);
   if (!dir) return;
-  dir.checked = mode === 'incl-excl';
+  if (mode === 'incl-excl') {
+    dir.checked = true;
+  } else if (mode === 'excl-incl') {
+    dir.checked = false;
+  }
 }
 
 function setMode(mode) {
@@ -1537,8 +1541,10 @@ function vulVergelijkTabel(bedragExcl, huidigTarief) {
 function showActionButtons(land, show) {
   var print = document.getElementById('btn-print-' + land);
   var copy  = document.getElementById('btn-kopieer-alles-' + land);
+  var share = document.getElementById('btn-share-link-' + land);
   if (print) print.hidden = !show;
   if (copy)  copy.hidden  = !show;
+  if (share) share.hidden = !show;
 }
 
 /* ═══ PRINT ═══════════════════════════════════════════════════════════ */
