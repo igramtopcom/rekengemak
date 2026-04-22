@@ -759,7 +759,7 @@ select option {
             onclick="switchTab('be')">&#127463;&#127466; Belgie</button>
   </div>
 
-  <div class="mode-bar" role="tablist" aria-label="BTW modus">
+  <div class="mode-bar" aria-label="BTW modus">
     <button class="mode-btn active" id="mode-excl-incl" type="button" data-mode="excl-incl" onclick="setMode('excl-incl')">Excl -> Incl</button>
     <button class="mode-btn" id="mode-incl-excl" type="button" data-mode="incl-excl" onclick="setMode('incl-excl')">Incl -> Excl</button>
     <button class="mode-btn" id="mode-vat-only" type="button" data-mode="vat-only" onclick="setMode('vat-only')">Alleen btw-bedrag</button>
@@ -1225,29 +1225,34 @@ function calcExcl(incl, pct) {
 }
 
 var actieveLand = 'nl';
-var actieveMode = 'excl-incl';
+
+function getLegacyMode(land) {
+  var dir = document.getElementById('dir-' + land);
+  return dir && dir.checked ? 'incl-excl' : 'excl-incl';
+}
 
 function applyModeUi(mode) {
-  actieveMode = mode;
+  var zichtbareMode = mode === 'incl-excl' ? 'incl-excl' : 'excl-incl';
   var knoppen = document.querySelectorAll('.mode-btn');
   knoppen.forEach(function(btn) {
-    btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+    btn.classList.toggle('active', btn.getAttribute('data-mode') === zichtbareMode);
   });
 }
 
-function syncShellModeToLegacyControls(land, mode) {
-  var dir = document.getElementById('dir-' + land);
-  if (!dir) return;
-  if (mode === 'incl-excl') {
-    dir.checked = true;
-  } else if (mode === 'excl-incl') {
-    dir.checked = false;
-  }
+function syncShellModeToLegacyControls(land) {
+  applyModeUi(getLegacyMode(land));
 }
 
 function setMode(mode) {
-  applyModeUi(mode);
-  syncShellModeToLegacyControls(actieveLand, mode);
+  var dir = document.getElementById('dir-' + actieveLand);
+  if (dir) {
+    if (mode === 'incl-excl') {
+      dir.checked = true;
+    } else if (mode === 'excl-incl') {
+      dir.checked = false;
+    }
+  }
+  syncShellModeToLegacyControls(actieveLand);
   recalc(actieveLand);
 }
 
@@ -1255,7 +1260,10 @@ function handleQuickIntent(intent) {
   if (intent === 'add-vat') setMode('excl-incl');
   if (intent === 'remove-vat') setMode('incl-excl');
   if (intent === 'invoice-check') setMode('incl-excl');
-  if (intent === 'compare-rates') setMode('compare-rates');
+  if (intent === 'compare-rates') {
+    syncShellModeToLegacyControls(actieveLand);
+    recalc(actieveLand);
+  }
 }
 
 /* ═══ RECALC ═══════════════════════════════════════════════════════════ */
@@ -1268,6 +1276,7 @@ function recalc(land) {
   var amt  = parseNL(raw);
   var pct  = parseFloat(rateEl.value);
   var incl = dirEl.checked; /* true = incl→excl */
+  syncShellModeToLegacyControls(land);
 
   /* Label aanpassen */
   var lbl = document.getElementById('amount-label-' + land);
@@ -1339,6 +1348,7 @@ function resetPanel(land) {
   document.getElementById('amount-' + land).value = '';
   document.getElementById('rate-'   + land).selectedIndex = 0;
   document.getElementById('dir-'    + land).checked = false;
+  syncShellModeToLegacyControls(land);
   var lbl = document.getElementById('amount-label-' + land);
   if (lbl) lbl.textContent = 'Bedrag exclusief btw';
   setResults(land, null);
@@ -1356,8 +1366,7 @@ function switchTab(land) {
     document.getElementById('tab-'   + l).setAttribute('aria-selected', l === land);
     document.getElementById('panel-' + l).classList.toggle('active', l === land);
   });
-  syncShellModeToLegacyControls(land, actieveMode);
-  applyModeUi(actieveMode);
+  syncShellModeToLegacyControls(land);
 }
 
 function deelLink(land) {
