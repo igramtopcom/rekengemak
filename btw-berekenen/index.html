@@ -1247,9 +1247,21 @@ function getLegacyMode(land) {
   return dir && dir.checked ? 'incl-excl' : 'excl-incl';
 }
 
+function isPlaceholderMode(mode) {
+  return mode === 'compare-rates' || mode === 'vat-only';
+}
+
+function isOndersteundeMode(mode) {
+  return mode === 'incl-excl' || mode === 'excl-incl';
+}
+
+function isBekendeMode(mode) {
+  return isOndersteundeMode(mode) || isPlaceholderMode(mode);
+}
+
 function getModeFromUi() {
   var actieveKnop = document.querySelector('.mode-btn.active');
-  return actieveKnop ? actieveKnop.getAttribute('data-mode') : 'excl-incl';
+  return actieveKnop ? actieveKnop.getAttribute('data-mode') : (actieveMode || 'excl-incl');
 }
 
 function modeNaarRichting(mode) {
@@ -1258,17 +1270,18 @@ function modeNaarRichting(mode) {
 
 function bepaalModeVanParams(params) {
   var mode = params.get('mode');
-  if (mode === 'incl-excl' || mode === 'excl-incl') return mode;
+  if (isBekendeMode(mode)) return mode;
 
   var legacyModus = params.get('modus');
   if (legacyModus === 'incl') return 'incl-excl';
   if (legacyModus === 'excl') return 'excl-incl';
+  if (isPlaceholderMode(legacyModus)) return legacyModus;
 
   return 'excl-incl';
 }
 
 function applyModeUi(mode) {
-  var zichtbareMode = mode === 'incl-excl' ? 'incl-excl' : 'excl-incl';
+  var zichtbareMode = isBekendeMode(mode) ? mode : 'excl-incl';
   actieveMode = zichtbareMode;
   var knoppen = document.querySelectorAll('.mode-btn');
   knoppen.forEach(function(btn) {
@@ -1282,9 +1295,9 @@ function applyModeUi(mode) {
 }
 
 function syncShellModeToLegacyControls(land, mode) {
-  var resolvedMode = mode === 'incl-excl' || mode === 'excl-incl' ? mode : getLegacyMode(land);
+  var resolvedMode = isBekendeMode(mode) ? mode : getLegacyMode(land);
   var dir = document.getElementById('dir-' + land);
-  if (dir) {
+  if (dir && isOndersteundeMode(resolvedMode)) {
     dir.checked = resolvedMode === 'incl-excl';
   }
   applyModeUi(resolvedMode);
@@ -1292,7 +1305,7 @@ function syncShellModeToLegacyControls(land, mode) {
 }
 
 function setMode(mode) {
-  var resolvedMode = mode === 'incl-excl' || mode === 'excl-incl' ? mode : getLegacyMode(actieveLand);
+  var resolvedMode = isBekendeMode(mode) ? mode : getLegacyMode(actieveLand);
   syncShellModeToLegacyControls(actieveLand, resolvedMode);
   recalc(actieveLand);
 }
@@ -1329,7 +1342,9 @@ function syncLandState(vanLand, naarLand) {
 }
 
 /* ═══ RECALC ═══════════════════════════════════════════════════════════ */
-function recalc(land) {
+function recalc(land, options) {
+  options = options || {};
+  var persistHistory = options.persistHistory !== false;
   actieveLand = land;
 
   var amountEl = document.getElementById('amount-' + land);
@@ -1339,15 +1354,25 @@ function recalc(land) {
   var amt  = parseNL(raw);
   var pct  = parseFloat(rateEl.value);
   var mode = getModeFromUi();
-  var incl = modeNaarRichting(mode);
-  syncShellModeToLegacyControls(land, mode);
+  var resolvedMode = syncShellModeToLegacyControls(land, mode);
+  var incl = modeNaarRichting(resolvedMode);
+  var ondersteundeMode = isOndersteundeMode(resolvedMode);
 
   /* Label aanpassen */
   var lbl = document.getElementById('amount-label-' + land);
   if (lbl) lbl.textContent = incl ? 'Bedrag inclusief btw' : 'Bedrag exclusief btw';
 
+  if (!ondersteundeMode) {
+    setResults(land, null, resolvedMode);
+    showActionButtons(land, false);
+    if (land === 'nl') document.getElementById('vergelijk-blok').hidden = true;
+    document.getElementById('formula-blok').style.display = 'none';
+    updateUrl(land, raw, pct, resolvedMode);
+    return;
+  }
+
   if (!raw || isNaN(amt) || amt <= 0) {
-    setResults(land, null, mode);
+    setResults(land, null, resolvedMode);
     showActionButtons(land, false);
     if (land === 'nl') document.getElementById('vergelijk-blok').hidden = true;
     document.getElementById('formula-blok').style.display = 'none';
@@ -1355,7 +1380,7 @@ function recalc(land) {
   }
 
   var r = incl ? calcExcl(amt, pct) : calcIncl(amt, pct);
-  setResults(land, r, mode);
+  setResults(land, r, resolvedMode);
   showActionButtons(land, true);
 
   /* Feature A: Vergelijkingstabel (alleen NL) */
@@ -1366,7 +1391,7 @@ function recalc(land) {
   var tariefPct = Math.round(pct * 100);
 
   /* Feature C: URL deeplink */
-  updateUrl(land, raw, pct, mode);
+  updateUrl(land, raw, pct, resolvedMode);
 
   /* Feature A: Formula blok */
   if (!incl) {
@@ -1382,11 +1407,13 @@ function recalc(land) {
   }
 
   /* Feature B: Geschiedenis */
-  slaGeschiedenisOp(
-    raw + ' (' + tariefPct + '%, ' + mode + ')',
-    incl ? 'excl: ' + fmtEUR.format(r.excl) : 'incl: ' + fmtEUR.format(r.incl),
-    { bedrag: raw, tarief: rateEl.value, mode: mode, modus: incl ? 'incl' : 'excl', land: land }
-  );
+  if (persistHistory) {
+    slaGeschiedenisOp(
+      raw + ' (' + tariefPct + '%, ' + resolvedMode + ')',
+      incl ? 'excl: ' + fmtEUR.format(r.excl) : 'incl: ' + fmtEUR.format(r.incl),
+      { bedrag: raw, tarief: rateEl.value, mode: resolvedMode, modus: incl ? 'incl' : 'excl', land: land }
+    );
+  }
 }
 
 function setResults(land, r) {
@@ -1436,7 +1463,7 @@ function switchTab(land) {
     document.getElementById('panel-' + l).classList.toggle('active', l === land);
   });
   applyModeUi(actieveMode);
-  recalc(land);
+  recalc(land, { persistHistory: false });
 }
 
 function deelLink(land) {
@@ -1590,7 +1617,11 @@ function updateUrl(land, bedrag, pct, mode) {
   params.set('bedrag', bedrag);
   params.set('tarief', Math.round(pct * 100));
   params.set('mode', mode);
-  params.set('modus', mode === 'incl-excl' ? 'incl' : 'excl');
+  if (isOndersteundeMode(mode)) {
+    params.set('modus', mode === 'incl-excl' ? 'incl' : 'excl');
+  } else {
+    params.set('modus', mode);
+  }
   if (land === 'be') params.set('land', 'be');
   history.replaceState(null, '', '?' + params.toString());
 }
